@@ -20,7 +20,7 @@ The gem name is "foreman_xen".
 
 You can get the develop branch of the plugin by specifying your Gemfile in this way:
 
-    gem 'foreman_xen', :git => "https://github.com/theforeman/foreman_xen.git"
+    gem 'foreman_xen', :git => "https://github.com/ohadlevy/foreman_xen.git"
 
 # Copyright
 
