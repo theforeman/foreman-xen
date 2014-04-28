@@ -19,14 +19,14 @@
 <!--Templates -->
 <div class="children_fields">
   <%= field_set_tag 'VM Template', :id => 'xen_templates', :title => _('Template') do -%>
-    <%= render 'templates', :f => f, :compute_resource => compute_resource %>
+    <%= render 'compute_resources_vms/form/templates', :f => f, :compute_resource => compute_resource %>
   <% end -%>
 </div>
 
 <!-- XenStore Data -->
 <div class="children_fields" id="xenserver-xenstore-data">
   <%= field_set_tag 'Xen Store Data', :id => 'xen_store_data', :title => _('Xen Store Data') do -%>
-    <%= render 'xenstore', :f => f, :compute_resource => compute_resource, :new => new %>
+    <%= render 'compute_resources_vms/form/xenstore', :f => f, :compute_resource => compute_resource, :new => new %>
   <% end %>
 </div>
 
@@ -35,10 +35,10 @@
 <div class="children_fields xenserver-raw" id="xenserver-storage" style="<%= hide_raw %>">
   <%= new_child_fields_template(f, :VBDs, {
       :object  => compute_resource.new_volume,
-      :partial => 'volume', :form_builder_attrs => { :compute_resource => compute_resource } }) %>
+      :partial => 'compute_resources_vms/form/volume', :form_builder_attrs => { :compute_resource => compute_resource } }) %>
   <%= field_set_tag 'Storage', :id => 'storage_volumes', :title => _('Storage') do -%>
     <%= f.fields_for :VBDs do |i| %>
-      <%= render 'volume', :f => i, :compute_resource => compute_resource %>
+      <%= render 'compute_resources_vms/form/volume', :f => i, :compute_resource => compute_resource %>
     <% end -%>
   <% end -%>
 </div>
@@ -46,7 +46,7 @@
 <div class="children_fields" id="xenserver-network" style="<%= hide_raw %>">
   <%= field_set_tag 'Network interfaces', :id => 'network_interfaces', :title => _('Networks') do -%>
     <%= f.fields_for :VIFs do |i| %>
-      <%= render 'network', :f => i, :compute_resource => compute_resource %>
+      <%= render 'compute_resources_vms/form/network', :f => i, :compute_resource => compute_resource %>
     <% end -%>
   <% end -%>
 </div>
