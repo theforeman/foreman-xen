@@ -9,20 +9,27 @@
   %>
 
   <div id='templates' class=''>
-    <label class="control-label" for="host_compute_attributes_custom_template_name">Custom template</label>
 
+  <div class="form-group">
+   <label class="col-md-2 control-label" for="host_compute_attributes_custom_template_name">Custom template</label>
+   <div class="col-md-4">
     <div class="controls">
-      <select class="input-xlarge" id="host_compute_attributes_custom_template_name" name="host[compute_attributes][custom_template_name]">
+      <select class="form-control span2" id="host_compute_attributes_custom_template_name" name="host[compute_attributes][custom_template_name]">
         <%= options_for_select([[_("No template"), ""]] + compute_resource.custom_templates.map { |t| [t.name, t.name] }, selected_item_c) %>
       </select>
     </div>
+   </div>  
+  </div>
 
-    <label class="control-label" for="host_compute_attributes_builtin_template_name">Built-in template</label>
-
+    <div class="form-group ">
+    <label class="col-md-2 control-label" for="host_compute_attributes_builtin_template_name">Built-in template</label>
+    <div class="col-md-4">
     <div class="controls">
-      <select class="input-xlarge" id="host_compute_attributes_builtin_template_name" name="host[compute_attributes][builtin_template_name]">
+      <select class="form-control span2" id="host_compute_attributes_builtin_template_name" name="host[compute_attributes][builtin_template_name]">
         <%= options_for_select([[_("No template"), ""]] + compute_resource.builtin_templates.map { |t| [t.name, t.name] }, selected_item_b) %>
       </select>
+    </div>
+    </div>
     </div>
 
   </div>
