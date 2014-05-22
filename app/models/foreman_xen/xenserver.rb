@@ -282,7 +282,6 @@ module ForemanXen
         end
       end
       out_hash
-      @key = key
     end
   end
 end
