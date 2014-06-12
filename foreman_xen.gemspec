@@ -7,8 +7,8 @@ require "foreman_xen/version"
 Gem::Specification.new do |s|
   s.name        = "foreman_xen"
   s.version     = ForemanXen::VERSION
-  s.authors     = ["Michał Piotrowski"]
-  s.email       = ["michal.piotrowski@erlang-solutions.com"]
+  s.authors     = ["Pavel Nemirovsky, Michał Piotrowski, Avi Israeli"]
+  s.email       = ["operations@oovoo.com"]
   s.homepage    = "http://github.com/theforeman/foreman-xen"
   s.summary     = "Provision and manage XEN Server from Foreman"
   s.description = "Provision and manage XEN Server from Foreman."
