@@ -14,13 +14,13 @@ The gem name is "foreman_xen".
 
 | Foreman Version | Plugin Version |
 | ---------------:| --------------:|
-| >=  1.5         | 0.0.1          |
+| >=  1.5         | 0.0.2          |
 
 ## Latest code
 
 You can get the develop branch of the plugin by specifying your Gemfile in this way:
 
-    gem 'foreman_xen', :git => "https://github.com/ohadlevy/foreman_xen.git"
+    gem 'foreman_xen', :git => "https://github.com/theforeman/foreman-xen/foreman_xen.git"
 
 # Copyright
 
