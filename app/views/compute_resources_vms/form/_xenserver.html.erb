@@ -9,10 +9,10 @@
   <fieldset id="vm_profile">
     <legend>VM Profile</legend>
     <div class="fields">
-      <%= text_f f, :name, :disabled => !new if controller_name != 'hosts' %>
+      <%= text_f f, :name, :label => 'Name', :disabled => !new if controller_name != 'hosts'%>
       <%= selectable_f f, :vcpus_max, 1..compute_resource.max_cpu_count, {}, :class => 'input-mini', :disabled => !new, :label => 'vCPUs' %>
-      <%= selectable_f f, :memory_min, memory_options(compute_resource.max_memory), {}, :class => 'span2', :disabled => !new %>
-      <%= selectable_f f, :memory_max, memory_options(compute_resource.max_memory), {}, :class => 'span2', :disabled => !new %>
+      <%= selectable_f f, :memory_min, memory_options(compute_resource.max_memory), {}, :class => 'span2', :disabled => !new, :label => 'Memory Min' %>
+      <%= selectable_f f, :memory_max, memory_options(compute_resource.max_memory), {}, :class => 'span2', :disabled => !new, :label => 'Memory Max' %>
     </div>
   </fieldset>
 </div>
