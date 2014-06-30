@@ -121,6 +121,12 @@ module ForemanXen
           vm.set_attribute('VCPUs_at_startup', cpus)
           vm.set_attribute('VCPUs_max', cpus)
         end
+        vm.set_attribute 'platform', {
+            'nx' => 'true',
+            'acpi' => '1',
+            'pae' => 'true',
+            'viridian' => 'true'
+        }
         vm.refresh
         return vm
       rescue => e
@@ -173,7 +179,11 @@ module ForemanXen
     end
 
     def create_vm_from_builtin(args)
+      require 'pp'
 
+      client.servers.each do |vm|
+        pp vm
+      end
       host               = client.hosts.first
       storage_repository = client.storage_repositories.find { |sr| sr.name == "#{args[:VBDs][:print]}" }
 
@@ -192,6 +202,8 @@ module ForemanXen
         other_config = template.other_config
         other_config.delete 'disks'
         other_config.delete 'default_template'
+        other_config[:"'base_template_name'"] = args[:builtin_template_name]
+
       end
       vm = client.servers.new :name               => args[:name],
                               :affinity           => host,
