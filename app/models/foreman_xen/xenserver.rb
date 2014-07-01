@@ -194,6 +194,15 @@ module ForemanXen
                                 :description        => "#{args[:name]}-disk_1",
                                 :virtual_size       => size.to_s
 
+      mem_max      = args[:memory_max]
+      mem_min      = args[:memory_min]
+      other_config = {}
+      if args[:builtin_template_name] != ''
+        template     = client.servers.builtin_templates.find { |tmp| tmp.name == args[:builtin_template_name] }
+        other_config = template.other_config
+        other_config.delete 'disks'
+        other_config.delete 'default_template'
+      end
       vm = client.servers.new :name               => args[:name],
                               :template_name      => args[:builtin_template_name],
                               :memory_static_max  => mem_max,
