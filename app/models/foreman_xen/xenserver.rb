@@ -62,7 +62,8 @@ module ForemanXen
     end
 
     def storage_pools
-      client.storage_repositories rescue []
+      storages = client.storage_repositories.select { |sr| sr.type!= 'udev' && sr.type!= 'iso'} rescue []
+      storages.sort { |a, b| a.name <=> b.name }
     end
 
     def interfaces
@@ -70,7 +71,8 @@ module ForemanXen
     end
 
     def networks
-      client.networks rescue []
+      networks = client.networks rescue []
+      networks.sort { |a, b| a.name <=> b.name }
     end
 
     def templates
@@ -214,10 +216,9 @@ module ForemanXen
       vm
     end
 
-    def console(uuid)
+    def console uuid
       vm = find_vm_by_uuid(uuid)
       raise 'VM is not running!' unless vm.ready?
-
 
       console = vm.service.consoles.find { |c| c.__vm == vm.reference && c.protocol == 'rfb' }
       raise "No console fore vm #{vm.name}" if console == nil
@@ -282,6 +283,7 @@ module ForemanXen
         end
       end
       out_hash
+#      @key = key
     end
   end
 end
