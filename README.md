@@ -22,6 +22,10 @@ You can get the develop branch of the plugin by specifying your Gemfile in this 
 
     gem 'foreman_xen', :git => "https://github.com/theforeman/foreman-xen.git"
 
+## Support
+
+http://projects.theforeman.org/projects/xen/issues
+
 # Copyright
 
 Copyright (c) 2014 ooVoo LLC
