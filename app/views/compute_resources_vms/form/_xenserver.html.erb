@@ -11,8 +11,8 @@
     <div class="fields">
       <%= text_f f, :name, :label => 'Name', :disabled => !new if controller_name != 'hosts'%>
       <%= selectable_f f, :vcpus_max, 1..compute_resource.max_cpu_count, {}, :class => 'input-mini', :disabled => !new, :label => 'vCPUs' %>
-      <%= selectable_f f, :memory_min, memory_options(compute_resource.max_memory), {}, :class => 'span2', :disabled => !new, :label => 'Memory Min' %>
-      <%= selectable_f f, :memory_max, memory_options(compute_resource.max_memory), {}, :class => 'span2', :disabled => !new, :label => 'Memory Max' %>
+      <%= selectable_f f, :memory_min, memory_options(compute_resource.max_memory), {}, :class => 'form-control span2', :disabled => !new, :label => 'Memory Min' %>
+      <%= selectable_f f, :memory_max, memory_options(compute_resource.max_memory), {}, :class => 'form-control span2', :disabled => !new, :label => 'Memory Max' %>
     </div>
   </fieldset>
 </div>
@@ -51,8 +51,20 @@
   <% end -%>
 </div>
 
-<% checked = params[:host] && params[:host][:compute_attributes] && params[:host][:compute_attributes][:start] || '1' %>
-<%= checkbox_f f, :start, { :checked => (checked == '1'), :help_inline => _('Power ON this machine') } if new %>
+<div class="children_fields" id="xenserver-vm-start" style="<%= hide_raw %>">
+  <%= field_set_tag 'VM Startup Options', :id => 'vm_starup_options', :title => _('Power ON this machine') do -%>
+  <div class="form-group">
+   <label class="col-md-2 control-label" for="xenserver-vm-start-params">Power ON this VM</label>
+   <div class="col-md-4">
+    <div class="controls">
+	<% checked = params[:host] && params[:host][:compute_attributes] && params[:host][:compute_attributes][:start] || '1' %>
+	<%= checkbox_f f, :start, { :checked => (checked == '1')} if new %>
+    </div>
+   </div>  
+  </div>
+  <% end -%>
+</div>
+
 
 
 <script type="text/javascript">
