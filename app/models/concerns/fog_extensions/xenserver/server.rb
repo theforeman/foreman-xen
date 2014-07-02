@@ -46,6 +46,10 @@ module FogExtensions
         template_name
       end
 
+      def vm_description
+        vm_description
+      end
+
     end
   end
 end

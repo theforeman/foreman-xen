@@ -109,11 +109,7 @@ module ForemanXen
       raise 'you can select at most one template type' if builtin_template_name != '' and custom_template_name != ''
       begin
         vm = nil
-        if custom_template_name != ''
-          vm = create_vm_from_custom args
-        else
-          vm = create_vm_from_builtin args
-        end
+        vm = create_vm_from_template args
         vm.set_attribute('name_description', 'Provisioned by Foreman')
         cpus = args[:vcpus_max]
         if vm.vcpus_max.to_i < cpus.to_i
@@ -174,13 +170,27 @@ module ForemanXen
       vm
     end
 
-    def create_vm_from_builtin(args)
+    def create_vm_from_template(args)
 
-      host               = client.hosts.first
-      storage_repository = client.storage_repositories.find { |sr| sr.name == "#{args[:VBDs][:print]}" }
+      #Get all the details from the XenServer
+      host                = client.hosts.first #TODO: Intelligent checking of this
+      network             = client.networks.find { |n| n.name == args[:VIFs][:print] }
+      storage_repository  = client.storage_repositories.find { |sr| sr.name == "#{args[:VBDs][:print]}" }
+      if args[:custom_template_name] != ''
+        template            = client.servers.builtin_templates.find { |tmp| tmp.name == args[:builtin_template_name] }
+      else
+        template            = client.servers.custom_templates.find { |tmp| tmp.name == args[:custom_template_name] }
+      end
 
+      #VDI Size
       gb   = 1073741824 #1gb in bytes
       size = args[:VBDs][:physical_size].to_i * gb
+
+      #Other VM Options
+      mem_max      = args[:memory_max]
+      mem_min      = args[:memory_min]
+
+      #Create and save it
       vdi  = client.vdis.create :name               => "#{args[:name]}-disk1",
                                 :storage_repository => storage_repository,
                                 :description        => "#{args[:name]}-disk_1",
@@ -196,27 +206,34 @@ module ForemanXen
         other_config.delete 'default_template'
       end
       vm = client.servers.new :name               => args[:name],
-                              :affinity           => host,
-                              :pv_bootloader      => '',
-                              :hvm_boot_params    => { :order => 'dn' },
-                              :other_config       => other_config,
+                              :template_name      => args[:builtin_template_name],
                               :memory_static_max  => mem_max,
                               :memory_static_min  => mem_min,
                               :memory_dynamic_max => mem_max,
                               :memory_dynamic_min => mem_min
 
       vm.save :auto_start => false
+
+      #Remove existing options that conflict with arguments
+      other_config = vm.other_config
+      other_config.delete 'disks'
+
+      other_config['install-methods']  = 'http,ftp,nfs'
+      vm.set_attribute 'PV_bootloader', 'eliloader'
+      vm.set_attribute 'other_config', other_config
+
       client.vbds.create :server => vm, :vdi => vdi
-
       create_network(vm, args)
-
       vm.provision
-      vm.set_attribute('HVM_boot_policy', 'BIOS order')
       vm.refresh
       vm
     end
 
-    def console uuid
+    def find_available_host()
+
+    end
+
+    def console(uuid)
       vm = find_vm_by_uuid(uuid)
       raise 'VM is not running!' unless vm.ready?
 
@@ -283,7 +300,6 @@ module ForemanXen
         end
       end
       out_hash
-#      @key = key
     end
   end
 end
