@@ -109,16 +109,13 @@ module ForemanXen
       raise 'you can select at most one template type' if builtin_template_name != '' and custom_template_name != ''
       begin
         vm = nil
-        vm = create_vm_from_template args
-        vm.set_attribute('name_description', 'Provisioned by Foreman')
-        cpus = args[:vcpus_max]
-        if vm.vcpus_max.to_i < cpus.to_i
-          vm.set_attribute('VCPUs_max', cpus)
-          vm.set_attribute('VCPUs_at_startup', cpus)
+        if custom_template_name != ''
+          vm = create_vm_from_custom args
         else
-          vm.set_attribute('VCPUs_at_startup', cpus)
-          vm.set_attribute('VCPUs_max', cpus)
+          vm = create_vm_from_builtin args
         end
+        vm.set_attribute('name_description', 'Provisioned by Foreman')
+
         vm.refresh
         return vm
       rescue => e
@@ -159,7 +156,14 @@ module ForemanXen
         vm.set_attribute('memory_dynamic_max', mem_max)
         vm.set_attribute('memory_static_max', mem_max)
       end
-
+      cpus = args[:vcpus_max]
+      if vm.vcpus_max.to_i < cpus.to_i
+        vm.set_attribute('VCPUs_max', cpus)
+        vm.set_attribute('VCPUs_at_startup', cpus)
+      else
+        vm.set_attribute('VCPUs_at_startup', cpus)
+        vm.set_attribute('VCPUs_max', cpus)
+      end
       disks = vm.vbds.select { |vbd| vbd.type == 'Disk' }
       disks.sort! { |a, b| a.userdevice <=> b.userdevice }
       i = 0
@@ -170,17 +174,11 @@ module ForemanXen
       vm
     end
 
-    def create_vm_from_template(args)
+    def create_vm_from_builtin(args)
 
       #Get all the details from the XenServer
-      host                = client.hosts.first #TODO: Intelligent checking of this
-      network             = client.networks.find { |n| n.name == args[:VIFs][:print] }
       storage_repository  = client.storage_repositories.find { |sr| sr.name == "#{args[:VBDs][:print]}" }
-      if args[:custom_template_name] != ''
-        template            = client.servers.builtin_templates.find { |tmp| tmp.name == args[:builtin_template_name] }
-      else
-        template            = client.servers.custom_templates.find { |tmp| tmp.name == args[:custom_template_name] }
-      end
+      template            = client.servers.builtin_templates.find { |tmp| tmp.name == args[:builtin_template_name] }
 
       #VDI Size
       gb   = 1073741824 #1gb in bytes
@@ -189,6 +187,7 @@ module ForemanXen
       #Other VM Options
       mem_max      = args[:memory_max]
       mem_min      = args[:memory_min]
+      cpus         = args[:vcpus_max]
 
       #Create and save it
       vdi  = client.vdis.create :name               => "#{args[:name]}-disk1",
@@ -196,46 +195,44 @@ module ForemanXen
                                 :description        => "#{args[:name]}-disk_1",
                                 :virtual_size       => size.to_s
 
-      mem_max      = args[:memory_max]
-      mem_min      = args[:memory_min]
-      other_config = {}
-      if args[:builtin_template_name] != ''
-        template     = client.servers.builtin_templates.find { |tmp| tmp.name == args[:builtin_template_name] }
-        other_config = template.other_config
-        other_config.delete 'disks'
-        other_config.delete 'default_template'
-      end
+      #Delete conflicting options from template
+      other_config = template.other_config
+      other_config.delete 'disks'
+      other_config.delete 'default_template'
+
       vm = client.servers.new :name               => args[:name],
-                              :template_name      => args[:builtin_template_name],
+                              :template_name      => template.name,
                               :memory_static_max  => mem_max,
                               :memory_static_min  => mem_min,
                               :memory_dynamic_max => mem_max,
-                              :memory_dynamic_min => mem_min
+                              :memory_dynamic_min => mem_min,
+                              :vcpus_max          => cpus,
+                              :vcpus_at_startup   => cpus
 
       vm.save :auto_start => false
 
-      #Remove existing options that conflict with arguments
-      other_config = vm.other_config
-      other_config.delete 'disks'
-
-      other_config['install-methods']  = 'http,ftp,nfs'
-      vm.set_attribute 'PV_bootloader', 'eliloader'
       vm.set_attribute 'other_config', other_config
 
+      #If the Template is PV then inserting KS information is handled in Orchestration_Extensions,
+      #otherwise set the HVM boot order to save having to do it manually.
+      if vm.pv_bootloader != ""
+        vm.set_attribute 'HVM_boot_policy', 'BIOS order'
+        vm.set_attribute 'HVM_boot_params', { :order => 'dcn'}
+      end
+
       client.vbds.create :server => vm, :vdi => vdi
+
       create_network(vm, args)
+
       vm.provision
       vm.refresh
       vm
     end
 
-    def find_available_host()
-
-    end
-
     def console(uuid)
       vm = find_vm_by_uuid(uuid)
       raise 'VM is not running!' unless vm.ready?
+
 
       console = vm.service.consoles.find { |c| c.__vm == vm.reference && c.protocol == 'rfb' }
       raise "No console fore vm #{vm.name}" if console == nil

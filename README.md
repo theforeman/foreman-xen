@@ -2,6 +2,14 @@
 
 This plugin enables provisioning and managing XEN Server in Foreman.
 
+This is a fork of the original that has or will have a few changes that my workplace required:
+* Provision para-virtual images directly rather than using HVM and then converting. - Done
+* Allow snapshots to be taken of machines via the Web UI.
+
+The implementation is rather hacky and right now would probably break other providers that are installed, so I won't
+be pushing any more upstream changes. Though I've had good results using CentOS and I would imagine it would work fine
+with Redhat as well.
+
 ## Installation
 
 Please see the Foreman manual for appropriate instructions:
@@ -21,6 +29,14 @@ The gem name is "foreman_xen".
 You can get the develop branch of the plugin by specifying your Gemfile in this way:
 
     gem 'foreman_xen', :git => "https://github.com/theforeman/foreman-xen.git"
+
+    or
+
+    gem 'foreman_xen', :git => "https://github.com/HeWhoWas/foreman-xen.git"
+
+## Support
+
+http://projects.theforeman.org/projects/xen/issues
 
 # Copyright
 

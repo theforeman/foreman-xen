@@ -23,10 +23,17 @@ module ForemanXen
 
     end
 
-  end
+     config.to_prepare do
+      begin
+        require File.expand_path('../../../app/models/concerns/orchestration_extensions/compute', __FILE__)
+        require 'fog/xenserver/models/compute/server'
+        require File.expand_path('../../../app/models/concerns/fog_extensions/xenserver/server', __FILE__)
+        Fog::Compute::XenServer::Server.send(:include, ::FogExtensions::Xenserver::Server)
+        Orchestration::Compute.send(:include, ::OrchestrationExtensions::Compute)
+      rescue => e
+        puts "Foreman-Xen: skipping engine hook (#{e.to_s})"
+      end
+    end
 
-  # extend fog xen server and image models.
-  require 'fog/xenserver/models/compute/server'
-  require File.expand_path('../../../app/models/concerns/fog_extensions/xenserver/server', __FILE__)
-  Fog::Compute::XenServer::Server.send(:include, ::FogExtensions::Xenserver::Server)
+  end
 end

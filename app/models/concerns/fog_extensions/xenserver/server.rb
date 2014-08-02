@@ -47,7 +47,7 @@ module FogExtensions
       end
 
       def vm_description
-        vm_description
+        name
       end
 
     end
