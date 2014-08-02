@@ -1,3 +1,4 @@
+# encoding: utf-8
 $:.push File.expand_path("../lib", __FILE__)
 
 # Maintain your gem's version:
@@ -7,7 +8,7 @@ require "foreman_xen/version"
 Gem::Specification.new do |s|
   s.name        = "foreman_xen"
   s.version     = ForemanXen::VERSION
-  s.authors     = ["Pavel Nemirovsky, Michał Piotrowski, Avi Israeli"]
+  s.authors     = ["Pavel Nemirovsky, Michał Piotrowski, Avi Israeli","Ben Bettridge"]
   s.email       = ["operations@oovoo.com"]
   s.homepage    = "http://github.com/theforeman/foreman-xen"
   s.summary     = "Provision and manage XEN Server from Foreman"
