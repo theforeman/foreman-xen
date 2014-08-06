@@ -89,6 +89,21 @@ module ForemanXen
       tmps.sort { |a, b| a.name <=> b.name }
     end
 
+    def associated_host(vm)
+      ips = []
+      begin
+        if vm.tools_installed?
+          vm.guest_metrics.networks.each do |k,v|
+            ips << v
+          end
+        end
+      rescue => e
+        logger.error("Error retrieving Network via Guest Metrics: #{e.message}")
+      end
+
+      Host.authorized(:view_hosts, Host).where(:ip => ips).first
+    end
+
     def new_vm(attr={})
 
       test_connection
