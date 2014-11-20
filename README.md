@@ -19,9 +19,9 @@ To make VNC client work properly, Foreman frontend should be configured without 
 
 ## Compatibility
 
-| Foreman Version | Plugin Version |
-| ---------------:| --------------:|
-| >=  1.5         | 0.0.3          |
+| Foreman Version |
+| ---------------:|
+| >=  1.5         |
 
 ## Latest code
 
