@@ -1,0 +1,2 @@
+<!-- replace 'code[erb-loud]:contains("host_title_actions")' -->
+<%= xen_host_title_actions(@host) %>
