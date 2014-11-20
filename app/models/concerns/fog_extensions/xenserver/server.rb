@@ -2,6 +2,8 @@ module FogExtensions
   module Xenserver
     module Server
 
+      attr_accessor :memory_min, :memory_max, :custom_template_name, :builtin_template_name
+
       def to_s
         name
       end
@@ -9,14 +11,6 @@ module FogExtensions
       def nics_attributes=(attrs); end
 
       def volumes_attributes=(attrs); end
-
-      def memory_min
-        memory_static_min.to_i
-      end
-
-      def memory_max
-        memory_static_max.to_i
-      end
 
       def memory
         memory_static_max.to_i
@@ -36,14 +30,6 @@ module FogExtensions
 
       def state
         power_state
-      end
-
-      def custom_template_name
-        template_name
-      end
-
-      def builtin_template_name
-        template_name
       end
 
     end
