@@ -10,6 +10,8 @@ Please see the Foreman manual for appropriate instructions:
 
 The gem name is "foreman_xen".
 
+## Special note
+
 To make VNC client work properly, Foreman frontend should be configured without forcing SSL:
 
 /usr/share/foreman/config/settings.yaml
