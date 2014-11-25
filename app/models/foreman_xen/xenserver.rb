@@ -129,7 +129,7 @@ module ForemanXen
         else
           vm = create_vm_from_builtin args
         end
-        vm.set_attribute('name_description', 'Provisioned by Foreman')
+        vm.set_attribute('description', 'Provisioned by Foreman')
         cpus = args[:vcpus_max]
         if vm.vcpus_max.to_i < cpus.to_i
           vm.set_attribute('VCPUs_max', cpus)
