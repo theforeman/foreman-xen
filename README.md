@@ -1,3 +1,7 @@
+# Development policy #
+
+Currently we hold master branch as tested and verified version, please submit your changes into development branch only.
+
 # Foreman XEN Plugin
 
 This plugin enables provisioning and managing XEN Server in Foreman.
