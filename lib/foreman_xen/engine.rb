@@ -1,6 +1,7 @@
 require 'fast_gettext'
 require 'gettext_i18n_rails'
 require 'fog'
+require 'deface'
 
 module ForemanXen
   #Inherit from the Rails module of the parent app (Foreman), not the plugin.
@@ -23,10 +24,23 @@ module ForemanXen
 
     end
 
+    config.to_prepare do
+      begin
+        # extend fog xen server and image models.
+        require 'fog/xenserver/models/compute/server'
+        require File.expand_path('../../../app/models/concerns/fog_extensions/xenserver/server', __FILE__)
+        require File.expand_path('../../../app/models/concerns/foreman_xen/host_helper_extensions', __FILE__)
+
+        Fog::Compute::XenServer::Server.send(:include, ::FogExtensions::Xenserver::Server)
+        ::HostsHelper.send(:include, ForemanXen::HostHelperExtensions)
+      rescue => e
+        puts "Foreman-Xen: skipping engine hook (#{e.to_s})"
+      end
+    end
+
   end
 
-  # extend fog xen server and image models.
-  require 'fog/xenserver/models/compute/server'
-  require File.expand_path('../../../app/models/concerns/fog_extensions/xenserver/server', __FILE__)
-  Fog::Compute::XenServer::Server.send(:include, ::FogExtensions::Xenserver::Server)
+
+
+
 end
