@@ -104,6 +104,23 @@ module ForemanXen
       Host.authorized(:view_hosts, Host).where(:ip => ips).first
     end
 
+    def get_snapshots_for_vm(vm)
+      if vm.snapshots.empty?
+        return []
+      end
+      tmps = client.servers.templates.select { |t| t.is_a_snapshot } rescue []
+      retval = []
+      tmps.each do | snapshot |
+        retval << snapshot if vm.snapshots.include?(snapshot.reference)
+      end
+      retval
+    end
+
+    def get_snapshots
+      tmps = client.servers.templates.select { |t| t.is_a_snapshot } rescue []
+      tmps.sort { |a, b| a.name <=> b.name }
+    end
+
     def new_vm(attr={})
 
       test_connection
