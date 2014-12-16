@@ -2,11 +2,13 @@
   <%
      nat = compute_resource.networks
      selected = ""
-     if params && params['host'] && params['host']['compute_attributes']
-       selected = params['host']['compute_attributes']['VIFs']['print']
-     elsif new.__vifs
-       selected = new.__vifs['print']
-     end
+	 if params['host']
+		 if params && params['host'] && params['host']['compute_attributes']
+		   selected = params['host']['compute_attributes']['VIFs']['print']
+		 elsif new.__vifs
+		   selected = new.__vifs['print']
+		 end
+	 end
   -%>
 
   <div id='nat' class=''>
