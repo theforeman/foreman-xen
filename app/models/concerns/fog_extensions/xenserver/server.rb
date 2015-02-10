@@ -38,7 +38,7 @@ module FogExtensions
       end
 
       def vm_description
-        _("VM Descr: %{cpus} CPUs and %{memory} memory") % {:cpus => vcpus_max, :memory => number_to_human_size(memory_max.to_i)}
+        _("%{cpus} CPUs and %{memory} memory") % {:cpus => vcpus_max, :memory => number_to_human_size(memory_max.to_i)}
       end
 
     end
