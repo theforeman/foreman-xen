@@ -1,6 +1,11 @@
 module FogExtensions
   module Xenserver
     module Server
+      extend ActiveSupport::Concern
+
+
+      include ActionView::Helpers::NumberHelper
+
 
       attr_accessor :memory_min, :memory_max, :custom_template_name, :builtin_template_name
 
@@ -30,6 +35,10 @@ module FogExtensions
 
       def state
         power_state
+      end
+
+      def vm_description
+        _("%{cpus} CPUs and %{memory} memory") % {:cpus => vcpus_max, :memory => number_to_human_size(memory_max.to_i)}
       end
 
     end
