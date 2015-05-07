@@ -42,8 +42,6 @@ module FogExtensions
       end
 
       def interfaces
-        puts vifs.inspect
-        puts self.inspect
         vifs
       end
 
