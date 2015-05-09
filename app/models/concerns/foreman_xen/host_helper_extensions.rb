@@ -7,7 +7,7 @@ module ForemanXen
           button_group(
               link_to_if_authorized(_("Edit"), hash_for_edit_host_path(:id => host).merge(:auth_object => host),
                                     :title    => _("Edit your host"), :id => "edit-button"),
-              if host.compute_resource_id
+              if not host.compute_resource.nil? and host.compute_resource.type =="ForemanXen::Xenserver"
                 link_to(_("Snapshots"), "../foreman_xen/snapshots/#{@host.id}/",
                         :title    => _("Manage machine snapshots"))
               end,
