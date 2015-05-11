@@ -226,6 +226,7 @@ module ForemanXen
         other_config = template.other_config
         other_config.delete 'disks'
         other_config.delete 'default_template'
+        other_config['mac_seed'] = SecureRandom.uuid
       end
       vm = client.servers.new :name               => args[:name],
                               :affinity           => host,
