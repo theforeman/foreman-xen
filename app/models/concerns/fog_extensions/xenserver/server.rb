@@ -41,6 +41,14 @@ module FogExtensions
         _("%{cpus} CPUs and %{memory} memory") % {:cpus => vcpus_max, :memory => number_to_human_size(memory_max.to_i)}
       end
 
+      def interfaces
+        vifs
+      end
+
+      def select_nic(fog_nics, nic)
+        return fog_nics[0]
+      end
+
     end
   end
 end
