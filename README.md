@@ -1,18 +1,21 @@
-# Development policy #
-
-Currently we hold master branch as tested and verified version, please submit your changes into development branch only.
-
 # Foreman XEN Plugin
 
 This plugin enables provisioning and managing XEN Server in Foreman.
 
 ## Installation
 
-Please see the Foreman manual for appropriate instructions:
+Packages are available for Debian based distribtions as **ruby-foreman-xen** and for Red Hat based distributions as **ruby193-rubygem-foreman_xen** The gem name is **foreman_xen**.
+
+Please see the Foreman manual for further instructions:
 
 * [Foreman: How to Install a Plugin](http://theforeman.org/manuals/latest/index.html#6.1InstallaPlugin)
 
-The gem name is "foreman_xen".
+## Compatibility
+
+| Foreman Version | Plugin Version |
+|:--------------- |:-------------- |
+| >=1.5, <1.8     | 0.0.x          |
+| >=1.8.1         | 0.1.x          |
 
 ## Special note
 
@@ -21,15 +24,9 @@ To make VNC client work properly, Foreman frontend should be configured without 
 /usr/share/foreman/config/settings.yaml
 :require_ssl: false
 
-## Compatibility
-
-| Foreman Version |
-| ---------------:|
-| >=  1.5         |
-
 ## Latest code
 
-You can get the develop branch of the plugin by specifying your Gemfile in this way:
+You can get the latest development code of the plugin by specifying your Gemfile in this way:
 
     gem 'foreman_xen', :git => "https://github.com/theforeman/foreman-xen.git"
 
