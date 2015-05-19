@@ -90,18 +90,7 @@ module ForemanXen
     end
 
     def associated_host(vm)
-      ips = []
-      begin
-        if vm.tools_installed?
-          vm.guest_metrics.networks.each do |k,v|
-            ips << v
-          end
-        end
-      rescue => e
-        logger.error("Error retrieving Network via Guest Metrics: #{e.message}")
-      end
-
-      Host.authorized(:view_hosts, Host).where(:ip => ips).first
+      associate_by("mac", vm.interfaces.map(&:mac))
     end
 
     def get_snapshots_for_vm(vm)
