@@ -75,23 +75,63 @@
 
 
 <script type="text/javascript">
+	
+	// Check if its a computer resource template then just do not show the form of XenStore
+	
+	if ($("#compute_attribute_compute_profile_id").length > 0){
+	 $('#xenserver-xenstore-data').hide(1)
+	}
 
+    $(document).off('change.xenserver', '#compute_attribute_vm_attrs_custom_template_name');
+    $(document).on('change.xenserver', '#compute_attribute_vm_attrs_custom_template_name', function (data) {
+        if ($('option:selected', data.target).val() == "") {
+			$('.xenserver-raw').show(1000)
+			// IE and Chrome
+	        $('.buildin_templates').prop("disabled", false);
+			$('#compute_attribute_vm_attrs_builtin_template_name').removeAttr('disabled');
+        } else {
+        	$('.xenserver-raw').hide(1000)
+			$('#compute_attribute_vm_attrs_builtin_template_name').val($("#compute_attribute_vm_attrs_builtin_template_name option:contains('No template')").val());
+			// IE and Chrome
+			$('#compute_attribute_vm_attrs_builtin_template_name').attr("disabled", 'disabled');
+			$('.buildin_templates').prop("disabled", true);
+			
+        }
+
+    });
+
+    $(document).off('change.xenserver', '#compute_attribute_vm_attrs_builtin_template_name');
+    $(document).on('change.xenserver', '#compute_attribute_vm_attrs_builtin_template_name', function (data) {
+        $('.xenserver-raw').show(1000);
+        $('.buildin_templates').prop("disabled", false);
+		$('#compute_attribute_vm_attrs_builtin_template_name').removeAttr('disabled');
+    })
+
+	
+	// Create a new host windows 
+	
     $(document).off('change.xenserver', '#host_compute_attributes_custom_template_name');
     $(document).on('change.xenserver', '#host_compute_attributes_custom_template_name', function (data) {
         if ($('option:selected', data.target).val() == "") {
 			$('.xenserver-raw').show(1000)
+			// IE and Chrome
 	        $('.buildin_templates').prop("disabled", false);
+			$('#host_compute_attributes_builtin_template_name').removeAttr('disabled');
         } else {
         	$('.xenserver-raw').hide(1000)
 			$('#host_compute_attributes_builtin_template_name').val($("#host_compute_attributes_builtin_template_name option:contains('No template')").val());
+			// IE and Chrome
+			$('#host_compute_attributes_builtin_template_name').attr("disabled", 'disabled');
 			$('.buildin_templates').prop("disabled", true);
+			
         }
 
     });
 
     $(document).off('change.xenserver', '#host_compute_attributes_builtin_template_name');
     $(document).on('change.xenserver', '#host_compute_attributes_builtin_template_name', function (data) {
-        $('.xenserver-raw').show(1000)
+        $('.xenserver-raw').show(1000);
         $('.buildin_templates').prop("disabled", false);
+		$('#host_compute_attributes_builtin_template_name').removeAttr('disabled');
     })
 </script>
