@@ -91,19 +91,19 @@
             $('#xenstore-vm-data-ifs-0-netmask').val($('#subnet_mask', fields).val());
             $('#xenstore-vm-data-nameserver1').val($('#subnet_dns_primary', fields).val());
             $('#xenstore-vm-data-nameserver2').val($('#subnet_dns_secondary', fields).val());
-            $('#xenstore-vm-data-ifs-0-ip').val($('#host_ip').val());
+            $('#xenstore-vm-data-ifs-0-ip').val($('#host_interfaces_attributes_0_ip').val());
             $('#xenstore-vm-data-environment').val($('#host_environment_id option:selected').text())
         })
     }
 
-    subnet_id = $('#host_subnet_id option:selected').val();
+    subnet_id = $('#host_interfaces_attributes_0_subnet_id option:selected').val();
 
     if (subnet_id) {
         autocomplete_xenstore(subnet_id)
     }
 
-    $(document).off('change.xenstore', '#host_subnet_id');
-    $(document).on('change.xenstore', '#host_subnet_id', function (data) {
+    $(document).off('change.xenstore', '#host_interfaces_attributes_0_subnet_id');
+    $(document).on('change.xenstore', '#host_interfaces_attributes_0_subnet_id', function (data) {
         subnet_id = $('option:selected', data.target).val();
         if (subnet_id) {
             autocomplete_xenstore(subnet_id)
@@ -120,7 +120,7 @@
 
     $(document).off('click.xenstore', '#compute_resource_tab a');
     $(document).on('click.xenstore', '#compute_resource_tab a', function (data) {
-        subnet_id = $('#host_subnet_id option:selected').val();
+        subnet_id = $('#host_interfaces_attributes_0_subnet_id option:selected').val();
 
         if (subnet_id) {
             autocomplete_xenstore(subnet_id)

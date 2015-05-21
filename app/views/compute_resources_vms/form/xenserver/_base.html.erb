@@ -79,9 +79,12 @@
     $(document).off('change.xenserver', '#host_compute_attributes_custom_template_name');
     $(document).on('change.xenserver', '#host_compute_attributes_custom_template_name', function (data) {
         if ($('option:selected', data.target).val() == "") {
-            $('.xenserver-raw').show(1000)
+			$('.xenserver-raw').show(1000)
+	        $('.buildin_templates').prop("disabled", false);
         } else {
-            $('.xenserver-raw').hide(1000)
+        	$('.xenserver-raw').hide(1000)
+			$('#host_compute_attributes_builtin_template_name').val($("#host_compute_attributes_builtin_template_name option:contains('No template')").val());
+			$('.buildin_templates').prop("disabled", true);
         }
 
     });
@@ -89,5 +92,6 @@
     $(document).off('change.xenserver', '#host_compute_attributes_builtin_template_name');
     $(document).on('change.xenserver', '#host_compute_attributes_builtin_template_name', function (data) {
         $('.xenserver-raw').show(1000)
+        $('.buildin_templates').prop("disabled", false);
     })
 </script>
