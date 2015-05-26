@@ -62,8 +62,37 @@ module ForemanXen
     end
 
     def storage_pools
-      storages = client.storage_repositories.select { |sr| sr.type!= 'udev' && sr.type!= 'iso'} rescue []
-      storages.sort { |a, b| a.name <=> b.name }
+        results = Array.new
+	
+        storages = client.storage_repositories.select { |sr| sr.type!= 'udev' && sr.type!= 'iso'} rescue []
+	hosts = client.hosts
+
+	storages.each do |sr|
+		subresults = Hash.new()
+		found = 0
+		hosts.each do |host|
+
+			if (sr.reference == host.suspend_image_sr) 
+				found = 1
+				subresults[:name] 		= sr.name
+				subresults[:display_name]	= sr.name + '(' +  host.hostname + ')'
+				subresults[:uuid]		= sr.uuid
+				break
+			end
+
+		end
+		
+		if (found==0) 
+			subresults[:name] 		= sr.name
+			subresults[:display_name] 	= sr.name
+			subresults[:uuid]		= sr.uuid
+		end
+		results.push(subresults)
+	end
+
+	results.sort_by!{|item| item[:display_name] }
+	return results
+
     end
 
     def interfaces
@@ -198,7 +227,7 @@ module ForemanXen
     def create_vm_from_builtin(args)
 
       host               = client.hosts.first
-      storage_repository = client.storage_repositories.find { |sr| sr.name == "#{args[:VBDs][:print]}" }
+      storage_repository = client.storage_repositories.find { |sr| sr.uuid == "#{args[:VBDs][:sr_uuid]}" }
 
       gb   = 1073741824 #1gb in bytes
       size = args[:VBDs][:physical_size].to_i * gb

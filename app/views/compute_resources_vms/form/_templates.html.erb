@@ -9,11 +9,11 @@
   %>
 
   <div id='templates' class=''>
-    <div class="form-group custom_templates">
+    <div class="form-group">
       <%= selectable_f f, :custom_template_name,[[_("No template"), ""]] + compute_resource.custom_templates.map { |t| [t.name, t.name] }, {}, :class => 'form-control span2', :label => 'Custom Template' %>
     </div>
 
-    <div class="form-group buildin_templates">
+    <div class="form-group ">
       <%= selectable_f f, :builtin_template_name,[[_("No template"), ""]] + compute_resource.builtin_templates.map { |t| [t.name, t.name] }, {}, :class => 'form-control span2', :label => 'Builtin Template' %>
     </div>
   </div>

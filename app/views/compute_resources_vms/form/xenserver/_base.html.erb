@@ -40,9 +40,6 @@
 
 <!--Storage-->
 <div class="children_fields xenserver-raw" id="xenserver-storage" style="<%= hide_raw %>">
-  <%= new_child_fields_template(f, :VBDs, {
-          :object  => compute_resource.new_volume,
-          :partial => 'compute_resources_vms/form/volume', :form_builder_attrs => { :compute_resource => compute_resource, :new => new  } }) %>
   <%= field_set_tag 'Storage', :id => 'storage_volumes', :title => _('Storage') do -%>
       <%= f.fields_for :VBDs do |i| %>
           <%= render 'compute_resources_vms/form/volume', :f => i, :compute_resource => compute_resource, :new => new %>
@@ -59,16 +56,8 @@
 </div>
 
 <div class="children_fields" id="xenserver-vm-start" style="<%= hide_raw %>">
-  <%= field_set_tag 'VM Startup Options', :id => 'vm_starup_options', :title => _('Power ON this machine') do -%>
-      <div class="form-group">
-        <label class="col-md-2 control-label" for="xenserver-vm-start-params">Power ON this VM</label>
-        <div class="col-md-4">
-          <div class="controls">
-            <% checked = params[:host] && params[:host][:compute_attributes] && params[:host][:compute_attributes][:start] || '1' %>
-            <%= checkbox_f f, :start, { :checked => (checked == '1')} if fields_enabled %>
-          </div>
-        </div>
-      </div>
+  <%= field_set_tag 'VM Startup Options', :id => 'vm_starup_options', :title => _('Power ON this VM') do -%>
+ 	 <%= checkbox_f f, :start, :checked => true, :label => _("Power ON this VM") %>
   <% end -%>
 </div>
 
@@ -130,8 +119,8 @@
 
     $(document).off('change.xenserver', '#host_compute_attributes_builtin_template_name');
     $(document).on('change.xenserver', '#host_compute_attributes_builtin_template_name', function (data) {
-        $('.xenserver-raw').show(1000);
-        $('.buildin_templates').prop("disabled", false);
+        	$('.xenserver-raw').show(1000);
+        	$('.buildin_templates').prop("disabled", false);
 		$('#host_compute_attributes_builtin_template_name').removeAttr('disabled');
     })
 </script>
