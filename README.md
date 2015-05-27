@@ -1,6 +1,6 @@
 # Foreman XEN Plugin
 
-This plugin enables provisioning and managing XEN Server in Foreman.
+This plugin enables managing of XEN Server as a Compute Resource in Foreman.
 
 ## Installation
 
@@ -16,19 +16,6 @@ Please see the Foreman manual for further instructions:
 |:--------------- |:-------------- |
 | >=1.5, <1.8     | 0.0.x          |
 | >=1.8.1         | 0.1.x          |
-
-## Special note
-
-To make VNC client work properly, Foreman frontend should be configured without forcing SSL:
-
-/usr/share/foreman/config/settings.yaml
-:require_ssl: false
-
-## Latest code
-
-You can get the latest development code of the plugin by specifying your Gemfile in this way:
-
-    gem 'foreman_xen', :git => "https://github.com/theforeman/foreman-xen.git"
 
 ## Support
 
