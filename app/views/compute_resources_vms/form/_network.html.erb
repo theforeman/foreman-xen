@@ -2,11 +2,20 @@
   <%
      nat = compute_resource.networks
      selected = ""
-	 if params['host']
-		 if params && params['host'] && params['host']['compute_attributes']
-		   selected = params['host']['compute_attributes']['VIFs']['print']
+	 
+	 if controller_name == 'hosts'
+		 compute_attributes = compute_resource.compute_profile_attributes_for(params['host']['compute_profile_id'])   
+		 if params && params['host']['compute_profile_id'] != ""
+			selected  = compute_attributes['VIFs']['print']
+		 elsif params && params['host'] && params['host']['compute_attributes']
+			selected = params['host']['compute_attributes']['VIFs']['print']
 		 elsif new.__vifs
-		   selected = new.__vifs['print']
+			selected = new.__vifs['print']
+		 end
+	 elsif controller_name == 'compute_attributes'
+		 compute_attributes = compute_resource.compute_profile_attributes_for(params['compute_profile_id'])   
+		 if compute_attributes['VIFs'] && compute_attributes['VIFs']['print']
+			selected  = compute_attributes['VIFs']['print']
 		 end
 	 end
   -%>

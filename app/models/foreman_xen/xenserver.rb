@@ -23,7 +23,8 @@ module ForemanXen
 
     # we default to destroy the VM's storage as well.
     def destroy_vm(ref, args = {})
-      find_vm_by_uuid(ref).destroy
+      logger.error "destroy_vm: #{ ref } #{ args }"
+	  find_vm_by_uuid(ref).destroy
     rescue ActiveRecord::RecordNotFound
       true
     end
@@ -52,6 +53,11 @@ module ForemanXen
       disconnect rescue nil
       errors[:base] << e.message
     end
+	
+	def avalable_hypervisors 
+      tmps = client.hosts rescue []
+      tmps.sort { |a, b| a.name <=> b.name }	
+	end
 
     def new_nic(attr={})
       client.networks.new attr
@@ -62,36 +68,37 @@ module ForemanXen
     end
 
     def storage_pools
-        results = Array.new
 	
-        storages = client.storage_repositories.select { |sr| sr.type!= 'udev' && sr.type!= 'iso'} rescue []
-	hosts = client.hosts
-
-	storages.each do |sr|
-		subresults = Hash.new()
-		found = 0
-		hosts.each do |host|
-
-			if (sr.reference == host.suspend_image_sr) 
-				found = 1
-				subresults[:name] 		= sr.name
-				subresults[:display_name]	= sr.name + '(' +  host.hostname + ')'
-				subresults[:uuid]		= sr.uuid
-				break
-			end
-
-		end
+		results = Array.new
 		
-		if (found==0) 
-			subresults[:name] 		= sr.name
-			subresults[:display_name] 	= sr.name
-			subresults[:uuid]		= sr.uuid
-		end
-		results.push(subresults)
-	end
+		storages = client.storage_repositories.select { |sr| sr.type!= 'udev' && sr.type!= 'iso'} rescue []
+		hosts 	 = client.hosts
 
-	results.sort_by!{|item| item[:display_name] }
-	return results
+		storages.each do |sr|
+			subresults = Hash.new()
+			found = 0
+			hosts.each do |host|
+
+				if (sr.reference == host.suspend_image_sr) 
+					found = 1
+					subresults[:name] 			= sr.name
+					subresults[:display_name]	= sr.name + '(' +  host.hostname + ')'
+					subresults[:uuid]			= sr.uuid
+					break
+				end
+
+			end
+			
+			if (found==0) 
+				subresults[:name] 			= sr.name
+				subresults[:display_name] 	= sr.name
+				subresults[:uuid]			= sr.uuid
+			end
+			results.push(subresults)
+		end
+
+		results.sort_by!{|item| item[:display_name] }
+		return results
 
     end
 
@@ -154,12 +161,22 @@ module ForemanXen
     end
 
     def create_vm(args = {})
-      custom_template_name  = args[:custom_template_name]
+	  
+	  custom_template_name  = args[:custom_template_name]
       builtin_template_name = args[:builtin_template_name]
-      raise 'you can select at most one template type' if builtin_template_name != '' and custom_template_name != ''
+	  custom_template_name 	= custom_template_name.to_s
+	  builtin_template_name = builtin_template_name.to_s
+	  
+      if builtin_template_name!= '' and custom_template_name!=''
+		  logger.error "custom_template_name: #{ custom_template_name }"
+		  logger.error "builtin_template_name: #{ builtin_template_name }"
+		  raise 'you can select at most one template type'
+	  end	  
       begin
         vm = nil
-        if custom_template_name != ''
+		  logger.error "create_vm(): custom_template_name: #{ custom_template_name }"
+		  logger.error "create_vm(): builtin_template_name: #{ builtin_template_name }"
+        if custom_template_name != '' 
           vm = create_vm_from_custom args
         else
           vm = create_vm_from_builtin args
@@ -183,11 +200,24 @@ module ForemanXen
     end
 
     def create_vm_from_custom(args)
-      mem_max = args[:memory_max]
-      mem_min = args[:memory_min]
 
+	  hypervisor_host  = args[:hypervisor_host]
+	  hypervisor_host  = hypervisor_host.to_s
+	
+	  mem_max = args[:memory_max]
+      mem_min = args[:memory_min]
+	  
+      if args[:hypervisor_host]
+		host  = client.hosts.find { |host| host.name == args[:hypervisor_host] }
+		logger.error "create_vm_from_builtin: host : #{ hypervisor_host }"
+	  elsif 
+		host  = client.hosts.first
+		logger.error "create_vm_from_builtin: host : #{ host }"
+	  end
+	  
       raise 'Memory max cannot be lower than Memory min' if mem_min.to_i > mem_max.to_i
       vm = client.servers.new :name          => args[:name],
+							  :affinity 	 => host,
                               :template_name => args[:custom_template_name]
 
       vm.save :auto_start => false
@@ -225,8 +255,21 @@ module ForemanXen
     end
 
     def create_vm_from_builtin(args)
+	
+	  hypervisor_host  = args[:hypervisor_host]
+	  hypervisor_host  = hypervisor_host.to_s
+	  
+      builtin_template_name = args[:builtin_template_name]
+	  builtin_template_name = builtin_template_name.to_s
+	
+      if args[:hypervisor_host]
+		host  = client.hosts.find { |host| host.name == args[:hypervisor_host] }
+		logger.error "create_vm_from_builtin: host : #{ hypervisor_host }"
+	  elsif 
+		host  = client.hosts.first
+		logger.error "create_vm_from_builtin: host : #{ host }"
+	  end
 
-      host               = client.hosts.first
       storage_repository = client.storage_repositories.find { |sr| sr.uuid == "#{args[:VBDs][:sr_uuid]}" }
 
       gb   = 1073741824 #1gb in bytes
@@ -239,7 +282,7 @@ module ForemanXen
       mem_max      = args[:memory_max]
       mem_min      = args[:memory_min]
       other_config = {}
-      if args[:builtin_template_name] != ''
+      if builtin_template_name != ''
         template     = client.servers.builtin_templates.find { |tmp| tmp.name == args[:builtin_template_name] }
         other_config = template.other_config
         other_config.delete 'disks'

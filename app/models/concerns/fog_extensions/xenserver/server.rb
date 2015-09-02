@@ -3,11 +3,10 @@ module FogExtensions
     module Server
       extend ActiveSupport::Concern
 
-
       include ActionView::Helpers::NumberHelper
 
-
-      attr_accessor :memory_min, :memory_max, :custom_template_name, :builtin_template_name
+      attr_accessor :start
+	  attr_accessor :memory_min, :memory_max, :custom_template_name, :builtin_template_name, :hypervisor_host
 
       def to_s
         name

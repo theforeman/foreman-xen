@@ -1,20 +1,36 @@
 <div class="fields">
   <%
-     selected_item_c = ''
+	 selected_item_c = ''
      selected_item_b = ''
-     if params && params['host'] && params['host']['compute_attributes']
-       selected_item_c = params['host']['compute_attributes']['custom_template_name']
-       selected_item_b = params['host']['compute_attributes']['builtin_template_name']
-     end
-  %>
+	 
+	 if controller_name == 'hosts'
+		 compute_attributes = compute_resource.compute_profile_attributes_for(params['host']['compute_profile_id'])   
+		 if params && params['host']['compute_profile_id'] != ""  
+			selected_item_c  = compute_attributes['custom_template_name']
+			selected_item_b  = compute_attributes['builtin_template_name']		 
+		 elsif params && params['host'] && params['host']['compute_attributes']
+			selected_item_c = params['host']['compute_attributes']['custom_template_name']
+		    selected_item_b = params['host']['compute_attributes']['builtin_template_name']
+		 end
+	 
+	 elsif controller_name == 'compute_attributes'
+		compute_attributes = compute_resource.compute_profile_attributes_for(params['compute_profile_id'])
+		if compute_attributes['custom_template_name']
+			selected_item_c  = compute_attributes['custom_template_name']
+		end 
+		if compute_attributes['builtin_template_name']
+			selected_item_b  = compute_attributes['builtin_template_name']
+		end
+	 end
+  -%>
 
   <div id='templates' class=''>
     <div class="form-group">
-      <%= selectable_f f, :custom_template_name,[[_("No template"), ""]] + compute_resource.custom_templates.map { |t| [t.name, t.name] }, {}, :class => 'form-control span2', :label => 'Custom Template' %>
+      <%= selectable_f f, :custom_template_name,[[_("No template"), ""]] + compute_resource.custom_templates.map { |t| [t.name, t.name] }, { :selected => selected_item_c }, :class => 'form-control span2', :label => 'Custom Template' %>
     </div>
 
     <div class="form-group ">
-      <%= selectable_f f, :builtin_template_name,[[_("No template"), ""]] + compute_resource.builtin_templates.map { |t| [t.name, t.name] }, {}, :class => 'form-control span2', :label => 'Builtin Template' %>
+      <%= selectable_f f, :builtin_template_name,[[_("No template"), ""]] + compute_resource.builtin_templates.map { |t| [t.name, t.name] }, { :selected => selected_item_b }, :class => 'form-control span2', :label => 'Builtin Template' %>
     </div>
   </div>
 </div>
