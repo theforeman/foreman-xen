@@ -23,7 +23,7 @@ module ForemanXen
 
     # we default to destroy the VM's storage as well.
     def destroy_vm(ref, args = {})
-      logger.error "destroy_vm: #{ ref } #{ args }"
+      logger.info "destroy_vm: #{ ref } #{ args }"
 	  find_vm_by_uuid(ref).destroy
     rescue ActiveRecord::RecordNotFound
       true
@@ -42,7 +42,7 @@ module ForemanXen
       xenServerMaxDoc = 128*1024*1024*1024
       [hypervisor.metrics.memory_total.to_i, xenServerMaxDoc].min
     rescue => e
-      logger.debug "unable to figure out free memory, guessing instead due to:#{e}"
+      logger.error "unable to figure out free memory, guessing instead due to:#{e}"
       16*1024*1024*1024
     end
 
@@ -168,14 +168,14 @@ module ForemanXen
 	  builtin_template_name = builtin_template_name.to_s
 	  
       if builtin_template_name!= '' and custom_template_name!=''
-		  logger.error "custom_template_name: #{ custom_template_name }"
-		  logger.error "builtin_template_name: #{ builtin_template_name }"
+		  logger.info "custom_template_name: #{ custom_template_name }"
+		  logger.info "builtin_template_name: #{ builtin_template_name }"
 		  raise 'you can select at most one template type'
 	  end	  
       begin
         vm = nil
-		  logger.error "create_vm(): custom_template_name: #{ custom_template_name }"
-		  logger.error "create_vm(): builtin_template_name: #{ builtin_template_name }"
+		  logger.info "create_vm(): custom_template_name: #{ custom_template_name }"
+		  logger.info "create_vm(): builtin_template_name: #{ builtin_template_name }"
         if custom_template_name != '' 
           vm = create_vm_from_custom args
         else
@@ -209,10 +209,10 @@ module ForemanXen
 	  
       if args[:hypervisor_host]
 		host  = client.hosts.find { |host| host.name == args[:hypervisor_host] }
-		logger.error "create_vm_from_builtin: host : #{ hypervisor_host }"
+		logger.info "create_vm_from_builtin: host : #{ hypervisor_host }"
 	  elsif 
 		host  = client.hosts.first
-		logger.error "create_vm_from_builtin: host : #{ host }"
+		logger.info "create_vm_from_builtin: host : #{ host }"
 	  end
 	  
       raise 'Memory max cannot be lower than Memory min' if mem_min.to_i > mem_max.to_i
@@ -264,10 +264,10 @@ module ForemanXen
 	
       if args[:hypervisor_host]
 		host  = client.hosts.find { |host| host.name == args[:hypervisor_host] }
-		logger.error "create_vm_from_builtin: host : #{ hypervisor_host }"
+		logger.info "create_vm_from_builtin: host : #{ hypervisor_host }"
 	  elsif 
 		host  = client.hosts.first
-		logger.error "create_vm_from_builtin: host : #{ host }"
+		logger.info "create_vm_from_builtin: host : #{ host }"
 	  end
 
       storage_repository = client.storage_repositories.find { |sr| sr.uuid == "#{args[:VBDs][:sr_uuid]}" }
