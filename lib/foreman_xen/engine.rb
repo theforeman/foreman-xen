@@ -1,6 +1,6 @@
 require 'fast_gettext'
 require 'gettext_i18n_rails'
-require 'fog'
+require 'fog/xenserver'
 require 'deface'
 
 module ForemanXen
