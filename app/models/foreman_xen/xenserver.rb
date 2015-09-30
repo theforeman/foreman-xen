@@ -336,7 +336,7 @@ module ForemanXen
     protected
 
     def client
-      @client ||= ::Fog::Compute.new({ :provider => 'XenServer', :xenserver_url => url, :xenserver_username => user, :xenserver_password => password })
+      @client ||= ::Fog::Compute.new({ :provider => 'XenServer', :xenserver_url => url, :xenserver_username => user, :xenserver_password => password, :xenserver_redirect_to_master => true })
     end
 
     def disconnect
