@@ -48,7 +48,7 @@ module ForemanXen
 
     def test_connection(options = {})
       super
-      errors[:url].empty? and hypervisor
+      errors[:url].empty? and errors[:user].empty? and errors[:password].empty? and hypervisor
     rescue => e
       disconnect rescue nil
       errors[:base] << e.message
