@@ -1,8 +1,4 @@
 <div class="fields">
-  <%
-     attribute_map = compute_attribute_map(params, compute_resource, new)
-  -%>
-
   <div id='templates' class=''>
     <div class="form-group">
       <%= selectable_f f, :custom_template_name,[[_("No template"), ""]] + compute_resource.custom_templates.map { |t| [t.name, t.name] }, { :selected => attribute_map[:template_selected_custom] }, :class => 'form-control span2', :label => 'Custom Template' %>

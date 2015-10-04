@@ -1,8 +1,4 @@
 <div class="fields">
-  <%
-     attribute_map = compute_attribute_map(params, compute_resource, new)
-  -%>
-  
 
   <%= selectable_f f, :sr_uuid, compute_resource.storage_pools.map{ |item| [item[:display_name], item[:uuid]]}, { :selected => attribute_map[:volume_selected] }, :class => "span2", :label => _("Storage Repository") %>
 
