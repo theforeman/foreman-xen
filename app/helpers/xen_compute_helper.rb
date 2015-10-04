@@ -25,7 +25,7 @@ module XenComputeHelper
   private
 
   def hosts_controller_compute_attribute_map(params, compute_resource, new)
-    attribute_map = {}
+    attribute_map = empty_attribute_map
     if new_host?
       compute_attributes = compute_resource.compute_profile_attributes_for(params['host']['compute_profile_id'])
       if compute_attributes['VBDs']
@@ -60,28 +60,38 @@ module XenComputeHelper
   end
 
   def compute_resource_controller_attribute_map(params, compute_resource)
-    attribute_map = {}
-    if params['compute_profile_id']
+    attribute_map = empty_attribute_map
+    if params && params['compute_profile_id']
       compute_attributes = compute_resource.compute_profile_attributes_for(params['compute_profile_id'])
-    elsif params['host'] && params['host']['compute_profile_id']
+    elsif params && params['host'] && params['host']['compute_profile_id']
       compute_attributes = compute_resource.compute_profile_attributes_for(params['host']['compute_profile_id'])
     end
-    if compute_attributes['VBDs']
-      attribute_map[:volume_size] = compute_attributes['VBDs']['physical_size'] ? compute_attributes['VBDs']['physical_size'] : nil
-      attribute_map[:volume_selected] = compute_attributes['VBDs']['sr_uuid'] ? compute_attributes['VBDs']['sr_uuid'] : nil
+    if compute_attributes
+      if compute_attributes['VBDs']
+        attribute_map[:volume_size] = compute_attributes['VBDs']['physical_size'] ? compute_attributes['VBDs']['physical_size'] : nil
+        attribute_map[:volume_selected] = compute_attributes['VBDs']['sr_uuid'] ? compute_attributes['VBDs']['sr_uuid'] : nil
+      end
+      if compute_attributes['VIFs']
+        attribute_map[:network_selected] = compute_attributes['VIFs']['print'] ? compute_attributes['VIFs']['print'] : nil
+      end
+      attribute_map[:template_selected_custom] = compute_attributes['custom_template_name'] ? compute_attributes['custom_template_name'] : nil
+      attribute_map[:template_selected_builtin] = compute_attributes['builtin_template_name'] ? compute_attributes['builtin_template_name'] : nil
+      attribute_map[:cpu_count] = compute_attributes['vcpus_max'] ? compute_attributes['vcpus_max'] : nil
+      attribute_map[:memory_min] = compute_attributes['memory_min'] ? compute_attributes['memory_min'] : nil
+      attribute_map[:memory_max] = compute_attributes['memory_max'] ? compute_attributes['memory_max'] : nil
+      attribute_map[:power_on] = compute_attributes['start'] ? compute_attributes['start'] : nil
     end
-    if compute_attributes['VIFs']
-      attribute_map[:network_selected] = compute_attributes['VIFs']['print'] ? compute_attributes['VIFs']['print'] : nil
-    end
-    attribute_map[:template_selected_custom] = compute_attributes['custom_template_name'] ? compute_attributes['custom_template_name'] : nil
-    attribute_map[:template_selected_builtin] = compute_attributes['builtin_template_name'] ? compute_attributes['builtin_template_name'] : nil
-    attribute_map[:cpu_count] = compute_attributes['vcpus_max'] ? compute_attributes['vcpus_max'] : nil
-    attribute_map[:memory_min] = compute_attributes['memory_min'] ? compute_attributes['memory_min'] : nil
-    attribute_map[:memory_max] = compute_attributes['memory_max'] ? compute_attributes['memory_max'] : nil
-    attribute_map[:power_on] = compute_attributes['start'] ? compute_attributes['start'] : nil
     attribute_map
   end
 
-
-
-end
+  def empty_attribute_map
+    {:volume_size => nil,
+     :volume_selected => nil,
+     :network_selected => nil,
+     :template_selected_custom => nil,
+     :template_selected_builtin => nil,
+     :cpu_count => nil,
+     :memory_min => nil,
+     :memory_max => nil,
+     :power_on => nil}
+  end
