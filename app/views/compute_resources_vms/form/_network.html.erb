@@ -1,29 +1,13 @@
 <div class="fields">
   <%
      nat = compute_resource.networks
-     selected = ""
-	 
-	 if controller_name == 'hosts'
-		 compute_attributes = compute_resource.compute_profile_attributes_for(params['host']['compute_profile_id'])   
-		 if params && params['host']['compute_profile_id'] != ""
-			selected  = compute_attributes['VIFs']['print']
-		 elsif params && params['host'] && params['host']['compute_attributes']
-			selected = params['host']['compute_attributes']['VIFs']['print']
-		 elsif new.__vifs
-			selected = new.__vifs['print']
-		 end
-	 elsif controller_name == 'compute_attributes'
-		 compute_attributes = compute_resource.compute_profile_attributes_for(params['compute_profile_id'])   
-		 if compute_attributes['VIFs'] && compute_attributes['VIFs']['print']
-			selected  = compute_attributes['VIFs']['print']
-		 end
-	 end
+     attribute_map = compute_attribute_map(params, compute_resource, new)
   -%>
 
   <div id='nat' class=''>
     <%= selectable_f f, :print, nat.map(&:name),
                      { :include_blank => nat.any? ? false : _("No networks"),
-                       :selected      => selected },
+                       :selected      => attribute_map[:network_selected] },
                      { :class => "span2", :label => _("Network") } %>
   </div>
 </div>
