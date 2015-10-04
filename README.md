@@ -15,7 +15,8 @@ Please see the Foreman manual for further instructions:
 | Foreman Version | Plugin Version |
 |:--------------- |:-------------- |
 | >=1.5, <1.8     | 0.0.x          |
-| >=1.8.1         | 0.1.x          |
+| >=1.8.1, <1.10  | 0.1.x          |
+| >=1.10          | 0.2.x          |
 
 ## Support
 
