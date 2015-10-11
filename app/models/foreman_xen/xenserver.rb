@@ -200,20 +200,17 @@ module ForemanXen
     end
 
     def create_vm_from_custom(args)
-
-	  hypervisor_host  = args[:hypervisor_host]
-	  hypervisor_host  = hypervisor_host.to_s
 	
 	  mem_max = args[:memory_max]
       mem_min = args[:memory_min]
 	  
-      if args[:hypervisor_host]
+	  if args[:hypervisor_host] != ''
 		host  = client.hosts.find { |host| host.name == args[:hypervisor_host] }
-		logger.info "create_vm_from_builtin: host : #{ hypervisor_host }"
-	  elsif 
+		logger.info "create_vm_from_builtin: host : #{ host.name }"    
+	  elsif   
 		host  = client.hosts.first
-		logger.info "create_vm_from_builtin: host : #{ host }"
-	  end
+		logger.info "create_vm_from_builtin: host : #{ host.name }"
+	  end 
 	  
       raise 'Memory max cannot be lower than Memory min' if mem_min.to_i > mem_max.to_i
       vm = client.servers.new :name          => args[:name],
@@ -255,20 +252,17 @@ module ForemanXen
     end
 
     def create_vm_from_builtin(args)
-	
-	  hypervisor_host  = args[:hypervisor_host]
-	  hypervisor_host  = hypervisor_host.to_s
-	  
+		  
       builtin_template_name = args[:builtin_template_name]
 	  builtin_template_name = builtin_template_name.to_s
 	
-      if args[:hypervisor_host]
+	  if args[:hypervisor_host] != ''
 		host  = client.hosts.find { |host| host.name == args[:hypervisor_host] }
-		logger.info "create_vm_from_builtin: host : #{ hypervisor_host }"
-	  elsif 
+		logger.info "create_vm_from_builtin: host : #{ host.name }"    
+	  elsif   
 		host  = client.hosts.first
-		logger.info "create_vm_from_builtin: host : #{ host }"
-	  end
+		logger.info "create_vm_from_builtin: host : #{ host.name }"
+	  end 
 
       storage_repository = client.storage_repositories.find { |sr| sr.uuid == "#{args[:VBDs][:sr_uuid]}" }
 
