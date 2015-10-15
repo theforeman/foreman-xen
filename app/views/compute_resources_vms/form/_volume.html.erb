@@ -1,34 +1,6 @@
 <div class="fields">
-  <%
-     selected = ""
-     size = ""
-	 	
-	 if controller_name == 'hosts'
-		 compute_attributes = compute_resource.compute_profile_attributes_for(params['host']['compute_profile_id'])   
-		 if params && params['host']['compute_profile_id'] != ""
-			   size 	= compute_attributes['VBDs']['physical_size']
-			   selected = compute_attributes['VBDs']['sr_uuid']
-		 elsif params && params['host'] && params['host']['compute_attributes'] && params['host']['compute_attributes']['VBDs']['physical_size'] != ""
-			   selected = params['host']['compute_attributes']['VBDs']['print']
-			   size     = params['host']['compute_attributes']['VBDs']['physical_size']
-		 elsif new.__vbds
-			   selected = new.__vbds['print']
-			   size     = new.__vbds['physical_size']
-		 end
-	 elsif controller_name == 'compute_attributes'
-		 compute_attributes = compute_resource.compute_profile_attributes_for(params['compute_profile_id'])   
-		 if compute_attributes['VBDs'] && compute_attributes['VBDs']['physical_size']
-			size 		= compute_attributes['VBDs']['physical_size']
-		 end
-		 if compute_attributes['VBDs'] && compute_attributes['VBDs']['sr_uuid']
-			selected 	= compute_attributes['VBDs']['sr_uuid']
-		 end
 
-	 end
-  -%>
-  
+  <%= selectable_f f, :sr_uuid, compute_resource.storage_pools.map{ |item| [item[:display_name], item[:uuid]]}, { :selected => attribute_map[:volume_selected] }, :class => "span2", :label => _("Storage Repository") %>
 
-  <%= selectable_f f, :sr_uuid, compute_resource.storage_pools.map{ |item| [item[:display_name], item[:uuid]]}, { :selected => selected }, :class => "span2", :label => _("Storage Repository") %>
-
-  <%= text_f f, :physical_size, :class => "input-mini", :label => _("Size (GB)"), :value => size %>
+  <%= text_f f, :physical_size, :class => "input-mini", :label => _("Size (GB)"), :value => attribute_map[:volume_size] %>
 </div>

@@ -1,4 +1,6 @@
 <% new = f.object
+   attribute_map = compute_attribute_map(params, compute_resource, new)
+
    hide_raw = ''
    if params && params['host'] && params['host']['compute_attributes'] && params['host']['compute_attributes']['custom_template_name'] != ''
      hide_raw = 'display:none;'
@@ -12,9 +14,6 @@
 	  fields_enabled = true	
 	  compute_attributes = compute_resource.compute_profile_attributes_for(params['compute_profile_id'])
 	  name 			= compute_attributes['name']
-	  vcpus_max 	= compute_attributes['vcpus_max']
-	  memory_min 	= compute_attributes['memory_min']
-	  memory_max	= compute_attributes['memory_max']
    else
      fields_enabled = false
    end
@@ -27,9 +26,9 @@
     <legend>VM Profile</legend>
     <div class="fields">
       <!--<%= text_f f, :name, :disabled => !fields_enabled, :value => name, :label => 'Name' if controller_name != 'hosts' %>-->
-      <%= selectable_f f, :vcpus_max, 1..compute_resource.max_cpu_count, {:selected  => vcpus_max}, :class => 'input-mini', :disabled => !fields_enabled, :label => 'vCPUs' %>
-      <%= selectable_f f, :memory_min, memory_options(compute_resource.max_memory), {:selected  => memory_min}, :class => 'form-control span2', :disabled => !fields_enabled, :label => 'Memory Min' %>
-      <%= selectable_f f, :memory_max, memory_options(compute_resource.max_memory), {:selected  => memory_max}, :class => 'form-control span2', :disabled => !fields_enabled, :label => 'Memory Max' %>
+      <%= selectable_f f, :vcpus_max, 1..compute_resource.max_cpu_count, {:selected  => attribute_map[:cpu_count]}, :class => 'input-mini', :disabled => !fields_enabled, :label => 'vCPUs' %>
+      <%= selectable_f f, :memory_min, memory_options(compute_resource.max_memory), {:selected  => attribute_map[:memory_min]}, :class => 'form-control span2', :disabled => !fields_enabled, :label => 'Memory Min' %>
+      <%= selectable_f f, :memory_max, memory_options(compute_resource.max_memory), {:selected  => attribute_map[:memory_max]}, :class => 'form-control span2', :disabled => !fields_enabled, :label => 'Memory Max' %>
     </div>
   </fieldset>
 </div>
@@ -37,14 +36,14 @@
 <!-- Templates -->
 <div class="children_fields">
   <%= field_set_tag 'VM Template', :id => 'xen_templates', :title => _('Template') do -%>
-      <%= render 'compute_resources_vms/form/templates', :f => f, :compute_resource => compute_resource, :new => new %>
+      <%= render 'compute_resources_vms/form/templates', :f => f, :compute_resource => compute_resource, :new => new, :attribute_map => attribute_map %>
   <% end -%>
 </div>
 
 <!-- XenStore Data -->
 <div class="children_fields" id="xenserver-xenstore-data">
   <%= field_set_tag 'Xen Store Data', :id => 'xen_store_data', :title => _('Xen Store Data') do -%>
-      <%= render 'compute_resources_vms/form/xenstore', :f => f, :compute_resource => compute_resource, :new => new %>
+      <%= render 'compute_resources_vms/form/xenstore', :f => f, :compute_resource => compute_resource, :new => new, :attribute_map => attribute_map %>
   <% end %>
 </div>
 
@@ -52,7 +51,7 @@
 <div class="children_fields xenserver-raw" id="xenserver-storage" style="<%= hide_raw %>">
   <%= field_set_tag 'Storage', :id => 'storage_volumes', :title => _('Storage') do -%>
       <%= f.fields_for :VBDs do |i| %>
-          <%= render 'compute_resources_vms/form/volume', :f => i, :compute_resource => compute_resource, :new => new %>
+          <%= render 'compute_resources_vms/form/volume', :f => i, :compute_resource => compute_resource, :new => new, :attribute_map => attribute_map %>
       <% end -%>
   <% end -%>
 </div>
@@ -61,14 +60,14 @@
 <div class="children_fields" id="xenserver-network" style="<%= hide_raw %>">
   <%= field_set_tag 'Network interfaces', :id => 'network_interfaces', :title => _('Networks') do -%>
       <%= f.fields_for :VIFs do |i| %>
-          <%= render 'compute_resources_vms/form/network', :f => i, :compute_resource => compute_resource, :new => new %>
+          <%= render 'compute_resources_vms/form/network', :f => i, :compute_resource => compute_resource, :new => new, :attribute_map => attribute_map %>
       <% end -%>
   <% end -%>
 </div>
 
 <div class="children_fields" id="xenserver-hosts" style="<%= hide_raw %>">
   <%= field_set_tag 'Start on server', :id => 'xen_hypervisors', :title => _('Start on server') do -%>
-      <%= render 'compute_resources_vms/form/hypervisors', :f => f, :compute_resource => compute_resource, :new => new %>
+      <%= render 'compute_resources_vms/form/hypervisors', :f => f, :compute_resource => compute_resource, :new => new, :attribute_map => attribute_map %>
   <% end -%>
 </div>
 
