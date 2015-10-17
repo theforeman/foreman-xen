@@ -7,7 +7,6 @@
    end
    
    if controller_name == 'hosts'
-      compute_attributes = compute_resource.compute_profile_attributes_for(params['host']['compute_profile_id'])   
 	  fields_enabled = true
 	  start_enable 	 = true
 	elsif controller_name == 'compute_attributes'
@@ -74,7 +73,7 @@
 <!-- Startup -->
 <div class="children_fields" id="xenserver-vm-start" style="<%= hide_raw %>">
   <%= field_set_tag 'VM Startup Options', :id => 'vm_starup_options', :title => _('Power ON VM') do -%>
-	<%= checkbox_f f, :start, :checked => (compute_attributes['start'] == '1' || start_enable), :label => _("Power ON VM") %>
+	<%= checkbox_f f, :start, :checked => (attribute_map[:power_on] == '1' || start_enable), :label => _("Power ON VM") %>
   <% end -%>
 </div>
 

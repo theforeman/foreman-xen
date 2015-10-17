@@ -41,23 +41,19 @@ module XenComputeHelper
       attribute_map[:memory_min] = compute_attributes['memory_min'] ? compute_attributes['memory_min'] : nil
       attribute_map[:memory_max] = compute_attributes['memory_max'] ? compute_attributes['memory_max'] : nil
       attribute_map[:power_on] = compute_attributes['start'] ? compute_attributes['start'] : nil
-    elsif params && params['host'] && params['host']['compute_attributes']
-      if params['host']['compute_attributes']['VBDs']
-        attribute_map[:volume_size] = (params['host']['compute_attributes']['VBDs']['physical_size']) ? params['host']['compute_attributes']['VBDs']['physical_size'] : nil
-        attribute_map[:volume_selected] = (params['host']['compute_attributes']['VBDs']['sr_uuid']) ? params['host']['compute_attributes']['VBDs']['sr_uuid'] : nil
-      end
-      if params['host']['compute_attributes']['VIFs']
-        attribute_map[:network_selected] = params['host']['compute_attributes']['VIFs']['print'] ? params['host']['compute_attributes']['VIFs']['print'] : nil
-      end
-      attribute_map[:template_selected_custom] = params['host']['compute_attributes']['custom_template_name'] ? params['host']['compute_attributes']['custom_template_name'] : nil
-      attribute_map[:template_selected_builtin] = params['host']['compute_attributes']['builtin_template_name'] ? params['host']['compute_attributes']['builtin_template_name'] : nil
     elsif new
+      attribute_map[:cpu_count] = new.vcpus_max ? new.vcpus_max : nil
+      attribute_map[:memory_min] = new.memory_static_min ? new.memory_static_min : nil
+      attribute_map[:memory_max] = new.memory_static_max ? new.memory_static_max : nil
       if new.__vbds
-        attribute_map[:volume_selected] = new.__vbds['sr_uuid'] ? new.__vbds['sr_uuid'] : nil
-        attribute_map[:volume_size] = new.__vbds['physical_size'] ? new.__vbds['physical_size'] : nil
+        vdi = new.vbds.first.vdi
+        if vdi
+          attribute_map[:volume_selected] = vdi.sr.uuid ? vdi.sr.uuid : nil
+          attribute_map[:volume_size] = vdi.virtual_size ? (vdi.virtual_size.to_i / 1073741824).to_s : nil
+        end
       end
       if new.__vifs
-        attribute_map[:network_selected] = new.__vifs['print'] ? new.__vifs['print'] : nil
+        attribute_map[:network_selected] = new.networks.first.name ? new.networks.first.name : nil
       end
     end
     attribute_map
