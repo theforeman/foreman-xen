@@ -4,10 +4,9 @@ require 'fog/xenserver'
 require 'deface'
 
 module ForemanXen
-  #Inherit from the Rails module of the parent app (Foreman), not the plugin.
-  #Thus, inherits from ::Rails::Engine and not from Rails::Engine
+  # Inherit from the Rails module of the parent app (Foreman), not the plugin.
+  # Thus, inherits from ::Rails::Engine and not from Rails::Engine
   class Engine < ::Rails::Engine
-
     initializer 'foreman_xen.register_gettext', :after => :load_config_initializers do |app|
       locale_dir    = File.join(File.expand_path('../../..', __FILE__), 'locale')
       locale_domain = 'foreman-xen'
@@ -21,7 +20,6 @@ module ForemanXen
         # Register xen compute resource in foreman
         compute_resource ForemanXen::Xenserver
       end
-
     end
 
     config.to_prepare do
@@ -34,13 +32,8 @@ module ForemanXen
         Fog::Compute::XenServer::Server.send(:include, ::FogExtensions::Xenserver::Server)
         ::HostsHelper.send(:include, ForemanXen::HostHelperExtensions)
       rescue => e
-        puts "Foreman-Xen: skipping engine hook (#{e.to_s})"
+        Rails.logger.warn "Foreman-Xen: skipping engine hook (#{e})"
       end
     end
-
   end
-
-
-
-
 end

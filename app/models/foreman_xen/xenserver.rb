@@ -4,9 +4,8 @@ module ForemanXen
 
     def provided_attributes
       super.merge(
-        { :uuid => :reference,
-          :mac  => :mac
-        })
+        :uuid => :reference,
+        :mac  => :mac)
     end
 
     def capabilities
@@ -23,8 +22,8 @@ module ForemanXen
 
     # we default to destroy the VM's storage as well.
     def destroy_vm(ref, args = {})
-      logger.info "destroy_vm: #{ ref } #{ args }"
-	  find_vm_by_uuid(ref).destroy
+      logger.info "destroy_vm: #{ref} #{args}"
+      find_vm_by_uuid(ref).destroy
     rescue ActiveRecord::RecordNotFound
       true
     end
@@ -39,115 +38,144 @@ module ForemanXen
     end
 
     def max_memory
-      xenServerMaxDoc = 128*1024*1024*1024
+      xenServerMaxDoc = 128 * 1024 * 1024 * 1024
       [hypervisor.metrics.memory_total.to_i, xenServerMaxDoc].min
     rescue => e
       logger.error "unable to figure out free memory, guessing instead due to:#{e}"
-      16*1024*1024*1024
+      16 * 1024 * 1024 * 1024
     end
 
     def test_connection(options = {})
       super
-      errors[:url].empty? and errors[:user].empty? and errors[:password].empty? and hypervisor
+      errors[:url].empty? && errors[:user].empty? && errors[:password].empty? && hypervisor
     rescue => e
-      disconnect rescue nil
+      begin
+        disconnect
+      rescue
+        nil
+      end
       errors[:base] << e.message
     end
-	
-	def avalable_hypervisors 
-      tmps = client.hosts rescue []
-      tmps.sort { |a, b| a.name <=> b.name }	
-	end
 
-    def new_nic(attr={})
+    def available_hypervisors
+      tmps = begin
+        client.hosts
+      rescue
+        []
+      end
+      tmps.sort { |a, b| a.name <=> b.name }
+    end
+
+    def new_nic(attr = {})
       client.networks.new attr
     end
 
-    def new_volume(attr={})
+    def new_volume(attr = {})
       client.storage_repositories.new attr
     end
 
     def storage_pools
-	
-		results = Array.new
-		
-		storages = client.storage_repositories.select { |sr| sr.type!= 'udev' && sr.type!= 'iso'} rescue []
-		hosts 	 = client.hosts
+      results = []
 
-		storages.each do |sr|
-			subresults = Hash.new()
-			found = 0
-			hosts.each do |host|
+      storages = begin
+        client.storage_repositories.select { |sr| sr.type != 'udev' && sr.type != 'iso' }
+      rescue
+        []
+      end
+      hosts = client.hosts
 
-				if (sr.reference == host.suspend_image_sr) 
-					found = 1
-					subresults[:name] 			= sr.name
-					subresults[:display_name]	= sr.name + '(' +  host.hostname + ')'
-					subresults[:uuid]			= sr.uuid
-					break
-				end
+      storages.each do |sr|
+        subresults = {}
+        found      = 0
+        hosts.each do |host|
+          if (sr.reference == host.suspend_image_sr)
+            found                     = 1
+            subresults[:name]         = sr.name
+            subresults[:display_name] = sr.name + '(' + host.hostname + ')'
+            subresults[:uuid]         = sr.uuid
+            break
+          end
+        end
 
-			end
-			
-			if (found==0) 
-				subresults[:name] 			= sr.name
-				subresults[:display_name] 	= sr.name
-				subresults[:uuid]			= sr.uuid
-			end
-			results.push(subresults)
-		end
+        if (found == 0)
+          subresults[:name]         = sr.name
+          subresults[:display_name] = sr.name
+          subresults[:uuid]         = sr.uuid
+        end
+        results.push(subresults)
+      end
 
-		results.sort_by!{|item| item[:display_name] }
-		return results
-
+      results.sort_by! { |item| item[:display_name] }
+      results
     end
 
     def interfaces
-      client.interfaces rescue []
+      client.interfaces
+    rescue
+      []
     end
 
     def networks
-      networks = client.networks rescue []
+      networks = begin
+        client.networks
+      rescue
+        []
+      end
       networks.sort { |a, b| a.name <=> b.name }
     end
 
     def templates
-      client.servers.templates rescue []
+      client.servers.templates
+    rescue
+      []
     end
 
     def custom_templates
-      tmps = client.servers.custom_templates.select { |t| !t.is_a_snapshot } rescue []
+      tmps = begin
+        client.servers.custom_templates.select { |t| !t.is_a_snapshot }
+      rescue
+        []
+      end
       tmps.sort { |a, b| a.name <=> b.name }
     end
 
     def builtin_templates
-      tmps = client.servers.builtin_templates.select { |t| !t.is_a_snapshot } rescue []
+      tmps = begin
+        client.servers.builtin_templates.select { |t| !t.is_a_snapshot }
+      rescue
+        []
+      end
       tmps.sort { |a, b| a.name <=> b.name }
     end
 
     def associated_host(vm)
-      associate_by("mac", vm.interfaces.map(&:mac))
+      associate_by('mac', vm.interfaces.map(&:mac))
     end
 
     def get_snapshots_for_vm(vm)
-      if vm.snapshots.empty?
-        return []
+      return [] if vm.snapshots.empty?
+      tmps   = begin
+        client.servers.templates.select { |t| t.is_a_snapshot }
+      rescue
+        []
       end
-      tmps = client.servers.templates.select { |t| t.is_a_snapshot } rescue []
       retval = []
-      tmps.each do | snapshot |
+      tmps.each do |snapshot|
         retval << snapshot if vm.snapshots.include?(snapshot.reference)
       end
       retval
     end
 
     def get_snapshots
-      tmps = client.servers.templates.select { |t| t.is_a_snapshot } rescue []
+      tmps = begin
+        client.servers.templates.select { |t| t.is_a_snapshot }
+      rescue
+        []
+      end
       tmps.sort { |a, b| a.name <=> b.name }
     end
 
-    def new_vm(attr={})
-
+    def new_vm(attr = {})
       test_connection
       return unless errors.empty?
       opts = vm_instance_defaults.merge(attr.to_hash).symbolize_keys
@@ -161,22 +189,21 @@ module ForemanXen
     end
 
     def create_vm(args = {})
-	  
-	  custom_template_name  = args[:custom_template_name]
+      custom_template_name  = args[:custom_template_name]
       builtin_template_name = args[:builtin_template_name]
-	  custom_template_name 	= custom_template_name.to_s
-	  builtin_template_name = builtin_template_name.to_s
-	  
-      if builtin_template_name!= '' and custom_template_name!=''
-		  logger.info "custom_template_name: #{ custom_template_name }"
-		  logger.info "builtin_template_name: #{ builtin_template_name }"
-		  raise 'you can select at most one template type'
-	  end	  
+      custom_template_name  = custom_template_name.to_s
+      builtin_template_name = builtin_template_name.to_s
+
+      if builtin_template_name != '' && custom_template_name != ''
+        logger.info "custom_template_name: #{custom_template_name}"
+        logger.info "builtin_template_name: #{builtin_template_name}"
+        fail 'you can select at most one template type'
+      end
       begin
         vm = nil
-		  logger.info "create_vm(): custom_template_name: #{ custom_template_name }"
-		  logger.info "create_vm(): builtin_template_name: #{ builtin_template_name }"
-        if custom_template_name != '' 
+        logger.info "create_vm(): custom_template_name: #{custom_template_name}"
+        logger.info "create_vm(): builtin_template_name: #{builtin_template_name}"
+        if custom_template_name != ''
           vm = create_vm_from_custom args
         else
           vm = create_vm_from_builtin args
@@ -200,28 +227,30 @@ module ForemanXen
     end
 
     def create_vm_from_custom(args)
-	
-	  mem_max = args[:memory_max]
+      mem_max = args[:memory_max]
       mem_min = args[:memory_min]
-	  
-	  if args[:hypervisor_host] != ''
-		host  = client.hosts.find { |host| host.name == args[:hypervisor_host] }
-		logger.info "create_vm_from_builtin: host : #{ host.name }"    
-	  elsif   
-		host  = client.hosts.first
-		logger.info "create_vm_from_builtin: host : #{ host.name }"
-	  end 
-	  
-      raise 'Memory max cannot be lower than Memory min' if mem_min.to_i > mem_max.to_i
+
+      if args[:hypervisor_host] != ''
+        host = client.hosts.find { |host| host.name == args[:hypervisor_host] }
+        logger.info "create_vm_from_builtin: host : #{host.name}"
+      elsif host = client.hosts.first
+        logger.info "create_vm_from_builtin: host : #{host.name}"
+      end
+
+      fail 'Memory max cannot be lower than Memory min' if mem_min.to_i > mem_max.to_i
       vm = client.servers.new :name          => args[:name],
-							  :affinity 	 => host,
+                              :affinity      => host,
                               :template_name => args[:custom_template_name]
 
       vm.save :auto_start => false
 
       vm.provision
 
-      vm.vifs.first.destroy rescue nil
+      begin
+        vm.vifs.first.destroy
+      rescue
+        nil
+      end
 
       create_network(vm, args)
 
@@ -246,27 +275,25 @@ module ForemanXen
       i = 0
       disks.each do |vbd|
         vbd.vdi.set_attribute('name-label', "#{args[:name]}_#{i}")
-        i+=1
+        i += 1
       end
       vm
     end
 
     def create_vm_from_builtin(args)
-		  
       builtin_template_name = args[:builtin_template_name]
-	  builtin_template_name = builtin_template_name.to_s
-	
-	  if args[:hypervisor_host] != ''
-		host  = client.hosts.find { |host| host.name == args[:hypervisor_host] }
-		logger.info "create_vm_from_builtin: host : #{ host.name }"    
-	  elsif   
-		host  = client.hosts.first
-		logger.info "create_vm_from_builtin: host : #{ host.name }"
-	  end 
+      builtin_template_name = builtin_template_name.to_s
+
+      if args[:hypervisor_host] != ''
+        host = client.hosts.find { |host| host.name == args[:hypervisor_host] }
+        logger.info "create_vm_from_builtin: host : #{host.name}"
+      elsif host = client.hosts.first
+        logger.info "create_vm_from_builtin: host : #{host.name}"
+      end
 
       storage_repository = client.storage_repositories.find { |sr| sr.uuid == "#{args[:VBDs][:sr_uuid]}" }
 
-      gb   = 1073741824 #1gb in bytes
+      gb   = 1073741824 # 1gb in bytes
       size = args[:VBDs][:physical_size].to_i * gb
       vdi  = client.vdis.create :name               => "#{args[:name]}-disk1",
                                 :storage_repository => storage_repository,
@@ -304,19 +331,26 @@ module ForemanXen
       vm
     end
 
-    def console uuid
+    def console(uuid)
       vm = find_vm_by_uuid(uuid)
-      raise 'VM is not running!' unless vm.ready?
+      fail 'VM is not running!' unless vm.ready?
 
       console = vm.service.consoles.find { |c| c.__vm == vm.reference && c.protocol == 'rfb' }
-      raise "No console fore vm #{vm.name}" if console == nil
+      fail "No console for vm #{vm.name}" if console.nil?
 
       session_ref = (vm.service.instance_variable_get :@connection).instance_variable_get :@credentials
       fullURL     = "#{console.location}&session_id=#{session_ref}"
       tunnel      = VNCTunnel.new fullURL
       tunnel.start
       logger.info 'VNCTunnel started'
-      WsProxy.start(:host => tunnel.host, :host_port => tunnel.port, :password => '').merge(:type => 'vnc', :name => vm.name)
+      WsProxy.start(
+        :host => tunnel.host,
+        :host_port => tunnel.port,
+        :password => ''
+      ).merge(
+        :type => 'vnc',
+        :name => vm.name
+      )
 
     rescue Error => e
       logger.warn e
@@ -330,7 +364,12 @@ module ForemanXen
     protected
 
     def client
-      @client ||= ::Fog::Compute.new({ :provider => 'XenServer', :xenserver_url => url, :xenserver_username => user, :xenserver_password => password })
+      @client ||= ::Fog::Compute.new(
+        :provider => 'XenServer',
+        :xenserver_url => url,
+        :xenserver_username => user,
+        :xenserver_password => password
+      )
     end
 
     def disconnect
@@ -341,7 +380,6 @@ module ForemanXen
     def vm_instance_defaults
       super.merge({})
     end
-
 
     private
 
@@ -362,7 +400,7 @@ module ForemanXen
       vm.reload
     end
 
-    def xenstore_hash_flatten(nested_hash, key=nil, keychain=nil, out_hash={})
+    def xenstore_hash_flatten(nested_hash, key = nil, keychain = nil, out_hash = {})
       nested_hash.each do |k, v|
         if v.is_a? Hash
           xenstore_hash_flatten(v, k, "#{keychain}#{k}/", out_hash)
@@ -371,7 +409,6 @@ module ForemanXen
         end
       end
       out_hash
-#      @key = key
     end
   end
 end

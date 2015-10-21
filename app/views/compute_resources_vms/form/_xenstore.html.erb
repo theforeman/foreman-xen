@@ -16,6 +16,7 @@
 
     <div class="form-group">
       <label class="col-md-2 control-label" for="xenstore-vm-data-ifs-0-ip">vm-data/ifs/0/ip</label>
+
       <div class="col-md-4">
         <div class="controls">
           <input <%= disabled %> id="xenstore-vm-data-ifs-0-ip" type="text" name="host[compute_attributes][xenstore][vm-data][ifs][0][ip]" class="form-control input-mini" value="<%= vmdata[:ifs]['0'][:ip] %>">
@@ -25,6 +26,7 @@
 
     <div class="form-group">
       <label class="col-md-2 control-label" for="xenstore-vm-data-ifs-0-gateway">vm-data/ifs/0/gateway</label>
+
       <div class="col-md-4">
         <div class="controls">
           <input <%= disabled %> id="xenstore-vm-data-ifs-0-gateway" type="text" name="host[compute_attributes][xenstore][vm-data][ifs][0][gateway]" class="form-control input-mini" value="<%= vmdata[:ifs]['0'][:gateway] %>">
@@ -34,6 +36,7 @@
 
     <div class="form-group">
       <label class="col-md-2 control-label" for="xenstore-vm-data-ifs-0-netmask">vm-data/ifs/0/netmask</label>
+
       <div class="col-md-4">
         <div class="controls">
           <input <%= disabled %> id="xenstore-vm-data-ifs-0-netmask" type="text" name="host[compute_attributes][xenstore][vm-data][ifs][0][netmask]" class="form-control input-mini" value="<%= vmdata[:ifs]['0'][:netmask] %>">
@@ -43,6 +46,7 @@
 
     <div class="form-group">
       <label class="col-md-2 control-label" for="xenstore-vm-data-nameserver1">vm-data/nameserver1</label>
+
       <div class="col-md-4">
         <input <%= disabled %> id="xenstore-vm-data-nameserver1" type="text" name="host[compute_attributes][xenstore][vm-data][nameserver1]" class="form-control input-mini" value="<%= vmdata[:nameserver1] %>">
       </div>
@@ -50,13 +54,15 @@
 
     <div class="form-group">
       <label class="col-md-2 control-label" for="xenstore-vm-data-nameserver2">vm-data/nameserver2</label>
+
       <div class="col-md-4">
-        <input <%= disabled %> id="xenstore-vm-data-nameserver2" type="text" name="host[compute_attributes][xenstore][vm-data][nameserver2]" class="form-control input-mini" value="<%= vmdata[:nameserver2]  %>">
+        <input <%= disabled %> id="xenstore-vm-data-nameserver2" type="text" name="host[compute_attributes][xenstore][vm-data][nameserver2]" class="form-control input-mini" value="<%= vmdata[:nameserver2] %>">
       </div>
     </div>
 
     <div class="form-group">
       <label class="col-md-2 control-label" for="xenstore-vm-data-environment">vm-data/environment</label>
+
       <div class="col-md-4">
         <input <%= disabled %> id="xenstore-vm-data-environment" type="text" name="host[compute_attributes][xenstore][vm-data][environment]" class="form-control input-mini" value="<%= vmdata[:environment] %>">
       </div>
