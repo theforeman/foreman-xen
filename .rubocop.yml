@@ -16,6 +16,3 @@ Style/HashSyntax:
 
 Style/ExtraSpacing:
   AllowForAlignment: true
-
-Style/Tab:
-  Enabled: true

@@ -2,7 +2,7 @@
 <%= title_actions(
             button_group(link_to("Take Snapshot", "/foreman_xen/snapshots/#{@host.id}/new", :id => "takeSnapshotButton", :class => "btn btn-success"),
                          link_to_if_authorized(_("Back to host"), hash_for_host_path(:id => @host), :title => _("Back to host"), :class => 'btn btn-default')
-            ) ) %>
+            )) %>
 
 <table class="table table-hover">
   <tbody>
@@ -15,11 +15,11 @@
         <td><%= h "#{snapshot.snapshot_time.to_date} #{snapshot.snapshot_time.to_time} " %></a></td>
         <td>
           <div class="form-group">
-            <%= link_to("Revert", "/foreman_xen/snapshots/#{@host.id}/revert/#{snapshot.reference}", :id => "revertSnapshotButton", :class => "btn btn-danger", data: { confirm: "Confirm revert to #{snapshot.name}? Please note that all changes since the snapshot time will be lost, and the system will be restarted."})%>
-            <%= link_to("Delete", "/foreman_xen/snapshots/#{@host.id}/delete/#{snapshot.reference}", :id => "deleteSnapshotButton", :class => "btn btn-danger", data: { confirm: "Delete snapshot #{snapshot.name}?"})%>
+            <%= link_to("Revert", "/foreman_xen/snapshots/#{@host.id}/revert/#{snapshot.reference}", :id => "revertSnapshotButton", :class => "btn btn-danger", data: { confirm: "Confirm revert to #{snapshot.name}? Please note that all changes since the snapshot time will be lost, and the system will be restarted." }) %>
+            <%= link_to("Delete", "/foreman_xen/snapshots/#{@host.id}/delete/#{snapshot.reference}", :id => "deleteSnapshotButton", :class => "btn btn-danger", data: { confirm: "Delete snapshot #{snapshot.name}?" }) %>
           </div>
         </td>
-       </tr>
+      </tr>
   <% end %>
   </tbody>
 </table>

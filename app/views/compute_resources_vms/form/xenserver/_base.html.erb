@@ -5,18 +5,18 @@
    if params && params['host'] && params['host']['compute_attributes'] && params['host']['compute_attributes']['custom_template_name'] != ''
      hide_raw = 'display:none;'
    end
-   
+
    if controller_name == 'hosts'
-	  fields_enabled = true
-	  start_enable 	 = true
-	elsif controller_name == 'compute_attributes'
-	  fields_enabled = true	
-	  compute_attributes = compute_resource.compute_profile_attributes_for(params['compute_profile_id'])
-	  name 			= compute_attributes['name']
+     fields_enabled = true
+     start_enable   = true
+   elsif controller_name == 'compute_attributes'
+     fields_enabled     = true
+     compute_attributes = compute_resource.compute_profile_attributes_for(params['compute_profile_id'])
+     name               = compute_attributes['name']
    else
      fields_enabled = false
    end
-	
+
 -%>
 
 <!-- VM Initial Settings -->
@@ -25,9 +25,9 @@
     <legend>VM Profile</legend>
     <div class="fields">
       <!--<%= text_f f, :name, :disabled => !fields_enabled, :value => name, :label => 'Name' if controller_name != 'hosts' %>-->
-      <%= selectable_f f, :vcpus_max, 1..compute_resource.max_cpu_count, {:selected  => attribute_map[:cpu_count]}, :class => 'input-mini', :disabled => !fields_enabled, :label => 'vCPUs' %>
-      <%= selectable_f f, :memory_min, memory_options(compute_resource.max_memory), {:selected  => attribute_map[:memory_min]}, :class => 'form-control span2', :disabled => !fields_enabled, :label => 'Memory Min' %>
-      <%= selectable_f f, :memory_max, memory_options(compute_resource.max_memory), {:selected  => attribute_map[:memory_max]}, :class => 'form-control span2', :disabled => !fields_enabled, :label => 'Memory Max' %>
+      <%= selectable_f f, :vcpus_max, 1..compute_resource.max_cpu_count, { :selected => attribute_map[:cpu_count] }, :class => 'input-mini', :disabled => !fields_enabled, :label => 'vCPUs' %>
+      <%= selectable_f f, :memory_min, memory_options(compute_resource.max_memory), { :selected => attribute_map[:memory_min] }, :class => 'form-control span2', :disabled => !fields_enabled, :label => 'Memory Min' %>
+      <%= selectable_f f, :memory_max, memory_options(compute_resource.max_memory), { :selected => attribute_map[:memory_max] }, :class => 'form-control span2', :disabled => !fields_enabled, :label => 'Memory Max' %>
     </div>
   </fieldset>
 </div>
@@ -73,52 +73,52 @@
 <!-- Startup -->
 <div class="children_fields" id="xenserver-vm-start" style="<%= hide_raw %>">
   <%= field_set_tag 'VM Startup Options', :id => 'vm_starup_options', :title => _('Power ON VM') do -%>
-	<%= checkbox_f f, :start, :checked => (attribute_map[:power_on] == '1' || start_enable), :label => _("Power ON VM") %>
+      <%= checkbox_f f, :start, :checked => (attribute_map[:power_on] == '1' || start_enable), :label => _("Power ON VM") %>
   <% end -%>
 </div>
 
 <script type="text/javascript">
-	
-	// Check if its a computer resource template then just do not show the form of XenStore
-	if ($("#compute_attribute_compute_profile_id").length > 0){
-			$('#xenserver-xenstore-data').hide(1)
-	}
 
-	// Check if custom template in use then do now show SR settings
-	if ($("#compute_attribute_vm_attrs_builtin_template_name").val() == "" && $("#compute_attribute_vm_attrs_custom_template_name").val() != ""){
-			$('.xenserver-raw').hide(1);
-	}
-	
-	// Check which template are in use 
-	if ($("#compute_attribute_vm_attrs_builtin_template_name").val() != "" ){
-			$('#compute_attribute_vm_attrs_custom_template_name').val($("#compute_attribute_vm_attrs_custom_template_name option:contains('No template')").val());
-			// IE and Chrome
-			$('#compute_attribute_vm_attrs_custom_template_name').attr("disabled", 'disabled');
-			$('.custom_template_name').prop("disabled", true);
-	}
+    // Check if its a computer resource template then just do not show the form of XenStore
+    if ($("#compute_attribute_compute_profile_id").length > 0) {
+        $('#xenserver-xenstore-data').hide(1)
+    }
 
-	if ($("#compute_attribute_vm_attrs_custom_template_name").val() != "" ){
-			$('#compute_attribute_vm_attrs_builtin_template_name').val($("#compute_attribute_vm_attrs_custom_template_name option:contains('No template')").val());
-			// IE and Chrome
-			$('#compute_attribute_vm_attrs_builtin_template_name').attr("disabled", 'disabled');
-			$('.buildin_templates').prop("disabled", true);
-	}
-	
-	// Computer Profile Templates
+    // Check if custom template in use then do now show SR settings
+    if ($("#compute_attribute_vm_attrs_builtin_template_name").val() == "" && $("#compute_attribute_vm_attrs_custom_template_name").val() != "") {
+        $('.xenserver-raw').hide(1);
+    }
+
+    // Check which template are in use
+    if ($("#compute_attribute_vm_attrs_builtin_template_name").val() != "") {
+        $('#compute_attribute_vm_attrs_custom_template_name').val($("#compute_attribute_vm_attrs_custom_template_name option:contains('No template')").val());
+        // IE and Chrome
+        $('#compute_attribute_vm_attrs_custom_template_name').attr("disabled", 'disabled');
+        $('.custom_template_name').prop("disabled", true);
+    }
+
+    if ($("#compute_attribute_vm_attrs_custom_template_name").val() != "") {
+        $('#compute_attribute_vm_attrs_builtin_template_name').val($("#compute_attribute_vm_attrs_custom_template_name option:contains('No template')").val());
+        // IE and Chrome
+        $('#compute_attribute_vm_attrs_builtin_template_name').attr("disabled", 'disabled');
+        $('.buildin_templates').prop("disabled", true);
+    }
+
+    // Computer Profile Templates
     $(document).off('change.xenserver', '#compute_attribute_vm_attrs_custom_template_name');
     $(document).on('change.xenserver', '#compute_attribute_vm_attrs_custom_template_name', function (data) {
         if ($('option:selected', data.target).val() == "") {
-			$('.xenserver-raw').show(1000)
-			// IE and Chrome
-	        $('.buildin_templates').prop("disabled", false);
-			$('#compute_attribute_vm_attrs_builtin_template_name').removeAttr('disabled');
+            $('.xenserver-raw').show(1000)
+            // IE and Chrome
+            $('.buildin_templates').prop("disabled", false);
+            $('#compute_attribute_vm_attrs_builtin_template_name').removeAttr('disabled');
         } else {
-        	$('.xenserver-raw').hide(1000)
-			$('#compute_attribute_vm_attrs_builtin_template_name').val($("#compute_attribute_vm_attrs_builtin_template_name option:contains('No template')").val());
-			// IE and Chrome
-			$('#compute_attribute_vm_attrs_builtin_template_name').attr("disabled", 'disabled');
-			$('.buildin_templates').prop("disabled", true);
-			
+            $('.xenserver-raw').hide(1000)
+            $('#compute_attribute_vm_attrs_builtin_template_name').val($("#compute_attribute_vm_attrs_builtin_template_name option:contains('No template')").val());
+            // IE and Chrome
+            $('#compute_attribute_vm_attrs_builtin_template_name').attr("disabled", 'disabled');
+            $('.buildin_templates').prop("disabled", true);
+
         }
 
     });
@@ -126,51 +126,51 @@
     $(document).off('change.xenserver', '#compute_attribute_vm_attrs_builtin_template_name');
     $(document).on('change.xenserver', '#compute_attribute_vm_attrs_builtin_template_name', function (data) {
         if ($('option:selected', data.target).val() == "") {
-			// IE and Chrome
-	        $('.buildin_templates').prop("disabled", false);
-			$('#compute_attribute_vm_attrs_custom_template_name').removeAttr('disabled');
+            // IE and Chrome
+            $('.buildin_templates').prop("disabled", false);
+            $('#compute_attribute_vm_attrs_custom_template_name').removeAttr('disabled');
         } else {
-        	$('#compute_attribute_vm_attrs_custom_template_name').val($("#compute_attribute_vm_attrs_custom_template_name option:contains('No template')").val());
-			// IE and Chrome
-			$('#compute_attribute_vm_attrs_custom_template_name').attr("disabled", 'disabled');
-			$('.custom_template_name').prop("disabled", true);
-			
+            $('#compute_attribute_vm_attrs_custom_template_name').val($("#compute_attribute_vm_attrs_custom_template_name option:contains('No template')").val());
+            // IE and Chrome
+            $('#compute_attribute_vm_attrs_custom_template_name').attr("disabled", 'disabled');
+            $('.custom_template_name').prop("disabled", true);
+
         }
 
     })
 
-	
-	// Host Profile Forms
-	
-	// Check which template are in use 
-	if ($("#host_compute_attributes_custom_template_name").val() != "" ){
-			$('#host_compute_attributes_builtin_template_name').val($("#host_compute_attributes_builtin_template_name option:contains('No template')").val());
-			// IE and Chrome
-			$('#host_compute_attributes_builtin_template_name').attr("disabled", 'disabled');
-			$('.buildin_templates').prop("disabled", true);
-	}
 
-	if ($("#host_compute_attributes_builtin_template_name").val() != "" ){
-			$('#host_compute_attributes_custom_template_name').val($("#host_compute_attributes_custom_template_name option:contains('No template')").val());
-			// IE and Chrome
-			$('#host_compute_attributes_custom_template_name').attr("disabled", 'disabled');
-			$('.custom_template_name').prop("disabled", true);
-	}	
-	
+    // Host Profile Forms
+
+    // Check which template are in use
+    if ($("#host_compute_attributes_custom_template_name").val() != "") {
+        $('#host_compute_attributes_builtin_template_name').val($("#host_compute_attributes_builtin_template_name option:contains('No template')").val());
+        // IE and Chrome
+        $('#host_compute_attributes_builtin_template_name').attr("disabled", 'disabled');
+        $('.buildin_templates').prop("disabled", true);
+    }
+
+    if ($("#host_compute_attributes_builtin_template_name").val() != "") {
+        $('#host_compute_attributes_custom_template_name').val($("#host_compute_attributes_custom_template_name option:contains('No template')").val());
+        // IE and Chrome
+        $('#host_compute_attributes_custom_template_name').attr("disabled", 'disabled');
+        $('.custom_template_name').prop("disabled", true);
+    }
+
     $(document).off('change.xenserver', '#host_compute_attributes_custom_template_name');
     $(document).on('change.xenserver', '#host_compute_attributes_custom_template_name', function (data) {
         if ($('option:selected', data.target).val() == "") {
-			$('.xenserver-raw').show(1000)
-			// IE and Chrome
-	        $('.buildin_templates').prop("disabled", false);
-			$('#host_compute_attributes_builtin_template_name').removeAttr('disabled');
+            $('.xenserver-raw').show(1000)
+            // IE and Chrome
+            $('.buildin_templates').prop("disabled", false);
+            $('#host_compute_attributes_builtin_template_name').removeAttr('disabled');
         } else {
-        	$('.xenserver-raw').hide(1000)
-			$('#host_compute_attributes_builtin_template_name').val($("#host_compute_attributes_builtin_template_name option:contains('No template')").val());
-			// IE and Chrome
-			$('#host_compute_attributes_builtin_template_name').attr("disabled", 'disabled');
-			$('.buildin_templates').prop("disabled", true);
-			
+            $('.xenserver-raw').hide(1000)
+            $('#host_compute_attributes_builtin_template_name').val($("#host_compute_attributes_builtin_template_name option:contains('No template')").val());
+            // IE and Chrome
+            $('#host_compute_attributes_builtin_template_name').attr("disabled", 'disabled');
+            $('.buildin_templates').prop("disabled", true);
+
         }
 
     });
@@ -178,15 +178,15 @@
     $(document).off('change.xenserver', '#host_compute_attributes_builtin_template_name');
     $(document).on('change.xenserver', '#host_compute_attributes_builtin_template_name', function (data) {
         if ($('option:selected', data.target).val() == "") {
-			// IE and Chrome
-	        $('.buildin_templates').prop("disabled", false);
-			$('#host_compute_attributes_custom_template_name').removeAttr('disabled');
+            // IE and Chrome
+            $('.buildin_templates').prop("disabled", false);
+            $('#host_compute_attributes_custom_template_name').removeAttr('disabled');
         } else {
-        	$('#host_compute_attributes_custom_template_name').val($("#host_compute_attributes_builtin_template_name option:contains('No template')").val());
-			// IE and Chrome
-			$('#host_compute_attributes_custom_template_name').attr("disabled", 'disabled');
-			$('.custom_template_name').prop("disabled", true);
-			
+            $('#host_compute_attributes_custom_template_name').val($("#host_compute_attributes_builtin_template_name option:contains('No template')").val());
+            // IE and Chrome
+            $('#host_compute_attributes_custom_template_name').attr("disabled", 'disabled');
+            $('.custom_template_name').prop("disabled", true);
+
         }
     })
 </script>

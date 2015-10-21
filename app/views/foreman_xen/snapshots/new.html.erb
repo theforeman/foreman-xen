@@ -1,23 +1,23 @@
 <% title _("Create Snapshot") %>
 
 <%= form_tag("create", method: "post") do %>
-  <div class="clearfix">
-    <div class="form-group">
-      <%= label_tag 'name', 'Name:', class: 'col-md-2 control-label' %>
-      <div class="col-md-8">
-        <%= text_field_tag(:name, nil, class: "form-control") %>
-      </div>
+    <div class="clearfix">
+      <div class="form-group">
+        <%= label_tag 'name', 'Name:', class: 'col-md-2 control-label' %>
+        <div class="col-md-8">
+          <%= text_field_tag(:name, nil, class: "form-control") %>
+        </div>
 
-      <div class="col-md-8">
+        <div class="col-md-8">
 
+        </div>
       </div>
     </div>
-  </div>
-  <div class = "row form-group"></div>
-  <div class="clearfix">
-    <div class="form-actions">
-      <%= link_to("Cancel", "/foreman_xen/snapshots/#{@host.id}", :id => "cancel_button", :class => "btn btn-danger") %>
-      <%= submit_tag("Create", class: "btn btn-primary") %>
+    <div class="row form-group"></div>
+    <div class="clearfix">
+      <div class="form-actions">
+        <%= link_to("Cancel", "/foreman_xen/snapshots/#{@host.id}", :id => "cancel_button", :class => "btn btn-danger") %>
+        <%= submit_tag("Create", class: "btn btn-primary") %>
+      </div>
     </div>
-  </div>
 <% end %>

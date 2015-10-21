@@ -1,6 +1,6 @@
 <div class="fields">
 
-  <%= selectable_f f, :sr_uuid, compute_resource.storage_pools.map{ |item| [item[:display_name], item[:uuid]]}, { :selected => attribute_map[:volume_selected] }, :class => "span2", :label => _("Storage Repository") %>
+  <%= selectable_f f, :sr_uuid, compute_resource.storage_pools.map { |item| [item[:display_name], item[:uuid]] }, { :selected => attribute_map[:volume_selected] }, :class => "span2", :label => _("Storage Repository") %>
 
   <%= text_f f, :physical_size, :class => "input-mini", :label => _("Size (GB)"), :value => attribute_map[:volume_size] %>
 </div>

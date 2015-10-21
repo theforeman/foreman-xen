@@ -9,12 +9,6 @@ Lint/ConditionPosition:
   Exclude:
     - 'app/models/foreman_xen/xenserver.rb'
 
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: AlignWith, SupportedStyles, AutoCorrect.
-Lint/EndAlignment:
-  Enabled: false
-
 # Offense count: 2
 Lint/HandleExceptions:
   Exclude:
@@ -39,13 +33,6 @@ Lint/RescueException:
 Lint/ShadowingOuterLocalVariable:
   Exclude:
     - 'app/models/foreman_xen/xenserver.rb'
-
-# Offense count: 3
-# Cop supports --auto-correct.
-Lint/StringConversionInInterpolation:
-  Exclude:
-    - 'lib/foreman_xen/engine.rb'
-    - 'lib/foreman_xen/vnc_tunnel.rb'
 
 # Offense count: 2
 # Cop supports --auto-correct.
@@ -77,7 +64,7 @@ Metrics/BlockNesting:
 # Offense count: 2
 # Configuration parameters: CountComments.
 Metrics/ClassLength:
-  Max: 340
+  Max: 351
 
 # Offense count: 4
 Metrics/CyclomaticComplexity:
@@ -88,15 +75,12 @@ Metrics/CyclomaticComplexity:
 Metrics/LineLength:
   Max: 120
   Exclude:
-    - 'app/controllers/foreman_xen/snapshots_controller.rb'
     - 'app/helpers/xen_compute_helper.rb'
-    - 'app/models/concerns/foreman_xen/host_helper_extensions.rb'
-    - 'app/models/foreman_xen/xenserver.rb'
 
 # Offense count: 19
 # Configuration parameters: CountComments.
 Metrics/MethodLength:
-  Max: 43
+  Max: 64
 
 # Offense count: 7
 Metrics/PerceivedComplexity:
@@ -107,208 +91,9 @@ Style/AccessorMethodName:
   Exclude:
     - 'app/models/foreman_xen/xenserver.rb'
 
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedHashRocketStyle, EnforcedColonStyle, EnforcedLastArgumentHashStyle, SupportedLastArgumentHashStyles.
-Style/AlignHash:
-  Exclude:
-    - 'app/models/foreman_xen/xenserver.rb'
-
-# Offense count: 5
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/AndOr:
-  Exclude:
-    - 'app/models/concerns/foreman_xen/host_helper_extensions.rb'
-    - 'app/models/foreman_xen/xenserver.rb'
-
-# Offense count: 19
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/BracesAroundHashParameters:
-  Exclude:
-    - 'app/controllers/foreman_xen/snapshots_controller.rb'
-    - 'app/models/foreman_xen/xenserver.rb'
-
-# Offense count: 3
-# Cop supports --auto-correct.
-# Configuration parameters: IndentWhenRelativeTo, SupportedStyles, IndentOneStep.
-Style/CaseIndentation:
-  Enabled: false
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/ClosingParenthesisIndentation:
-  Exclude:
-    - 'app/models/concerns/foreman_xen/host_helper_extensions.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/CommentIndentation:
-  Exclude:
-    - 'app/models/foreman_xen/xenserver.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/DefWithParentheses:
-  Exclude:
-    - 'app/helpers/xen_compute_helper.rb'
-
-# Offense count: 8
-# Configuration parameters: Exclude.
-Style/Documentation:
-  Exclude:
-    - 'app/controllers/foreman_xen/snapshots_controller.rb'
-    - 'app/helpers/xen_compute_helper.rb'
-    - 'app/models/concerns/fog_extensions/xenserver/server.rb'
-    - 'app/models/concerns/foreman_xen/host_helper_extensions.rb'
-    - 'app/models/foreman_xen/xenserver.rb'
-    - 'lib/foreman_xen.rb'
-    - 'lib/foreman_xen/version.rb'
-    - 'lib/foreman_xen/vnc_tunnel.rb'
-
-# Offense count: 4
-# Cop supports --auto-correct.
-Style/EmptyLines:
-  Exclude:
-    - 'app/models/foreman_xen/xenserver.rb'
-    - 'lib/foreman_xen/engine.rb'
-
-# Offense count: 5
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/EmptyLinesAroundBlockBody:
-  Exclude:
-    - 'app/models/foreman_xen/xenserver.rb'
-    - 'config/routes.rb'
-    - 'lib/foreman_xen/engine.rb'
-
-# Offense count: 4
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/EmptyLinesAroundClassBody:
-  Exclude:
-    - 'app/controllers/foreman_xen/snapshots_controller.rb'
-    - 'lib/foreman_xen/engine.rb'
-    - 'lib/foreman_xen/vnc_tunnel.rb'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-Style/EmptyLinesAroundMethodBody:
-  Exclude:
-    - 'app/models/foreman_xen/xenserver.rb'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/EmptyLinesAroundModuleBody:
-  Exclude:
-    - 'app/models/concerns/fog_extensions/xenserver/server.rb'
-    - 'lib/foreman_xen/engine.rb'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-Style/EmptyLiteral:
-  Exclude:
-    - 'app/models/foreman_xen/xenserver.rb'
-
-# Offense count: 18
-# Cop supports --auto-correct.
-# Configuration parameters: AllowForAlignment.
-Style/ExtraSpacing:
-  Exclude:
-    - 'app/controllers/foreman_xen/snapshots_controller.rb'
-    - 'app/models/concerns/foreman_xen/host_helper_extensions.rb'
-    - 'app/models/foreman_xen/xenserver.rb'
-    - 'lib/foreman_xen/vnc_tunnel.rb'
-    - 'test/test_helper.rb'
-
-# Offense count: 5
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/FirstParameterIndentation:
-  Exclude:
-    - 'app/models/concerns/foreman_xen/host_helper_extensions.rb'
-
 # Offense count: 2
 # Configuration parameters: MinBodyLength.
 Style/GuardClause:
-  Exclude:
-    - 'app/controllers/foreman_xen/snapshots_controller.rb'
-
-# Offense count: 126
-# Cop supports --auto-correct.
-# Configuration parameters: SupportedStyles, UseHashRocketsWithSymbolValues.
-Style/HashSyntax:
-  EnforcedStyle: hash_rockets
-
-# Offense count: 5
-# Cop supports --auto-correct.
-# Configuration parameters: MaxLineLength.
-Style/IfUnlessModifier:
-  Exclude:
-    - 'app/controllers/foreman_xen/snapshots_controller.rb'
-    - 'app/models/foreman_xen/xenserver.rb'
-    - 'lib/foreman_xen/vnc_tunnel.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/IndentHash:
-  Enabled: false
-
-# Offense count: 27
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/IndentationConsistency:
-  Exclude:
-    - 'app/models/concerns/fog_extensions/xenserver/server.rb'
-    - 'app/models/foreman_xen/xenserver.rb'
-    - 'lib/foreman_xen/vnc_tunnel.rb'
-
-# Offense count: 14
-# Cop supports --auto-correct.
-# Configuration parameters: Width.
-Style/IndentationWidth:
-  Exclude:
-    - 'app/models/foreman_xen/xenserver.rb'
-    - 'lib/foreman_xen/vnc_tunnel.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/InfiniteLoop:
-  Exclude:
-    - 'lib/foreman_xen/vnc_tunnel.rb'
-
-# Offense count: 8
-# Cop supports --auto-correct.
-Style/LeadingCommentSpace:
-  Exclude:
-    - 'app/controllers/foreman_xen/snapshots_controller.rb'
-    - 'app/models/foreman_xen/xenserver.rb'
-    - 'lib/foreman_xen/engine.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/MethodCallParentheses:
-  Exclude:
-    - 'app/models/foreman_xen/xenserver.rb'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/MethodDefParentheses:
-  Enabled: false
-
-# Offense count: 2
-# Cop supports --auto-correct.
-Style/MultilineIfThen:
-  Exclude:
-    - 'lib/foreman_xen/vnc_tunnel.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/NegatedIf:
   Exclude:
     - 'app/controllers/foreman_xen/snapshots_controller.rb'
 
@@ -321,123 +106,8 @@ Style/Next:
 
 # Offense count: 2
 # Cop supports --auto-correct.
-Style/NilComparison:
-  Exclude:
-    - 'app/models/foreman_xen/xenserver.rb'
-    - 'lib/foreman_xen/vnc_tunnel.rb'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: IncludeSemanticChanges.
-Style/NonNilCheck:
-  Exclude:
-    - 'app/controllers/foreman_xen/snapshots_controller.rb'
-    - 'lib/foreman_xen/vnc_tunnel.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/Not:
-  Exclude:
-    - 'app/models/concerns/foreman_xen/host_helper_extensions.rb'
-
-# Offense count: 2
-# Cop supports --auto-correct.
 Style/NumericLiterals:
   MinDigits: 11
-
-# Offense count: 4
-# Cop supports --auto-correct.
-# Configuration parameters: AllowMultipleReturnValues.
-Style/RedundantReturn:
-  Exclude:
-    - 'app/controllers/foreman_xen/snapshots_controller.rb'
-    - 'app/models/concerns/fog_extensions/xenserver/server.rb'
-    - 'app/models/foreman_xen/xenserver.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/RedundantSelf:
-  Exclude:
-    - 'lib/foreman_xen/vnc_tunnel.rb'
-
-# Offense count: 11
-# Cop supports --auto-correct.
-Style/RescueModifier:
-  Exclude:
-    - 'app/models/foreman_xen/xenserver.rb'
-
-# Offense count: 5
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/SignalException:
-  Exclude:
-    - 'app/models/foreman_xen/xenserver.rb'
-    - 'lib/foreman_xen/vnc_tunnel.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/SingleSpaceBeforeFirstArg:
-  Exclude:
-    - 'app/controllers/foreman_xen/snapshots_controller.rb'
-
-# Offense count: 4
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyleInsidePipes, SupportedStyles.
-Style/SpaceAroundBlockParameters:
-  Exclude:
-    - 'app/controllers/foreman_xen/snapshots_controller.rb'
-    - 'app/models/foreman_xen/xenserver.rb'
-
-# Offense count: 6
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/SpaceAroundEqualsInParameterDefault:
-  Enabled: false
-
-# Offense count: 14
-# Cop supports --auto-correct.
-# Configuration parameters: MultiSpaceAllowedForOperators.
-Style/SpaceAroundOperators:
-  Exclude:
-    - 'app/models/concerns/foreman_xen/host_helper_extensions.rb'
-    - 'app/models/foreman_xen/xenserver.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/SpaceBeforeBlockBraces:
-  Enabled: false
-
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles, EnforcedStyleForEmptyBraces, SpaceBeforeBlockParameters.
-Style/SpaceInsideBlockBraces:
-  Enabled: false
-
-# Offense count: 36
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, EnforcedStyleForEmptyBraces, SupportedStyles.
-Style/SpaceInsideHashLiteralBraces:
-  Enabled: false
-
-# Offense count: 10
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/SpaceInsideStringInterpolation:
-  Exclude:
-    - 'app/models/foreman_xen/xenserver.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/SpecialGlobalVars:
-  Exclude:
-    - 'foreman_xen.gemspec'
-
-# Offense count: 57
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/StringLiterals:
-  Enabled: false
 
 # Offense count: 2
 # Cop supports --auto-correct.
@@ -446,46 +116,14 @@ Style/SymbolProc:
   Exclude:
     - 'app/models/foreman_xen/xenserver.rb'
 
-# Offense count: 65
-# Cop supports --auto-correct.
-Style/Tab:
-  Exclude:
-    - 'app/models/concerns/fog_extensions/xenserver/server.rb'
-    - 'app/models/foreman_xen/xenserver.rb'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/TrailingBlankLines:
-  Exclude:
-    - 'app/controllers/foreman_xen/snapshots_controller.rb'
-    - 'lib/foreman_xen/vnc_tunnel.rb'
-
-# Offense count: 23
-# Cop supports --auto-correct.
-Style/TrailingWhitespace:
-  Exclude:
-    - 'app/models/foreman_xen/xenserver.rb'
-
 # Offense count: 2
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 Style/VariableName:
   Enabled: false
 
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/WhileUntilDo:
-  Exclude:
-    - 'lib/foreman_xen/vnc_tunnel.rb'
-
 Rails/ActionFilter:
   Exclude:
     - 'app/controllers/foreman_xen/snapshots_controller.rb'
-
-Rails/Output:
-  Exclude:
-    - 'app/controllers/foreman_xen/snapshots_controller.rb'
-    - 'lib/foreman_xen/engine.rb'
 
 Rails/Validation:
   Exclude:
