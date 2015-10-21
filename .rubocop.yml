@@ -1,0 +1,21 @@
+# TODO: remove this file by either moving cops here or fixing code
+inherit_from:
+  - .rubocop_todo.yml
+
+AllCops:
+  RunRailsCops: true
+
+Style/Documentation:
+  Enabled: false
+
+Style/HashSyntax:
+  Enabled: false
+  SupportedStyles:
+    - ruby19
+    - hash_rockets
+
+Style/ExtraSpacing:
+  AllowForAlignment: true
+
+Style/Tab:
+  Enabled: true
