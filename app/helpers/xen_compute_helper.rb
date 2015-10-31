@@ -50,7 +50,7 @@ module XenComputeHelper
         vdi = new.vbds.first.vdi
         if vdi
           attribute_map[:volume_selected] = vdi.sr.uuid ? vdi.sr.uuid : nil
-          attribute_map[:volume_size]     = vdi.virtual_size ? (vdi.virtual_size.to_i / 1073741824).to_s : nil
+          attribute_map[:volume_size]     = vdi.virtual_size ? (vdi.virtual_size.to_i / 1_073_741_824).to_s : nil
         end
       end
       if new.__vifs

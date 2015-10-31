@@ -1,6 +1,6 @@
 module ForemanXen
   class Xenserver < ComputeResource
-    validates_presence_of :url, :user, :password
+    validates :url, :user, :password, :presence => true
 
     def provided_attributes
       super.merge(
@@ -38,8 +38,8 @@ module ForemanXen
     end
 
     def max_memory
-      xenServerMaxDoc = 128 * 1024 * 1024 * 1024
-      [hypervisor.metrics.memory_total.to_i, xenServerMaxDoc].min
+      xenserver_max_doc = 128 * 1024 * 1024 * 1024
+      [hypervisor.metrics.memory_total.to_i, xenserver_max_doc].min
     rescue => e
       logger.error "unable to figure out free memory, guessing instead due to:#{e}"
       16 * 1024 * 1024 * 1024
@@ -88,13 +88,12 @@ module ForemanXen
         subresults = {}
         found      = 0
         hosts.each do |host|
-          if (sr.reference == host.suspend_image_sr)
-            found                     = 1
-            subresults[:name]         = sr.name
-            subresults[:display_name] = sr.name + '(' + host.hostname + ')'
-            subresults[:uuid]         = sr.uuid
-            break
-          end
+          next until sr.reference == host.suspend_image_sr
+          found                     = 1
+          subresults[:name]         = sr.name
+          subresults[:display_name] = sr.name + '(' + host.hostname + ')'
+          subresults[:uuid]         = sr.uuid
+          break
         end
 
         if (found == 0)
@@ -152,10 +151,10 @@ module ForemanXen
       associate_by('mac', vm.interfaces.map(&:mac))
     end
 
-    def get_snapshots_for_vm(vm)
+    def find_snapshots_for_vm(vm)
       return [] if vm.snapshots.empty?
       tmps   = begin
-        client.servers.templates.select { |t| t.is_a_snapshot }
+        client.servers.templates.select(&:is_a_snapshot)
       rescue
         []
       end
@@ -166,9 +165,9 @@ module ForemanXen
       retval
     end
 
-    def get_snapshots
+    def find_snapshots
       tmps = begin
-        client.servers.templates.select { |t| t.is_a_snapshot }
+        client.servers.templates.select(&:is_a_snapshot)
       rescue
         []
       end
@@ -233,7 +232,8 @@ module ForemanXen
       if args[:hypervisor_host] != ''
         host = client.hosts.find { |host| host.name == args[:hypervisor_host] }
         logger.info "create_vm_from_builtin: host : #{host.name}"
-      elsif host = client.hosts.first
+      else
+        host = client.hosts.first
         logger.info "create_vm_from_builtin: host : #{host.name}"
       end
 
@@ -287,13 +287,14 @@ module ForemanXen
       if args[:hypervisor_host] != ''
         host = client.hosts.find { |host| host.name == args[:hypervisor_host] }
         logger.info "create_vm_from_builtin: host : #{host.name}"
-      elsif host = client.hosts.first
+      else
+        host = client.hosts.first
         logger.info "create_vm_from_builtin: host : #{host.name}"
       end
 
       storage_repository = client.storage_repositories.find { |sr| sr.uuid == "#{args[:VBDs][:sr_uuid]}" }
 
-      gb   = 1073741824 # 1gb in bytes
+      gb   = 1_073_741_824 # 1gb in bytes
       size = args[:VBDs][:physical_size].to_i * gb
       vdi  = client.vdis.create :name               => "#{args[:name]}-disk1",
                                 :storage_repository => storage_repository,
@@ -339,8 +340,8 @@ module ForemanXen
       fail "No console for vm #{vm.name}" if console.nil?
 
       session_ref = (vm.service.instance_variable_get :@connection).instance_variable_get :@credentials
-      fullURL     = "#{console.location}&session_id=#{session_ref}"
-      tunnel      = VNCTunnel.new fullURL
+      full_url    = "#{console.location}&session_id=#{session_ref}"
+      tunnel      = VNCTunnel.new full_url
       tunnel.start
       logger.info 'VNCTunnel started'
       WsProxy.start(

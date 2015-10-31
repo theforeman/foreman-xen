@@ -12,7 +12,7 @@ module ForemanXen
         unless @compute_resource.nil?
           vm = @compute_resource.find_vm_by_uuid(@host.uuid)
           if !vm.nil?
-            @snapshots = @compute_resource.get_snapshots_for_vm(vm)
+            @snapshots = @compute_resource.find_snapshots_for_vm(vm)
           else
             process_error(:error_msg => "Error retrieving compute resource #{@host.compute_resource_id} from provider.")
             return
@@ -67,14 +67,13 @@ module ForemanXen
       name              = nil
       if @compute_resource
         if @host
-          snapshots = @compute_resource.get_snapshots
+          snapshots = @compute_resource.find_snapshots
           snapshots.each do |snapshot|
-            if snapshot.reference == ref
-              name = snapshot.name
-              snapshot.destroy
-              notice ("Succesfully deleted snapshot #{snapshot.name}")
-              break
-            end
+            next unless snapshot.reference == ref
+            name = snapshot.name
+            snapshot.destroy
+            notice "Succesfully deleted snapshot #{snapshot.name}"
+            break
           end
         else
           process_error(:error_msg => ("Error retrieving host information for host id: #{id}"))
