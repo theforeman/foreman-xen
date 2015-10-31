@@ -72,7 +72,7 @@
 
 <!-- Startup -->
 <div class="children_fields" id="xenserver-vm-start" style="<%= hide_raw %>">
-  <%= field_set_tag 'VM Startup Options', :id => 'vm_starup_options', :title => _('Power ON VM') do -%>
+  <%= field_set_tag 'VM Startup Options', :id => 'vm_startup_options', :title => _('Power ON VM') do -%>
       <%= checkbox_f f, :start, :checked => (attribute_map[:power_on] == '1' || start_enable), :label => _("Power ON VM") %>
   <% end -%>
 </div>
@@ -101,23 +101,23 @@
         $('#compute_attribute_vm_attrs_builtin_template_name').val($("#compute_attribute_vm_attrs_custom_template_name option:contains('No template')").val());
         // IE and Chrome
         $('#compute_attribute_vm_attrs_builtin_template_name').attr("disabled", 'disabled');
-        $('.buildin_templates').prop("disabled", true);
+        $('.builtin_templates').prop("disabled", true);
     }
 
     // Computer Profile Templates
     $(document).off('change.xenserver', '#compute_attribute_vm_attrs_custom_template_name');
     $(document).on('change.xenserver', '#compute_attribute_vm_attrs_custom_template_name', function (data) {
         if ($('option:selected', data.target).val() == "") {
-            $('.xenserver-raw').show(1000)
+            $('.xenserver-raw').show(1000);
             // IE and Chrome
-            $('.buildin_templates').prop("disabled", false);
+            $('.builtin_templates').prop("disabled", false);
             $('#compute_attribute_vm_attrs_builtin_template_name').removeAttr('disabled');
         } else {
-            $('.xenserver-raw').hide(1000)
+            $('.xenserver-raw').hide(1000);
             $('#compute_attribute_vm_attrs_builtin_template_name').val($("#compute_attribute_vm_attrs_builtin_template_name option:contains('No template')").val());
             // IE and Chrome
             $('#compute_attribute_vm_attrs_builtin_template_name').attr("disabled", 'disabled');
-            $('.buildin_templates').prop("disabled", true);
+            $('.builtin_templates').prop("disabled", true);
 
         }
 
@@ -127,7 +127,7 @@
     $(document).on('change.xenserver', '#compute_attribute_vm_attrs_builtin_template_name', function (data) {
         if ($('option:selected', data.target).val() == "") {
             // IE and Chrome
-            $('.buildin_templates').prop("disabled", false);
+            $('.builtin_templates').prop("disabled", false);
             $('#compute_attribute_vm_attrs_custom_template_name').removeAttr('disabled');
         } else {
             $('#compute_attribute_vm_attrs_custom_template_name').val($("#compute_attribute_vm_attrs_custom_template_name option:contains('No template')").val());
@@ -137,7 +137,7 @@
 
         }
 
-    })
+    });
 
 
     // Host Profile Forms
@@ -147,7 +147,7 @@
         $('#host_compute_attributes_builtin_template_name').val($("#host_compute_attributes_builtin_template_name option:contains('No template')").val());
         // IE and Chrome
         $('#host_compute_attributes_builtin_template_name').attr("disabled", 'disabled');
-        $('.buildin_templates').prop("disabled", true);
+        $('.builtin_templates').prop("disabled", true);
     }
 
     if ($("#host_compute_attributes_builtin_template_name").val() != "") {
@@ -160,16 +160,16 @@
     $(document).off('change.xenserver', '#host_compute_attributes_custom_template_name');
     $(document).on('change.xenserver', '#host_compute_attributes_custom_template_name', function (data) {
         if ($('option:selected', data.target).val() == "") {
-            $('.xenserver-raw').show(1000)
+            $('.xenserver-raw').show(1000);
             // IE and Chrome
-            $('.buildin_templates').prop("disabled", false);
+            $('.builtin_templates').prop("disabled", false);
             $('#host_compute_attributes_builtin_template_name').removeAttr('disabled');
         } else {
-            $('.xenserver-raw').hide(1000)
+            $('.xenserver-raw').hide(1000);
             $('#host_compute_attributes_builtin_template_name').val($("#host_compute_attributes_builtin_template_name option:contains('No template')").val());
             // IE and Chrome
             $('#host_compute_attributes_builtin_template_name').attr("disabled", 'disabled');
-            $('.buildin_templates').prop("disabled", true);
+            $('.builtin_templates').prop("disabled", true);
 
         }
 
@@ -179,7 +179,7 @@
     $(document).on('change.xenserver', '#host_compute_attributes_builtin_template_name', function (data) {
         if ($('option:selected', data.target).val() == "") {
             // IE and Chrome
-            $('.buildin_templates').prop("disabled", false);
+            $('.builtin_templates').prop("disabled", false);
             $('#host_compute_attributes_custom_template_name').removeAttr('disabled');
         } else {
             $('#host_compute_attributes_custom_template_name').val($("#host_compute_attributes_builtin_template_name option:contains('No template')").val());

@@ -1,28 +1,7 @@
 # Offense count: 2
-# Configuration parameters: AllowSafeAssignment.
-Lint/AssignmentInCondition:
-  Exclude:
-    - 'app/models/foreman_xen/xenserver.rb'
-
-# Offense count: 2
-Lint/ConditionPosition:
-  Exclude:
-    - 'app/models/foreman_xen/xenserver.rb'
-
-# Offense count: 2
 Lint/HandleExceptions:
   Exclude:
     - 'lib/foreman_xen/vnc_tunnel.rb'
-
-# Offense count: 1
-Lint/LiteralInCondition:
-  Exclude:
-    - 'lib/foreman_xen/vnc_tunnel.rb'
-
-# Offense count: 1
-Lint/ParenthesesAsGroupedExpression:
-  Exclude:
-    - 'app/controllers/foreman_xen/snapshots_controller.rb'
 
 # Offense count: 2
 Lint/RescueException:
@@ -64,7 +43,7 @@ Metrics/BlockNesting:
 # Offense count: 2
 # Configuration parameters: CountComments.
 Metrics/ClassLength:
-  Max: 351
+  Max: 352
 
 # Offense count: 4
 Metrics/CyclomaticComplexity:
@@ -86,45 +65,6 @@ Metrics/MethodLength:
 Metrics/PerceivedComplexity:
   Max: 24
 
-# Offense count: 1
-Style/AccessorMethodName:
-  Exclude:
-    - 'app/models/foreman_xen/xenserver.rb'
-
-# Offense count: 2
-# Configuration parameters: MinBodyLength.
-Style/GuardClause:
-  Exclude:
-    - 'app/controllers/foreman_xen/snapshots_controller.rb'
-
-# Offense count: 2
-# Configuration parameters: EnforcedStyle, MinBodyLength, SupportedStyles.
-Style/Next:
-  Exclude:
-    - 'app/controllers/foreman_xen/snapshots_controller.rb'
-    - 'app/models/foreman_xen/xenserver.rb'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-Style/NumericLiterals:
-  MinDigits: 11
-
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: IgnoredMethods.
-Style/SymbolProc:
-  Exclude:
-    - 'app/models/foreman_xen/xenserver.rb'
-
-# Offense count: 2
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/VariableName:
-  Enabled: false
-
 Rails/ActionFilter:
   Exclude:
     - 'app/controllers/foreman_xen/snapshots_controller.rb'
-
-Rails/Validation:
-  Exclude:
-    - 'app/models/foreman_xen/xenserver.rb'
