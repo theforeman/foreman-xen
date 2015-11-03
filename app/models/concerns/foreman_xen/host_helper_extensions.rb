@@ -7,9 +7,11 @@ module ForemanXen
         button_group(
           link_to_if_authorized(_('Edit'), hash_for_edit_host_path(:id => host).merge(:auth_object => host),
                                 :title => _('Edit your host'), :id => 'edit-button'),
-          unless host.compute_resource.nil? && host.compute_resource.type == 'ForemanXen::Xenserver'
-            link_to(_('Snapshots'), "../foreman_xen/snapshots/#{@host.id}/",
-                    :title => _('Manage machine snapshots'))
+          unless host.compute_resource.nil?
+            if host.compute_resource.type == 'ForemanXen::Xenserver'
+              link_to(_('Snapshots'), "../foreman_xen/snapshots/#{@host.id}/",
+                      :title => _('Manage machine snapshots'))
+            end
           end,
           if host.build
             link_to_if_authorized(
