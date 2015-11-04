@@ -5,9 +5,9 @@ class VNCTunnel
   @client_socket    = nil
   @read_from_server = nil
 
-  def initialize(fullURL)
-    @uri = URI(fullURL)
-    logger.info(fullURL)
+  def initialize(full_url)
+    @uri = URI(full_url)
+    logger.info(full_url)
     self.host = 'localhost'
     s         = TCPServer.new('127.0.0.1', 0)
     self.port = s.addr[1]
