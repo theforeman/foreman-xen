@@ -96,7 +96,7 @@ module ForemanXen
           break
         end
 
-        if (found == 0)
+        if found == 0
           subresults[:name]         = sr.name
           subresults[:display_name] = sr.name
           subresults[:uuid]         = sr.uuid
