@@ -1,7 +1,7 @@
 module ForemanXen
   class SnapshotsController < ::ApplicationController
     helper :all
-    skip_before_filter :verify_authenticity_token
+    skip_before_action :verify_authenticity_token
 
     # GET - foreman_xen/snapshots/:host_id
     def show

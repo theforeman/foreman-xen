@@ -51,7 +51,7 @@ Metrics/ClassLength:
 Metrics/CyclomaticComplexity:
   Max: 23
 
-# Offense count: 65
+# Offense count: 16
 # Configuration parameters: AllowHeredoc, AllowURI, URISchemes.
 # URISchemes: http, https
 Metrics/LineLength:
@@ -66,15 +66,6 @@ Metrics/MethodLength:
 # Offense count: 4
 Metrics/PerceivedComplexity:
   Max: 24
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles, Include.
-# SupportedStyles: action, filter
-# Include: app/controllers/**/*.rb
-Rails/ActionFilter:
-  Exclude:
-    - 'app/controllers/foreman_xen/snapshots_controller.rb'
 
 # Offense count: 1
 # Cop supports --auto-correct.

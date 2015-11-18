@@ -24,7 +24,7 @@ module ForemanXen
     config.to_prepare do
       begin
         # extend fog xen server and image models.
-        require 'fog/xenserver/models/compute/server'
+        require 'fog/compute/xen_server/models/server'
         require File.expand_path('../../../app/models/concerns/fog_extensions/xenserver/server', __FILE__)
         require File.expand_path('../../../app/models/concerns/foreman_xen/host_helper_extensions', __FILE__)
 
