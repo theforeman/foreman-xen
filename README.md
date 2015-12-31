@@ -8,7 +8,7 @@ Packages are available for Debian based distribtions as **ruby-foreman-xen** and
 
 Please see the Foreman manual for further instructions:
 
-* [Foreman: How to Install a Plugin](http://theforeman.org/manuals/latest/index.html#6.1InstallaPlugin)
+* [Foreman: How to Install a Plugin](http://theforeman.org/plugins/#2.Installation)
 
 ## Compatibility
 
