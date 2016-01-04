@@ -86,15 +86,24 @@ module ForemanXen
 
       storages.each do |sr|
         subresults = {}
+        found      = 0
 
         hosts.each do |host|
-          append_hostname = (sr.reference == host.suspend_image_sr) ? '(' + host.hostname + ')' : ''
-          subresults[:name]         = sr.name
-          subresults[:display_name] = sr.name + append_hostname
-          subresults[:uuid]         = sr.uuid
-
-          results.push(subresults)
+          if sr.reference == host.suspend_image_sr
+            found                     = 1
+            subresults[:name]         = sr.name
+            subresults[:display_name] = sr.name + '(' + host.hostname + ')'
+            subresults[:uuid]         = sr.uuid
+            break
+          end
         end
+
+        if found == 0
+          subresults[:name]         = sr.name
+          subresults[:display_name] = sr.name
+          subresults[:uuid]         = sr.uuid
+        end
+        results.push(subresults)
       end
 
       results.sort_by! { |item| item[:display_name] }
