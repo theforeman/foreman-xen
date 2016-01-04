@@ -43,7 +43,7 @@ Metrics/BlockNesting:
 # Offense count: 2
 # Configuration parameters: CountComments.
 Metrics/ClassLength:
-  Max: 344
+  Max: 353
 
 # Offense count: 4
 Metrics/CyclomaticComplexity:
@@ -68,3 +68,7 @@ Metrics/PerceivedComplexity:
 Rails/ActionFilter:
   Exclude:
     - 'app/controllers/foreman_xen/snapshots_controller.rb'
+
+Style/Next:
+  Exclude:
+    - 'app/models/foreman_xen/xenserver.rb'
