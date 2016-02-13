@@ -155,7 +155,7 @@ module ForemanXen
 
     def find_snapshots_for_vm(vm)
       return [] if vm.snapshots.empty?
-      tmps   = begin
+      tmps = begin
         client.servers.templates.select(&:is_a_snapshot)
       rescue
         []
@@ -198,17 +198,13 @@ module ForemanXen
       if builtin_template_name != '' && custom_template_name != ''
         logger.info "custom_template_name: #{custom_template_name}"
         logger.info "builtin_template_name: #{builtin_template_name}"
-        fail 'you can select at most one template type'
+        raise 'you can select at most one template type'
       end
       begin
         vm = nil
         logger.info "create_vm(): custom_template_name: #{custom_template_name}"
         logger.info "create_vm(): builtin_template_name: #{builtin_template_name}"
-        if custom_template_name != ''
-          vm = create_vm_from_custom args
-        else
-          vm = create_vm_from_builtin args
-        end
+        vm = (custom_template_name != '') ? create_vm_from_custom(args) : create_vm_from_builtin(args)
         vm.set_attribute('name_description', 'Provisioned by Foreman')
         cpus = args[:vcpus_max]
         if vm.vcpus_max.to_i < cpus.to_i
@@ -231,15 +227,15 @@ module ForemanXen
       mem_max = args[:memory_max]
       mem_min = args[:memory_min]
 
-      if args[:hypervisor_host] != ''
-        host = client.hosts.find { |host| host.name == args[:hypervisor_host] }
-        logger.info "create_vm_from_builtin: host : #{host.name}"
-      else
-        host = client.hosts.first
-        logger.info "create_vm_from_builtin: host : #{host.name}"
-      end
+      host = if args[:hypervisor_host] != ''
+               client.hosts.find { |host| host.name == args[:hypervisor_host] }
+             else
+               client.hosts.first
+             end
 
-      fail 'Memory max cannot be lower than Memory min' if mem_min.to_i > mem_max.to_i
+      logger.info "create_vm_from_builtin: host : #{host.name}"
+
+      raise 'Memory max cannot be lower than Memory min' if mem_min.to_i > mem_max.to_i
       vm = client.servers.new :name          => args[:name],
                               :affinity      => host,
                               :template_name => args[:custom_template_name]
@@ -283,18 +279,21 @@ module ForemanXen
     end
 
     def create_vm_from_builtin(args)
+      mem_max = args[:memory_max]
+      mem_min = args[:memory_min]
+
+      host = if args[:hypervisor_host] != ''
+               client.hosts.find { |host| host.name == args[:hypervisor_host] }
+             else
+               client.hosts.first
+             end
+
+      logger.info "create_vm_from_builtin: host : #{host.name}"
+
       builtin_template_name = args[:builtin_template_name]
       builtin_template_name = builtin_template_name.to_s
 
-      if args[:hypervisor_host] != ''
-        host = client.hosts.find { |host| host.name == args[:hypervisor_host] }
-        logger.info "create_vm_from_builtin: host : #{host.name}"
-      else
-        host = client.hosts.first
-        logger.info "create_vm_from_builtin: host : #{host.name}"
-      end
-
-      storage_repository = client.storage_repositories.find { |sr| sr.uuid == "#{args[:VBDs][:sr_uuid]}" }
+      storage_repository = client.storage_repositories.find { |sr| sr.uuid == (args[:VBDs][:sr_uuid]).to_s }
 
       gb   = 1_073_741_824 # 1gb in bytes
       size = args[:VBDs][:physical_size].to_i * gb
@@ -303,8 +302,6 @@ module ForemanXen
                                 :description        => "#{args[:name]}-disk_1",
                                 :virtual_size       => size.to_s
 
-      mem_max      = args[:memory_max]
-      mem_min      = args[:memory_min]
       other_config = {}
       if builtin_template_name != ''
         template     = client.servers.builtin_templates.find { |tmp| tmp.name == args[:builtin_template_name] }
@@ -336,10 +333,10 @@ module ForemanXen
 
     def console(uuid)
       vm = find_vm_by_uuid(uuid)
-      fail 'VM is not running!' unless vm.ready?
+      raise 'VM is not running!' unless vm.ready?
 
       console = vm.service.consoles.find { |c| c.__vm == vm.reference && c.protocol == 'rfb' }
-      fail "No console for vm #{vm.name}" if console.nil?
+      raise "No console for vm #{vm.name}" if console.nil?
 
       session_ref = (vm.service.instance_variable_get :@connection).instance_variable_get :@credentials
       full_url    = "#{console.location}&session_id=#{session_ref}"

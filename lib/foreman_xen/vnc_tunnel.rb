@@ -29,7 +29,7 @@ class VNCTunnel
         listen client_srv
       else
         logger.error "Cannot connect to the conosle located at #{uri} reason: #{header}"
-        fail "Cannot connect to the console located at #{uri} reason: #{header}"
+        raise "Cannot connect to the console located at #{uri} reason: #{header}"
       end
     end
   end
@@ -76,7 +76,7 @@ class VNCTunnel
           data = @srv_socket.read_nonblock(1024)
           @client_socket.write(data)
         rescue IO::WaitReadable => e
-          retry unless (IO.select([@srv_socket], nil, nil, 60)).nil?
+          retry unless IO.select([@srv_socket], nil, nil, 60).nil?
         end
       end
     rescue EOFError
