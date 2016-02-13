@@ -12,11 +12,12 @@ Please see the Foreman manual for further instructions:
 
 ## Compatibility
 
-| Foreman Version | Plugin Version |
-|:--------------- |:-------------- |
-| >=1.5, <1.8     | 0.0.x          |
-| >=1.8.1, <1.10  | 0.1.x          |
-| >=1.10          | 0.2.x          |
+| Foreman Version | Plugin Version        |
+|:--------------- |:--------------------- |
+| >=1.5, <1.8     | 0.0.x (unmaintained)  |
+| >=1.8.1, <1.10  | 0.1.x (unmaintained)  |
+| >=1.10, <1.11   | 0.2.x                 |
+| >=1.11          | 0.3.x                 |
 
 ## Support
 
