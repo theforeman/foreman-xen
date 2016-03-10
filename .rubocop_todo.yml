@@ -45,18 +45,11 @@ Metrics/BlockNesting:
 # Offense count: 2
 # Configuration parameters: CountComments.
 Metrics/ClassLength:
-  Max: 347
+  Max: 337
 
 # Offense count: 3
 Metrics/CyclomaticComplexity:
-  Max: 23
-
-# Offense count: 16
-# Configuration parameters: AllowHeredoc, AllowURI, URISchemes.
-# URISchemes: http, https
-Metrics/LineLength:
-  Exclude:
-    - 'app/helpers/xen_compute_helper.rb'
+  Max: 14
 
 # Offense count: 19
 # Configuration parameters: CountComments.
@@ -65,12 +58,4 @@ Metrics/MethodLength:
 
 # Offense count: 4
 Metrics/PerceivedComplexity:
-  Max: 24
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, MinBodyLength, SupportedStyles.
-# SupportedStyles: skip_modifier_ifs, always
-Style/Next:
-  Exclude:
-    - 'app/models/foreman_xen/xenserver.rb'
+  Max: 15

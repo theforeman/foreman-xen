@@ -89,13 +89,12 @@ module ForemanXen
         found      = 0
 
         hosts.each do |host|
-          if sr.reference == host.suspend_image_sr
-            found                     = 1
-            subresults[:name]         = sr.name
-            subresults[:display_name] = sr.name + '(' + host.hostname + ')'
-            subresults[:uuid]         = sr.uuid
-            break
-          end
+          next unless sr.reference == host.suspend_image_sr
+          found                     = 1
+          subresults[:name]         = sr.name
+          subresults[:display_name] = sr.name + '(' + host.hostname + ')'
+          subresults[:uuid]         = sr.uuid
+          break
         end
 
         if found == 0
@@ -190,10 +189,8 @@ module ForemanXen
     end
 
     def create_vm(args = {})
-      custom_template_name  = args[:custom_template_name]
-      builtin_template_name = args[:builtin_template_name]
-      custom_template_name  = custom_template_name.to_s
-      builtin_template_name = builtin_template_name.to_s
+      custom_template_name  = args[:custom_template_name].to_s
+      builtin_template_name = args[:builtin_template_name].to_s
 
       if builtin_template_name != '' && custom_template_name != ''
         logger.info "custom_template_name: #{custom_template_name}"
@@ -201,19 +198,12 @@ module ForemanXen
         raise 'you can select at most one template type'
       end
       begin
-        vm = nil
         logger.info "create_vm(): custom_template_name: #{custom_template_name}"
         logger.info "create_vm(): builtin_template_name: #{builtin_template_name}"
         vm = (custom_template_name != '') ? create_vm_from_custom(args) : create_vm_from_builtin(args)
         vm.set_attribute('name_description', 'Provisioned by Foreman')
-        cpus = args[:vcpus_max]
-        if vm.vcpus_max.to_i < cpus.to_i
-          vm.set_attribute('VCPUs_max', cpus)
-          vm.set_attribute('VCPUs_at_startup', cpus)
-        else
-          vm.set_attribute('VCPUs_at_startup', cpus)
-          vm.set_attribute('VCPUs_max', cpus)
-        end
+        vm.set_attribute('VCPUs_at_startup', args[:vcpus_max])
+        vm.set_attribute('VCPUs_max', args[:vcpus_max])
         vm.refresh
         return vm
       rescue => e
