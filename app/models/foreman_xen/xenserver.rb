@@ -5,7 +5,8 @@ module ForemanXen
     def provided_attributes
       super.merge(
         :uuid => :reference,
-        :mac  => :mac)
+        :mac  => :mac
+      )
     end
 
     def capabilities
