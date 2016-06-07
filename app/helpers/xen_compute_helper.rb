@@ -46,15 +46,15 @@ module XenComputeHelper
       attribute_map[:cpu_count]  = new.vcpus_max ? new.vcpus_max : nil
       attribute_map[:memory_min] = new.memory_static_min ? new.memory_static_min : nil
       attribute_map[:memory_max] = new.memory_static_max ? new.memory_static_max : nil
-      if new.__vbds
+      if new.vbds
         vdi = new.vbds.first.vdi
         if vdi
           attribute_map[:volume_selected] = vdi.sr.uuid ? vdi.sr.uuid : nil
           attribute_map[:volume_size]     = vdi.virtual_size ? (vdi.virtual_size.to_i / 1_073_741_824).to_s : nil
         end
       end
-      if new.__vifs
-        attribute_map[:network_selected] = new.networks.first.name ? new.networks.first.name : nil
+      if new.vifs
+        attribute_map[:network_selected] = new.vifs.first.network.name ? new.vifs.first.network.name : nil
       end
     end
     attribute_map
