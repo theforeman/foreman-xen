@@ -328,7 +328,7 @@ module ForemanXen
       vm = find_vm_by_uuid(uuid)
       raise 'VM is not running!' unless vm.ready?
 
-      console = vm.service.consoles.find { |c| c.vm != nil && c.vm.reference == vm.reference && c.protocol == 'rfb' }
+      console = vm.service.consoles.find { |c| c.vm && c.vm.reference == vm.reference && c.protocol == 'rfb' }
       raise "No console for vm #{vm.name}" if console.nil?
 
       session_ref = (vm.service.instance_variable_get :@connection).instance_variable_get :@credentials
