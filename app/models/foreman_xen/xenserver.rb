@@ -207,7 +207,7 @@ module ForemanXen
         vm.set_attribute('name_description', 'Provisioned by Foreman')
         vm.set_attribute('VCPUs_at_startup', args[:vcpus_max])
         vm.set_attribute('VCPUs_max', args[:vcpus_max])
-        #vm.refresh
+        vm.rload
         return vm
       rescue => e
         logger.info e
@@ -320,7 +320,7 @@ module ForemanXen
 
       vm.provision
       vm.set_attribute('HVM_boot_policy', 'BIOS order')
-      #vm.reload
+      vm.reload
       vm
     end
 
@@ -390,8 +390,8 @@ module ForemanXen
         'qos_algorithm_type'   => 'ratelimit',
         'qos_algorithm_params' => {}
       }
-      client.vifs.create net_config
-      #vm.reload
+      vm.vifs = client.vifs.create net_config
+      vm.reload
     end
 
     def xenstore_hash_flatten(nested_hash, key = nil, keychain = nil, out_hash = {})
