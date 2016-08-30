@@ -100,7 +100,7 @@ module ForemanXen
           break
         end
 
-        if found == 0
+        if found.zero?
           subresults[:name]         = sr.name
           subresults[:display_name] = sr.name
           subresults[:uuid]         = sr.uuid
@@ -203,7 +203,7 @@ module ForemanXen
       begin
         logger.info "create_vm(): custom_template_name: #{custom_template_name}"
         logger.info "create_vm(): builtin_template_name: #{builtin_template_name}"
-        vm = (custom_template_name != '') ? create_vm_from_custom(args) : create_vm_from_builtin(args)
+        vm = custom_template_name != '' ? create_vm_from_custom(args) : create_vm_from_builtin(args)
         vm.set_attribute('name_description', 'Provisioned by Foreman')
         vm.set_attribute('VCPUs_at_startup', args[:vcpus_max])
         vm.set_attribute('VCPUs_max', args[:vcpus_max])
