@@ -207,7 +207,7 @@ module ForemanXen
         vm.set_attribute('name_description', 'Provisioned by Foreman')
         vm.set_attribute('VCPUs_at_startup', args[:vcpus_max])
         vm.set_attribute('VCPUs_max', args[:vcpus_max])
-        vm.rload
+        vm.reload
         return vm
       rescue => e
         logger.info e
