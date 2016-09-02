@@ -15,9 +15,10 @@ module ForemanXen
       [:build]
     end
 
-    def find_vm_by_uuid(ref)
-      client.servers.get(ref)
+    def find_vm_by_uuid(uuid)
+      client.servers.get(uuid)
     rescue Fog::XenServer::RequestFailed => e
+      Foreman::Logging.exception("Failed retrieving xenserver vm by uuid #{uuid}", e)
       raise(ActiveRecord::RecordNotFound) if e.message.include?('HANDLE_INVALID')
       raise(ActiveRecord::RecordNotFound) if e.message.include?('VM.get_record: ["SESSION_INVALID"')
       raise e
