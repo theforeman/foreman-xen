@@ -133,21 +133,11 @@ module ForemanXen
     end
 
     def custom_templates
-      tmps = begin
-        client.servers.custom_templates.select { |t| !t.is_a_snapshot }
-      rescue
-        []
-      end
-      tmps.sort_by(&:name)
+      get_templates(client.servers.custom_templates)
     end
 
     def builtin_templates
-      tmps = begin
-        client.servers.builtin_templates.select { |t| !t.is_a_snapshot }
-      rescue
-        []
-      end
-      tmps.sort_by(&:name)
+      get_templates(client.servers.builtin_templates)
     end
 
     def associated_host(vm)
@@ -219,11 +209,7 @@ module ForemanXen
       mem_max = args[:memory_max]
       mem_min = args[:memory_min]
 
-      host = if args[:hypervisor_host] != ''
-               client.hosts.find { |host| host.name == args[:hypervisor_host] }
-             else
-               client.hosts.first
-             end
+      host = get_hypervisor_host(args)
 
       logger.info "create_vm_from_builtin: host : #{host.name}"
 
@@ -274,11 +260,7 @@ module ForemanXen
       mem_max = args[:memory_max]
       mem_min = args[:memory_min]
 
-      host = if args[:hypervisor_host] != ''
-               client.hosts.find { |host| host.name == args[:hypervisor_host] }
-             else
-               client.hosts.first
-             end
+      host = get_hypervisor_host(args)
 
       logger.info "create_vm_from_builtin: host : #{host.name}"
 
@@ -402,6 +384,20 @@ module ForemanXen
         end
       end
       out_hash
+    end
+
+    def get_templates(templates)
+      tmps = begin
+        templates.select { |t| !t.is_a_snapshot }
+      rescue
+        []
+      end
+      tmps.sort_by(&:name)
+    end
+
+    def get_hypervisor_host(args)
+      return client.hosts.first unless args[:hypervisor_host] != ''
+      client.hosts.find { |host| host.name == args[:hypervisor_host] }
     end
   end
 end
