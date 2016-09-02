@@ -36,7 +36,7 @@ module ForemanXen
           vm.revert(ref)
           vm.start
           process_success(
-            :success_msg => "Successfully reverted and powered on #{@host.name}",
+            :success_msg      => "Successfully reverted and powered on #{@host.name}",
             :success_redirect => "/foreman_xen/snapshots/#{id}"
           )
         else
@@ -71,7 +71,7 @@ module ForemanXen
         process_error(:error_msg => "Error retrieving compute resource information for host id: #{id}")
       end
       process_success(
-        :success_msg => "Successfully deleted snapshot: #{name}",
+        :success_msg      => "Successfully deleted snapshot: #{name}",
         :success_redirect => "/foreman_xen/snapshots/#{id}"
       )
     end
@@ -110,7 +110,7 @@ module ForemanXen
         if !vm.nil?
           vm.snapshot(name)
           process_success(
-            :success_msg => "Successfully created snapshot #{name} for #{@host.name}",
+            :success_msg      => "Successfully created snapshot #{name} for #{@host.name}",
             :success_redirect => "/foreman_xen/snapshots/#{id}"
           )
         else

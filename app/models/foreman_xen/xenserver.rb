@@ -335,9 +335,9 @@ module ForemanXen
       tunnel.start
       logger.info 'VNCTunnel started'
       WsProxy.start(
-        :host => tunnel.host,
+        :host      => tunnel.host,
         :host_port => tunnel.port,
-        :password => ''
+        :password  => ''
       ).merge(
         :type => 'vnc',
         :name => vm.name
@@ -356,10 +356,10 @@ module ForemanXen
 
     def client
       @client ||= ::Fog::Compute.new(
-        :provider => 'XenServer',
-        :xenserver_url => url,
-        :xenserver_username => user,
-        :xenserver_password => password,
+        :provider                     => 'XenServer',
+        :xenserver_url                => url,
+        :xenserver_username           => user,
+        :xenserver_password           => password,
         :xenserver_redirect_to_master => true
       )
     end
