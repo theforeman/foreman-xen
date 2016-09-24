@@ -26,6 +26,10 @@ module FogExtensions
         reboot
       end
 
+      def stop
+        shutdown
+      end
+
       def ready?
         running?
       end
