@@ -10,7 +10,7 @@ module XenComputeHelper
 
   def init_vmdata
     vmdata = {
-      :ifs => {
+      :ifs         => {
         '0' => {
           :ip      => '',
           :gateway => '',

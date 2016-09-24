@@ -15,7 +15,8 @@ module ForemanXen
                 _('Xen Snapshots'),
                 "../foreman_xen/snapshots/#{@host.id}/",
                 :title => _('Manage machine snapshots'),
-                :id => :xen_snap_button
+                :id    => :xen_snap_button,
+                :class => 'btn btn-default'
               )
             )
           )

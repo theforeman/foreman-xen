@@ -15,9 +15,10 @@ module ForemanXen
 
     initializer 'foreman_xen.register_plugin', :before => :finisher_hook do |app|
       Foreman::Plugin.register :foreman_xen do
-        requires_foreman '>= 1.11'
+        requires_foreman '>= 1.13'
         # Register xen compute resource in foreman
         compute_resource ForemanXen::Xenserver
+        parameter_filter(ComputeResource, :uuid)
       end
     end
 

@@ -2,8 +2,6 @@ module ForemanXen
   class Xenserver < ComputeResource
     validates :url, :user, :password, :presence => true
 
-    attr_accessible :uuid
-
     def provided_attributes
       super.merge(
         :uuid => :reference,
@@ -15,9 +13,10 @@ module ForemanXen
       [:build]
     end
 
-    def find_vm_by_uuid(ref)
-      client.servers.get(ref)
+    def find_vm_by_uuid(uuid)
+      client.servers.get(uuid)
     rescue Fog::XenServer::RequestFailed => e
+      Foreman::Logging.exception("Failed retrieving xenserver vm by uuid #{uuid}", e)
       raise(ActiveRecord::RecordNotFound) if e.message.include?('HANDLE_INVALID')
       raise(ActiveRecord::RecordNotFound) if e.message.include?('VM.get_record: ["SESSION_INVALID"')
       raise e
@@ -100,7 +99,7 @@ module ForemanXen
           break
         end
 
-        if found == 0
+        if found.zero?
           subresults[:name]         = sr.name
           subresults[:display_name] = sr.name
           subresults[:uuid]         = sr.uuid
@@ -203,7 +202,7 @@ module ForemanXen
       begin
         logger.info "create_vm(): custom_template_name: #{custom_template_name}"
         logger.info "create_vm(): builtin_template_name: #{builtin_template_name}"
-        vm = (custom_template_name != '') ? create_vm_from_custom(args) : create_vm_from_builtin(args)
+        vm = custom_template_name != '' ? create_vm_from_custom(args) : create_vm_from_builtin(args)
         vm.set_attribute('name_description', 'Provisioned by Foreman')
         vm.set_attribute('VCPUs_at_startup', args[:vcpus_max])
         vm.set_attribute('VCPUs_max', args[:vcpus_max])
@@ -337,9 +336,9 @@ module ForemanXen
       tunnel.start
       logger.info 'VNCTunnel started'
       WsProxy.start(
-        :host => tunnel.host,
+        :host      => tunnel.host,
         :host_port => tunnel.port,
-        :password => ''
+        :password  => ''
       ).merge(
         :type => 'vnc',
         :name => vm.name
@@ -358,10 +357,10 @@ module ForemanXen
 
     def client
       @client ||= ::Fog::Compute.new(
-        :provider => 'XenServer',
-        :xenserver_url => url,
-        :xenserver_username => user,
-        :xenserver_password => password,
+        :provider                     => 'XenServer',
+        :xenserver_url                => url,
+        :xenserver_username           => user,
+        :xenserver_password           => password,
         :xenserver_redirect_to_master => true
       )
     end
