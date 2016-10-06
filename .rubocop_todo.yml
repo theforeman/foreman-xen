@@ -15,7 +15,7 @@ Lint/ShadowingOuterLocalVariable:
 
 # Offense count: 2
 # Cop supports --auto-correct.
-# Configuration parameters: AllowUnusedKeywordArguments.
+# Configuration parameters: IgnoreEmptyBlocks, AllowUnusedKeywordArguments.
 Lint/UnusedBlockArgument:
   Exclude:
     - 'lib/foreman_xen/engine.rb'

@@ -65,7 +65,7 @@ module ForemanXen
       rescue
         []
       end
-      tmps.sort { |a, b| a.name <=> b.name }
+      tmps.sort_by(&:name)
     end
 
     def new_nic(attr = {})
@@ -123,7 +123,7 @@ module ForemanXen
       rescue
         []
       end
-      networks.sort { |a, b| a.name <=> b.name }
+      networks.sort_by(&:name)
     end
 
     def templates
@@ -138,7 +138,7 @@ module ForemanXen
       rescue
         []
       end
-      tmps.sort { |a, b| a.name <=> b.name }
+      tmps.sort_by(&:name)
     end
 
     def builtin_templates
@@ -147,7 +147,7 @@ module ForemanXen
       rescue
         []
       end
-      tmps.sort { |a, b| a.name <=> b.name }
+      tmps.sort_by(&:name)
     end
 
     def associated_host(vm)
@@ -174,7 +174,7 @@ module ForemanXen
       rescue
         []
       end
-      tmps.sort { |a, b| a.name <=> b.name }
+      tmps.sort_by(&:name)
     end
 
     def new_vm(attr = {})
