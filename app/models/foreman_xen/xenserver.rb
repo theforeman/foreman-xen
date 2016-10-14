@@ -151,7 +151,7 @@ module ForemanXen
     end
 
     def associated_host(vm)
-      associate_by('mac', vm.interfaces.map(&:mac))
+      associate_by('mac', vm.interfaces.map(&:mac).map { |mac| Net::Validations.normalize_mac(mac) })
     end
 
     def find_snapshots_for_vm(vm)
