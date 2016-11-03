@@ -18,16 +18,16 @@
    end
 
 -%>
-
+<%= javascript_tag("$(document).on('ContentLoad', tfm.numFields.initAll)"); %>
 <!-- VM Initial Settings -->
 <div class="children_fields">
   <fieldset id="vm_profile">
     <legend>VM Profile</legend>
     <div class="fields">
       <!--<%= text_f f, :name, :disabled => !fields_enabled, :value => name, :label => 'Name' if controller_name != 'hosts' %>-->
-      <%= selectable_f f, :vcpus_max, 1..compute_resource.max_cpu_count, { :selected => attribute_map[:cpu_count] }, :class => 'input-mini', :disabled => !fields_enabled, :label => 'vCPUs' %>
-      <%= selectable_f f, :memory_min, memory_options(compute_resource.max_memory), { :selected => attribute_map[:memory_min] }, :class => 'form-control span2', :disabled => !fields_enabled, :label => 'Memory Min' %>
-      <%= selectable_f f, :memory_max, memory_options(compute_resource.max_memory), { :selected => attribute_map[:memory_max] }, :class => 'form-control span2', :disabled => !fields_enabled, :label => 'Memory Max' %>
+      <%= counter_f f,   :vcpus_max,  :disabled => !fields_enabled, :label => _('vCPUs'),      :label_size => 'col-md-2', :'data-soft-max' => compute_resource.max_cpu_count %>
+      <%= byte_size_f f, :memory_min, :disabled => !fields_enabled, :label => _('Memory Min'), :label_size => "col-md-2", :'data-soft-max' => compute_resource.max_memory %>
+      <%= byte_size_f f, :memory_max, :disabled => !fields_enabled, :label => _('Memory Max'), :label_size => "col-md-2", :'data-soft-max' => compute_resource.max_memory %>
     </div>
   </fieldset>
 </div>
@@ -190,8 +190,3 @@
         }
     })
 </script>
-
-<!--
-<%= debug params -%>
-<%= debug compute_attributes -%>
--->
