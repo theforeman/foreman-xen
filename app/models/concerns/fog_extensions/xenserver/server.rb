@@ -12,11 +12,9 @@ module FogExtensions
         name
       end
 
-      def nics_attributes=(attrs)
-      end
+      def nics_attributes=(attrs); end
 
-      def volumes_attributes=(attrs)
-      end
+      def volumes_attributes=(attrs); end
 
       def memory
         memory_static_max.to_i
