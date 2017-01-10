@@ -9,11 +9,6 @@ Lint/RescueException:
     - 'lib/foreman_xen/vnc_tunnel.rb'
 
 # Offense count: 2
-Lint/ShadowingOuterLocalVariable:
-  Exclude:
-    - 'app/models/foreman_xen/xenserver.rb'
-
-# Offense count: 2
 # Cop supports --auto-correct.
 # Configuration parameters: IgnoreEmptyBlocks, AllowUnusedKeywordArguments.
 Lint/UnusedBlockArgument:
@@ -36,7 +31,7 @@ Lint/UselessAssignment:
 
 # Offense count: 15
 Metrics/AbcSize:
-  Max: 66
+  Max: 56
 
 # Offense count: 2
 Metrics/BlockNesting:
@@ -45,17 +40,17 @@ Metrics/BlockNesting:
 # Offense count: 2
 # Configuration parameters: CountComments.
 Metrics/ClassLength:
-  Max: 339
+  Max: 333
 
 # Offense count: 3
 Metrics/CyclomaticComplexity:
-  Max: 14
+  Max: 12
 
 # Offense count: 19
 # Configuration parameters: CountComments.
 Metrics/MethodLength:
-  Max: 42
+  Max: 38
 
 # Offense count: 4
 Metrics/PerceivedComplexity:
-  Max: 15
+  Max: 13
