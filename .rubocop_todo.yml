@@ -31,7 +31,7 @@ Lint/UselessAssignment:
 
 # Offense count: 15
 Metrics/AbcSize:
-  Max: 56
+  Max: 60
 
 # Offense count: 2
 Metrics/BlockNesting:
