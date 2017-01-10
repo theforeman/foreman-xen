@@ -230,11 +230,10 @@ module ForemanXen
       logger.info "create_vm_from_builtin: host : #{host.name}"
 
       raise 'Memory max cannot be lower than Memory min' if mem_min.to_i > mem_max.to_i
-      vm = client.servers.new :name          => args[:name],
-                              :affinity      => host,
-                              :template_name => args[:custom_template_name]
 
-      vm.save :auto_start => false
+      template    = client.custom_templates.select { |t| t.name == args[:custom_template_name] }.first
+      vm          = template.clone args[:name]
+      vm.affinity = host
 
       vm.provision
 
