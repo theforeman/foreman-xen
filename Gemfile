@@ -2,4 +2,5 @@ source 'https://rubygems.org'
 
 gemspec
 
-gem 'rubocop', '~> 0.42.0', require: false
+gem 'nokogiri', '< 1.7', require: false if RUBY_VERSION.start_with? '2.0.'
+gem 'rubocop', '~> 0.46.0', require: false

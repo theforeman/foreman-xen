@@ -65,7 +65,7 @@ module ForemanXen
       rescue
         []
       end
-      tmps.sort { |a, b| a.name <=> b.name }
+      tmps.sort_by(&:name)
     end
 
     def new_nic(attr = {})
@@ -123,7 +123,7 @@ module ForemanXen
       rescue
         []
       end
-      networks.sort { |a, b| a.name <=> b.name }
+      networks.sort_by(&:name)
     end
 
     def templates
@@ -133,25 +133,15 @@ module ForemanXen
     end
 
     def custom_templates
-      tmps = begin
-        client.servers.custom_templates.select { |t| !t.is_a_snapshot }
-      rescue
-        []
-      end
-      tmps.sort { |a, b| a.name <=> b.name }
+      get_templates(client.servers.custom_templates)
     end
 
     def builtin_templates
-      tmps = begin
-        client.servers.builtin_templates.select { |t| !t.is_a_snapshot }
-      rescue
-        []
-      end
-      tmps.sort { |a, b| a.name <=> b.name }
+      get_templates(client.servers.builtin_templates)
     end
 
     def associated_host(vm)
-      associate_by('mac', vm.interfaces.map(&:mac))
+      associate_by('mac', vm.interfaces.map(&:mac).map { |mac| Net::Validations.normalize_mac(mac) })
     end
 
     def find_snapshots_for_vm(vm)
@@ -174,7 +164,7 @@ module ForemanXen
       rescue
         []
       end
-      tmps.sort { |a, b| a.name <=> b.name }
+      tmps.sort_by(&:name)
     end
 
     def new_vm(attr = {})
@@ -204,8 +194,8 @@ module ForemanXen
         logger.info "create_vm(): builtin_template_name: #{builtin_template_name}"
         vm = custom_template_name != '' ? create_vm_from_custom(args) : create_vm_from_builtin(args)
         vm.set_attribute('name_description', 'Provisioned by Foreman')
-        vm.set_attribute('VCPUs_at_startup', args[:vcpus_max])
         vm.set_attribute('VCPUs_max', args[:vcpus_max])
+        vm.set_attribute('VCPUs_at_startup', args[:vcpus_max])
         vm.reload
         return vm
       rescue => e
@@ -219,20 +209,15 @@ module ForemanXen
       mem_max = args[:memory_max]
       mem_min = args[:memory_min]
 
-      host = if args[:hypervisor_host] != ''
-               client.hosts.find { |host| host.name == args[:hypervisor_host] }
-             else
-               client.hosts.first
-             end
+      host = get_hypervisor_host(args)
 
       logger.info "create_vm_from_builtin: host : #{host.name}"
 
       raise 'Memory max cannot be lower than Memory min' if mem_min.to_i > mem_max.to_i
-      vm = client.servers.new :name          => args[:name],
-                              :affinity      => host,
-                              :template_name => args[:custom_template_name]
 
-      vm.save :auto_start => false
+      template    = client.custom_templates.select { |t| t.name == args[:custom_template_name] }.first
+      vm          = template.clone args[:name]
+      vm.affinity = host
 
       vm.provision
 
@@ -274,11 +259,7 @@ module ForemanXen
       mem_max = args[:memory_max]
       mem_min = args[:memory_min]
 
-      host = if args[:hypervisor_host] != ''
-               client.hosts.find { |host| host.name == args[:hypervisor_host] }
-             else
-               client.hosts.first
-             end
+      host = get_hypervisor_host(args)
 
       logger.info "create_vm_from_builtin: host : #{host.name}"
 
@@ -402,6 +383,20 @@ module ForemanXen
         end
       end
       out_hash
+    end
+
+    def get_templates(templates)
+      tmps = begin
+        templates.select { |t| !t.is_a_snapshot }
+      rescue
+        []
+      end
+      tmps.sort_by(&:name)
+    end
+
+    def get_hypervisor_host(args)
+      return client.hosts.first unless args[:hypervisor_host] != ''
+      client.hosts.find { |host| host.name == args[:hypervisor_host] }
     end
   end
 end

@@ -29,19 +29,7 @@ module XenComputeHelper
     attribute_map = empty_attribute_map
     if new_host?(new)
       compute_attributes = compute_resource.compute_profile_attributes_for(params['host']['compute_profile_id'])
-      if compute_attributes['VBDs']
-        attribute_map[:volume_size]     = compute_attributes['VBDs']['physical_size']
-        attribute_map[:volume_selected] = compute_attributes['VBDs']['sr_uuid']
-      end
-      if compute_attributes['VIFs']
-        attribute_map[:network_selected] = compute_attributes['VIFs']['print']
-      end
-      attribute_map[:template_selected_custom]  = compute_attributes['custom_template_name']
-      attribute_map[:template_selected_builtin] = compute_attributes['builtin_template_name']
-      attribute_map[:cpu_count]                 = compute_attributes['vcpus_max']
-      attribute_map[:memory_min]                = compute_attributes['memory_min']
-      attribute_map[:memory_max]                = compute_attributes['memory_max']
-      attribute_map[:power_on]                  = compute_attributes['start']
+      attribute_map = filter_compute_attributes(attribute_map, compute_attributes)
     elsif new
       attribute_map[:cpu_count]  = new.vcpus_max ? new.vcpus_max : nil
       attribute_map[:memory_min] = new.memory_static_min ? new.memory_static_min : nil
@@ -68,19 +56,7 @@ module XenComputeHelper
       compute_attributes = compute_resource.compute_profile_attributes_for(params['host']['compute_profile_id'])
     end
     if compute_attributes
-      if compute_attributes['VBDs']
-        attribute_map[:volume_size]     = compute_attributes['VBDs']['physical_size']
-        attribute_map[:volume_selected] = compute_attributes['VBDs']['sr_uuid']
-      end
-      if compute_attributes['VIFs']
-        attribute_map[:network_selected] = compute_attributes['VIFs']['print']
-      end
-      attribute_map[:template_selected_custom]  = compute_attributes['custom_template_name']
-      attribute_map[:template_selected_builtin] = compute_attributes['builtin_template_name']
-      attribute_map[:cpu_count]                 = compute_attributes['vcpus_max']
-      attribute_map[:memory_min]                = compute_attributes['memory_min']
-      attribute_map[:memory_max]                = compute_attributes['memory_max']
-      attribute_map[:power_on]                  = compute_attributes['start']
+      attribute_map = filter_compute_attributes(attribute_map, compute_attributes)
     end
     attribute_map
   end
@@ -95,5 +71,22 @@ module XenComputeHelper
       :memory_min                => nil,
       :memory_max                => nil,
       :power_on                  => nil }
+  end
+
+  def filter_compute_attributes(attribute_map, compute_attributes)
+    if compute_attributes['VBDs']
+      attribute_map[:volume_size]     = compute_attributes['VBDs']['physical_size']
+      attribute_map[:volume_selected] = compute_attributes['VBDs']['sr_uuid']
+    end
+    if compute_attributes['VIFs']
+      attribute_map[:network_selected] = compute_attributes['VIFs']['print']
+    end
+    attribute_map[:template_selected_custom]  = compute_attributes['custom_template_name']
+    attribute_map[:template_selected_builtin] = compute_attributes['builtin_template_name']
+    attribute_map[:cpu_count]                 = compute_attributes['vcpus_max']
+    attribute_map[:memory_min]                = compute_attributes['memory_min']
+    attribute_map[:memory_max]                = compute_attributes['memory_max']
+    attribute_map[:power_on]                  = compute_attributes['start']
+    attribute_map
   end
 end
