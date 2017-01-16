@@ -53,6 +53,7 @@
           <%= render 'compute_resources_vms/form/volume', :f => i, :compute_resource => compute_resource, :new => new, :attribute_map => attribute_map %>
       <% end -%>
   <% end -%>
+  <%= checkbox_f f, :xstools, :checked => true, :label => _("Insert XS Tools ISO Drive") %>  
 </div>
 
 <!-- Network -->
