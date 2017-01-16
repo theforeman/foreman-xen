@@ -298,6 +298,23 @@ module ForemanXen
 
       create_network(vm, args)
 
+      if args[:xstools] == "1"
+        # Add xs-tools ISO to newly created VMs
+        dvd_vdi = client.vdis.find { |vdi| vdi.name == "xs-tools.iso" }
+        vbdconnectcd = {
+          'vdi'=>dvd_vdi,
+           'vm'=> vm.reference,
+           'userdevice'=>"1",
+           'mode'=>"RO",
+           'type'=>"cd",
+           'other_config'=>{},
+           'qos_algorithm_type'=>'',
+           'qos_algorithm_params'=>{}
+        }
+        vm.vbds = client.vbds.create vbdconnectcd
+        vm.reload
+      end
+
       vm.provision
       vm.set_attribute('HVM_boot_policy', 'BIOS order')
       vm.reload
