@@ -29,7 +29,7 @@ Lint/UselessAssignment:
     - 'app/helpers/xen_compute_helper.rb'
     - 'lib/foreman_xen/vnc_tunnel.rb'
 
-# Offense count: 15
+# Offense count: 16
 Metrics/AbcSize:
   Max: 65
 
@@ -40,16 +40,26 @@ Metrics/BlockNesting:
 # Offense count: 2
 # Configuration parameters: CountComments.
 Metrics/ClassLength:
-  Max: 347
+  Max: 368
 
 # Offense count: 3
 Metrics/CyclomaticComplexity:
   Max: 12
 
-# Offense count: 19
+# Offense count: 21
 # Configuration parameters: CountComments.
 Metrics/MethodLength:
   Max: 52
+
+# Offense count: 1
+# Configuration parameters: CountComments.
+Metrics/ModuleLength:
+  Max: 117
+
+# Offense count: 1
+# Configuration parameters: CountKeywordArgs.
+Metrics/ParameterLists:
+  Max: 6
 
 # Offense count: 4
 Metrics/PerceivedComplexity:

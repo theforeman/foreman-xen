@@ -6,5 +6,7 @@ Rails.application.routes.draw do
     match 'snapshots/:id/delete/:ref', :to => 'snapshots#destroy', :via => 'get'
 
     match 'snapshots/:id/create', :to => 'snapshots#create', :via => 'post'
+
+    match 'cache/refresh', :to => 'cache#refresh', :via => 'post'
   end
 end

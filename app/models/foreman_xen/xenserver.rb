@@ -60,12 +60,14 @@ module ForemanXen
     end
 
     def available_hypervisors
-      tmps = begin
-        client.hosts
-      rescue
-        []
+      read_from_cache('available_hypervisors', 'available_hypervisors!')
+    end
+
+    def available_hypervisors!
+      store_in_cache('available_hypervisors') do
+        hosts = client.hosts
+        hosts.sort_by(&:name)
       end
-      tmps.sort_by(&:name)
     end
 
     def new_nic(attr = {})
@@ -77,38 +79,34 @@ module ForemanXen
     end
 
     def storage_pools
-      results = []
+      read_from_cache('storage_pools', 'storage_pools!')
+    end
 
-      storages = begin
-        client.storage_repositories.select { |sr| sr.type != 'udev' && sr.type != 'iso' }
-      rescue
-        []
-      end
-      hosts = client.hosts
+    def storage_pools!
+      store_in_cache('storage_pools') do
+        results = []
+        storages = client.storage_repositories.select { |sr| sr.type != 'udev' && sr.type != 'iso' }
+        storages.each do |sr|
+          subresults = {}
+          found      = false
 
-      storages.each do |sr|
-        subresults = {}
-        found      = 0
-
-        hosts.each do |host|
-          next unless sr.reference == host.suspend_image_sr
-          found                     = 1
-          subresults[:name]         = sr.name
-          subresults[:display_name] = sr.name + '(' + host.hostname + ')'
-          subresults[:uuid]         = sr.uuid
-          break
+          available_hypervisors.each do |host|
+            next unless sr.reference == host.suspend_image_sr
+            found                     = true
+            subresults[:name]         = sr.name
+            subresults[:display_name] = sr.name + '(' + host.hostname + ')'
+            subresults[:uuid]         = sr.uuid
+            break
+          end
+          unless found
+            subresults[:name]         = sr.name
+            subresults[:display_name] = sr.name
+            subresults[:uuid]         = sr.uuid
+          end
+          results.push(subresults)
         end
-
-        if found.zero?
-          subresults[:name]         = sr.name
-          subresults[:display_name] = sr.name
-          subresults[:uuid]         = sr.uuid
-        end
-        results.push(subresults)
+        results.sort_by! { |item| item[:display_name] }
       end
-
-      results.sort_by! { |item| item[:display_name] }
-      results
     end
 
     def interfaces
@@ -118,26 +116,43 @@ module ForemanXen
     end
 
     def networks
-      networks = begin
-        client.networks
-      rescue
-        []
+      read_from_cache('networks', 'networks!')
+    end
+
+    def networks!
+      store_in_cache('networks') do
+        client.networks.sort_by(&:name)
       end
-      networks.sort_by(&:name)
     end
 
     def templates
-      client.servers.templates
-    rescue
-      []
+      read_from_cache('templates', 'templates!')
+    end
+
+    def templates!
+      store_in_cache('templates') do
+        client.servers.templates.sort_by(&:name)
+      end
     end
 
     def custom_templates
-      get_templates(client.servers.custom_templates)
+      read_from_cache('custom_templates', 'custom_templates!')
+    end
+
+    def custom_templates!
+      store_in_cache('custom_templates') do
+        get_templates(client.servers.custom_templates)
+      end
     end
 
     def builtin_templates
-      get_templates(client.servers.builtin_templates)
+      read_from_cache('builtin_templates', 'builtin_templates!')
+    end
+
+    def builtin_templates!
+      store_in_cache('builtin_templates') do
+        get_templates(client.servers.builtin_templates)
+      end
     end
 
     def associated_host(vm)
@@ -403,17 +418,28 @@ module ForemanXen
     end
 
     def get_templates(templates)
-      tmps = begin
-        templates.select { |t| !t.is_a_snapshot }
-      rescue
-        []
-      end
+      tmps = templates.select { |t| !t.is_a_snapshot }
       tmps.sort_by(&:name)
     end
 
     def get_hypervisor_host(args)
       return client.hosts.first unless args[:hypervisor_host] != ''
       client.hosts.find { |host| host.name == args[:hypervisor_host] }
+    end
+
+    def read_from_cache(key, fallback)
+      value = Rails.cache.fetch(cache_key + key) { public_send(fallback) }
+      value
+    end
+
+    def store_in_cache(key)
+      value = yield
+      Rails.cache.write(cache_key + key, value)
+      value
+    end
+
+    def cache_key
+      "computeresource_#{id}/"
     end
   end
 end
