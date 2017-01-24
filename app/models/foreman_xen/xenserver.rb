@@ -2,6 +2,8 @@ module ForemanXen
   class Xenserver < ComputeResource
     validates :url, :user, :password, :presence => true
 
+    CACHE_PATH = "/tmp"
+
     def provided_attributes
       super.merge(
         :uuid => :reference,
@@ -60,12 +62,18 @@ module ForemanXen
     end
 
     def available_hypervisors
+      Rails.cache.fetch(:available_hypervisors) { available_hypervisors! }
+    end
+
+    def available_hypervisors!
       tmps = begin
         client.hosts
       rescue
         []
       end
-      tmps.sort_by(&:name)
+      retval = tmps.sort_by(&:name)
+      Rails.cache.write(:available_hypervisors, retval)
+      retval
     end
 
     def new_nic(attr = {})
@@ -77,6 +85,10 @@ module ForemanXen
     end
 
     def storage_pools
+      Rails.cache.fetch(:storage_pools) { storage_pools! }
+    end
+
+    def storage_pools!
       results = []
 
       storages = begin
@@ -108,6 +120,7 @@ module ForemanXen
       end
 
       results.sort_by! { |item| item[:display_name] }
+      Rails.cache.write(:storage_pools, results)
       results
     end
 
@@ -118,26 +131,50 @@ module ForemanXen
     end
 
     def networks
+      Rails.cache.fetch(:networks) { networks! }
+    end
+
+    def networks!
       networks = begin
         client.networks
       rescue
         []
       end
-      networks.sort_by(&:name)
+      retval = networks.sort_by(&:name)
+      Rails.cache.write(:networks, retval)
+      retval
     end
 
     def templates
-      client.servers.templates
+      Rails.cache.fetch(:templates) { templates! }
+    end
+
+    def templates!
+      retval = client.servers.templates
+      Rails.cache.write(:templates, retval)
+      retval
     rescue
       []
     end
 
     def custom_templates
-      get_templates(client.servers.custom_templates)
+      Rails.cache.fetch(:custom_templates) { custom_templates! }
+    end
+
+    def custom_templates!
+      retval = get_templates(client.servers.custom_templates)
+      Rails.cache.write(:custom_templates, retval)
+      retval
     end
 
     def builtin_templates
-      get_templates(client.servers.builtin_templates)
+      Rails.cache.fetch(:builtin_templates) { builtin_templates! }
+    end
+
+    def builtin_templates!
+      retval = get_templates(client.servers.builtin_templates)
+      Rails.cache.write(:builtin_templates, retval)
+      retval
     end
 
     def associated_host(vm)
@@ -415,5 +452,6 @@ module ForemanXen
       return client.hosts.first unless args[:hypervisor_host] != ''
       client.hosts.find { |host| host.name == args[:hypervisor_host] }
     end
+
   end
 end

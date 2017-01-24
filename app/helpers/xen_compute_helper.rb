@@ -1,7 +1,5 @@
 module XenComputeHelper
 
-  CACHE_PATH = File.exists?(SETTINGS[:puppetvardir]) ? Settings[:puppetvardir] : "/tmp"
-
   def compute_attribute_map(params, compute_resource, new)
     if controller_name == 'hosts'
       attribute_map = hosts_controller_compute_attribute_map(params, compute_resource, new)
@@ -94,47 +92,19 @@ module XenComputeHelper
   end
 
   def builtin_template_map(compute_resource)
-    if(not persisted_map_exists?('builtin_templates'))
-      persist_map('builtin_templates', compute_resource.builtin_templates.map { |t| [t.name, t.name] })
-    end
-    load_map('builtin_templates')
+    compute_resource.builtin_templates.map { |t| [t.name, t.name] }
   end
 
   def custom_template_map(compute_resource)
-    if(not persisted_map_exists?('custom_templates'))
-      persist_map('custom_templates', compute_resource.custom_templates.map { |t| [t.name, t.name] })
-    end
-    load_map('custom_templates')
+    compute_resource.custom_templates.map { |t| [t.name, t.name] }
   end
 
   def storage_pool_map(compute_resource)
-    if(not persisted_map_exists?('storage_pools'))
-      persist_map('storage_pools', compute_resource.storage_pools.map { |item| [item[:display_name], item[:uuid]] })
-    end
-    load_map('storage_pools')
+    compute_resource.storage_pools.map { |item| [item[:display_name], item[:uuid]] }
   end
 
   def hypervisor_map(compute_resource)
-    if(not persisted_map_exists?('hypervisor'))
-      persist_map('hypervisor', compute_resource.available_hypervisors.map { |t| [t.name + " - " + (t.metrics.memory_free.to_f / t.metrics.memory_total.to_f * 100).round(2).to_s + "% free mem", t.name] })
-    end
-    load_map('hypervisor')
-  end
-
-  private
-
-  def persist_map(name, map, file="xen_#{name}_map.cache")
-    File.open(File.join(CACHE_PATH, file),'w') do |m|
-      m.write map.to_yaml
-    end
-  end
-
-  def load_map(name, file="xen_#{name}_map.cache")
-    YAML.load_file(File.join(CACHE_PATH, file))
-  end
-
-  def persisted_map_exists?(name, file="xen_#{name}_map.cache")
-    File.exists?(File.join(CACHE_PATH, file))
+      compute_resource.available_hypervisors.map { |t| [t.name + " - " + (t.metrics.memory_free.to_f / t.metrics.memory_total.to_f * 100).round(2).to_s + "% free mem", t.name] }
   end
 
 end
