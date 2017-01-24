@@ -2,8 +2,6 @@ module ForemanXen
   class Xenserver < ComputeResource
     validates :url, :user, :password, :presence => true
 
-    CACHE_PATH = "/tmp"
-
     def provided_attributes
       super.merge(
         :uuid => :reference,

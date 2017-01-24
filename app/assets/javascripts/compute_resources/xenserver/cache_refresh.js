@@ -12,9 +12,8 @@ function refreshCache(attribute_name, compute_resource_id, on_success) {
             complete: function(){
                 tfm.tools.hideSpinner();
             },
-            error: function(jqXHR, status, error){
-                $('#scheduler_hint_wrapper').html(Jed.sprintf(__("Error loading scheduler hint filters information: %s"), error));
-                $('#compute_resource_tab a').addClass('tab-error');
+            error: function(){
+                $.jnotify(__("Error refreshing cache for " + attribute_name), 'error', true);
             },
             success: on_success
         })
