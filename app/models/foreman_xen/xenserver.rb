@@ -450,6 +450,5 @@ module ForemanXen
       return client.hosts.first unless args[:hypervisor_host] != ''
       client.hosts.find { |host| host.name == args[:hypervisor_host] }
     end
-
   end
 end

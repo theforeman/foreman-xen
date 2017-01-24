@@ -1,5 +1,4 @@
 module XenComputeHelper
-
   def compute_attribute_map(params, compute_resource, new)
     if controller_name == 'hosts'
       attribute_map = hosts_controller_compute_attribute_map(params, compute_resource, new)
@@ -104,7 +103,9 @@ module XenComputeHelper
   end
 
   def hypervisor_map(compute_resource)
-      compute_resource.available_hypervisors.map { |t| [t.name + " - " + (t.metrics.memory_free.to_f / t.metrics.memory_total.to_f * 100).round(2).to_s + "% free mem", t.name] }
+    compute_resource.available_hypervisors.map do |t|
+      [t.name + ' - ' + (t.metrics.memory_free.to_f / t.metrics.memory_total.to_f * 100).round(2).to_s + '% free mem',
+       t.name]
+    end
   end
-
 end

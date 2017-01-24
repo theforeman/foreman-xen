@@ -13,16 +13,16 @@ module ForemanXen
         if @compute_resource.respond_to?("#{type}!")
           retval = @compute_resource.public_send("#{type}!")
         else
-          process_error(:error_msg => "Error refreshing cache. Method '#{type}!' not found for compute resource #{@compute_resource.name}")
+          process_error(:error_msg => "Error refreshing cache. Method '#{type}!' not found for compute resource" +
+              @compute_resource.name)
         end
       else
-        process_error(:error_msg => "Error retrieving compute resource information")
+        process_error(:error_msg => 'Error retrieving compute resource information')
       end
 
       respond_to do |format|
-        format.json  { render :json => retval }
+        format.json { render :json => retval }
       end
-
     end
 
     private
