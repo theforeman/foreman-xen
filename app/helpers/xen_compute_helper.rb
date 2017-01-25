@@ -103,6 +103,6 @@ module XenComputeHelper
   end
 
   def hypervisor_map(compute_resource)
-    compute_resource.available_hypervisors.map { |t| [t.name + ' - ' + (t.metrics.memory_free.to_f / t.metrics.memory_total.to_f * 100).round(2).to_s + '% free mem', t.name] }
+    compute_resource.available_hypervisors!.map { |t| [t.name + ' - ' + (t.metrics.memory_free.to_f / t.metrics.memory_total.to_f * 100).round(2).to_s + '% free mem', t.name] }
   end
 end
