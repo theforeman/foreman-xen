@@ -60,18 +60,14 @@ module ForemanXen
     end
 
     def available_hypervisors
-      Rails.cache.fetch(:available_hypervisors) { available_hypervisors! }
+      self.read_from_cache('available_hypervisors', 'available_hypervisors!')
     end
 
     def available_hypervisors!
-      tmps = begin
-        client.hosts
-      rescue
-        []
+      self.store_in_cache('available_hypervisors') do
+        hosts = client.hosts rescue []
+        hosts.sort_by(&:name)
       end
-      retval = tmps.sort_by(&:name)
-      Rails.cache.write(:available_hypervisors, retval)
-      retval
     end
 
     def new_nic(attr = {})
@@ -83,43 +79,34 @@ module ForemanXen
     end
 
     def storage_pools
-      Rails.cache.fetch(:storage_pools) { storage_pools! }
+      self.read_from_cache('storage_pools', 'storage_pools!')
     end
 
     def storage_pools!
-      results = []
+      self.store_in_cache('storage_pools') do
+        results = []
+        storages = client.storage_repositories.select { |sr| sr.type != 'udev' && sr.type != 'iso' } rescue []
+        storages.each do |sr|
+          subresults = {}
+          found      = false
 
-      storages = begin
-        client.storage_repositories.select { |sr| sr.type != 'udev' && sr.type != 'iso' }
-      rescue
-        []
-      end
-      hosts = client.hosts
-
-      storages.each do |sr|
-        subresults = {}
-        found      = 0
-
-        hosts.each do |host|
-          next unless sr.reference == host.suspend_image_sr
-          found                     = 1
-          subresults[:name]         = sr.name
-          subresults[:display_name] = sr.name + '(' + host.hostname + ')'
-          subresults[:uuid]         = sr.uuid
-          break
+          available_hypervisors.each do |host|
+            next unless sr.reference == host.suspend_image_sr
+            found                     = true
+            subresults[:name]         = sr.name
+            subresults[:display_name] = sr.name + '(' + host.hostname + ')'
+            subresults[:uuid]         = sr.uuid
+            break
+          end
+          if not found
+            subresults[:name]         = sr.name
+            subresults[:display_name] = sr.name
+            subresults[:uuid]         = sr.uuid
+          end
+          results.push(subresults)
         end
-
-        if found.zero?
-          subresults[:name]         = sr.name
-          subresults[:display_name] = sr.name
-          subresults[:uuid]         = sr.uuid
-        end
-        results.push(subresults)
+        results.sort_by! { |item| item[:display_name] }
       end
-
-      results.sort_by! { |item| item[:display_name] }
-      Rails.cache.write(:storage_pools, results)
-      results
     end
 
     def interfaces
@@ -129,50 +116,43 @@ module ForemanXen
     end
 
     def networks
-      Rails.cache.fetch(:networks) { networks! }
+      self.read_from_cache('networks', 'networks!')
     end
 
     def networks!
-      networks = begin
-        client.networks
-      rescue
-        []
+      self.store_in_cache('networks') do
+        client.networks.sort_by(&:name) rescue []
       end
-      retval = networks.sort_by(&:name)
-      Rails.cache.write(:networks, retval)
-      retval
     end
 
     def templates
-      Rails.cache.fetch(:templates) { templates! }
+      self.read_from_cache('templates', 'templates!')
     end
 
     def templates!
-      retval = client.servers.templates
-      Rails.cache.write(:templates, retval)
-      retval
-    rescue
-      []
+      self.store_in_cache('templates') do
+        client.servers.templates.sort_by(&:name)
+      end
     end
 
     def custom_templates
-      Rails.cache.fetch(:custom_templates) { custom_templates! }
+      self.read_from_cache('custom_templates', 'custom_templates!')
     end
 
     def custom_templates!
-      retval = get_templates(client.servers.custom_templates)
-      Rails.cache.write(:custom_templates, retval)
-      retval
+      self.store_in_cache('custom_templates') do
+        get_templates(client.servers.custom_templates)
+      end
     end
 
     def builtin_templates
-      Rails.cache.fetch(:builtin_templates) { builtin_templates! }
+      self.read_from_cache('builtin_templates', 'builtin_templates!')
     end
 
     def builtin_templates!
-      retval = get_templates(client.servers.builtin_templates)
-      Rails.cache.write(:builtin_templates, retval)
-      retval
+      self.store_in_cache('builtin_templates') do
+        get_templates(client.servers.builtin_templates)
+      end
     end
 
     def associated_host(vm)
@@ -407,6 +387,21 @@ module ForemanXen
       super.merge({})
     end
 
+    def read_from_cache(key, fallback)
+      value = Rails.cache.fetch(cache_key + key) { public_send(fallback) }
+      value
+    end
+
+    def store_in_cache(key)
+      value = yield
+      Rails.cache.write(cache_key + key, value)
+      value
+    end
+
+    def cache_key
+      "computeresource_#{id}/"
+    end
+
     private
 
     def create_network(vm, args)
@@ -438,11 +433,7 @@ module ForemanXen
     end
 
     def get_templates(templates)
-      tmps = begin
-        templates.select { |t| !t.is_a_snapshot }
-      rescue
-        []
-      end
+      tmps = templates.select { |t| !t.is_a_snapshot } rescue []
       tmps.sort_by(&:name)
     end
 
