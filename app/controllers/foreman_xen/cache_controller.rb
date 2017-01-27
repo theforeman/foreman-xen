@@ -19,7 +19,7 @@ module ForemanXen
     private
 
     def get_compute_resource
-      @compute_resource = ComputeResource.find_by_id(:params[:compute_resource_id]).first
+      @compute_resource = ComputeResource.find_by_id(params['compute_resource_id'])
     end
   end
 end
