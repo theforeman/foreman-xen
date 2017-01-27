@@ -90,19 +90,19 @@ module XenComputeHelper
     attribute_map
   end
 
-  def builtin_template_map(compute_resource)
+  def xen_builtin_template_map(compute_resource)
     compute_resource.builtin_templates.map { |t| [t.name, t.name] }
   end
 
-  def custom_template_map(compute_resource)
+  def xen_custom_template_map(compute_resource)
     compute_resource.custom_templates.map { |t| [t.name, t.name] }
   end
 
-  def storage_pool_map(compute_resource)
+  def xen_storage_pool_map(compute_resource)
     compute_resource.storage_pools.map { |item| [item[:display_name], item[:uuid]] }
   end
 
-  def hypervisor_map(compute_resource)
+  def xen_hypervisor_map(compute_resource)
     compute_resource.available_hypervisors!.map { |t| [t.name + ' - ' + (t.metrics.memory_free.to_f / t.metrics.memory_total.to_f * 100).round(2).to_s + '% free mem', t.name] }
   end
 end

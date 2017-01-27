@@ -13,7 +13,7 @@
   <%= selectable_f(
           f,
           :sr_uuid,
-          storage_pool_map(compute_resource),
+          xen_storage_pool_map(compute_resource),
           { :selected => attribute_map[:volume_selected] },
           {
               :class => "span2",

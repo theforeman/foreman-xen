@@ -23,7 +23,7 @@
     <div class="form-group">
       <%= selectable_f(f,
                        :custom_template_name,
-                       [[_("No template"), ""]] + custom_template_map(compute_resource),
+                       [[_("No template"), ""]] + xen_custom_template_map(compute_resource),
                        { :selected => attribute_map[:template_selected_custom] },
                        {:class => 'form-control span2',
                         :input_group_btn => link_to_function(icon_text('refresh'), "refreshCache('custom_templates', #{compute_resource.id})", :class => 'btn btn-primary',
@@ -37,7 +37,7 @@
     <div class="form-group ">
       <%= selectable_f(f,
                        :builtin_template_name,
-                       [[_("No template"), ""]] + builtin_template_map(compute_resource),
+                       [[_("No template"), ""]] + xen_builtin_template_map(compute_resource),
                        { :selected => attribute_map[:template_selected_builtin] },
                        { :class => 'form-control span2',
                          :input_group_btn => link_to_function(icon_text('refresh'), "refreshCache('builtin_templates', #{compute_resource.id})", :class => 'btn btn-primary',
