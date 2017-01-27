@@ -1,7 +1,5 @@
 module ForemanXen
   class CacheController < ::ApplicationController
-    helper :all
-    skip_before_action :verify_authenticity_token
 
     # POST = foreman_xen/cache/refresh
     def refresh
