@@ -1,50 +1,41 @@
-<script>
-
-
-  populateCustomTemplates = function(results){
-      populateTemplates(results, '#host_compute_attributes_custom_template_name');
-  }
-
-  populateBuiltinTemplates = function(results){
-      populateTemplates(results, '#host_compute_attributes_builtin_template_name');
-  }
-
-  function populateTemplates(results, selector){
-      $(selector).children().remove();
-      for (var i = 0; i < results.length; i++) {
-          result = results[i];
-          $(selector).append('<option id=' + result['name'] + '>' + result['name'] + '</option>');
-      }
-  }
-</script>
-
 <div class="fields">
   <div id='templates' class=''>
     <div class="form-group">
-      <%= selectable_f(f,
+      <%= selectable_f f,
                        :custom_template_name,
                        [[_("No template"), ""]] + xen_custom_template_map(compute_resource),
                        { :selected => attribute_map[:template_selected_custom] },
-                       {:class => 'form-control span2',
-                        :input_group_btn => link_to_function(icon_text('refresh'), "refreshCache('custom_templates', #{compute_resource.id})", :class => 'btn btn-primary',
-                                                             :title => _('Refresh available custom templates.')),
-                        :label => 'Custom Template'
+                       { :class => 'form-control span2',
+                         :label => 'Custom Template',
+                         :input_group_btn => link_to_function(icon_text('refresh'), "refreshCache(this, xenPopulateCustomTemplates)",
+                           :class => 'btn btn-primary',
+                           :title => _('Refresh available custom templates.'),
+                           :data => {
+                             :url => "/foreman_xen/cache/refresh",
+                             :compute_resource_id => compute_resource.id,
+                             :attribute => 'custom_templates'
+                           }
+                         )
                        }
-          )
       %>
     </div>
 
     <div class="form-group ">
-      <%= selectable_f(f,
-                       :builtin_template_name,
+      <%= selectable_f f, :builtin_template_name,
                        [[_("No template"), ""]] + xen_builtin_template_map(compute_resource),
                        { :selected => attribute_map[:template_selected_builtin] },
                        { :class => 'form-control span2',
-                         :input_group_btn => link_to_function(icon_text('refresh'), "refreshCache('builtin_templates', #{compute_resource.id})", :class => 'btn btn-primary',
-                                                              :title => _('Refresh available builtin templates.')),
-                         :label => 'Builtin Template'
+                         :label => 'Builtin Template',
+                         :input_group_btn => link_to_function(icon_text('refresh'), "refreshCache(this, xenPopulateBuiltinTemplates)",
+                           :class => 'btn btn-primary',
+                           :title => _('Refresh available builtin templates.'),
+                           :data => {
+                             :url => "/foreman_xen/cache/refresh",
+                             :compute_resource_id => compute_resource.id,
+                             :attribute => 'builtin_templates'
+                           }
+                         )
                        }
-          )
       %>
     </div>
   </div>

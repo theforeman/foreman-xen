@@ -1,27 +1,19 @@
-<script>
-    populateStoragePools = function(results){
-        $('#host_compute_attributes_VBDs_sr_uuid').children().remove();
-        for (var i = 0; i < results.length; i++) {
-            result = results[i];
-            $('#host_compute_attributes_VBDs_sr_uuid').append('<option id=' + result['uuid'] + '>' + result['name'] + '</option>');
-        }
-    }
-</script>
-
 <div class="fields">
-
-  <%= selectable_f(
-          f,
-          :sr_uuid,
-          xen_storage_pool_map(compute_resource),
-          { :selected => attribute_map[:volume_selected] },
-          {
-              :class => "span2",
-              :label => _("Storage Repository"),
-              :input_group_btn => link_to_function(icon_text('refresh'), "refreshCache('storage_pools', #{compute_resource.id})", :class => 'btn btn-primary',
-                                                   :title => _('Refresh available storage repositories')),
-          }
-      )
+  <%= selectable_f f, :sr_uuid,
+                   xen_storage_pool_map(compute_resource),
+                   { :selected => attribute_map[:volume_selected] },
+                   { :class => "span2",
+                     :label => _("Storage Repository"),
+                     :input_group_btn => link_to_function(icon_text('refresh'), "refreshCache(this, xenPopulateStoragePools)",
+                       :class => 'btn btn-primary',
+                       :title => _('Refresh available storage repositories'),
+                       :data => {
+                         :url => "/foreman_xen/cache/refresh",
+                         :compute_resource_id => compute_resource.id,
+                         :attribute => 'storage_pools'
+                       }
+                     )
+                   }
   %>
 
   <%= text_f f, :physical_size, :class => "input-mini", :label => _("Size (GB)"), :value => attribute_map[:volume_size] %>
