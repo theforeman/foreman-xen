@@ -60,11 +60,11 @@ module ForemanXen
     end
 
     def available_hypervisors
-      self.read_from_cache('available_hypervisors', 'available_hypervisors!')
+      read_from_cache('available_hypervisors', 'available_hypervisors!')
     end
 
     def available_hypervisors!
-      self.store_in_cache('available_hypervisors') do
+      store_in_cache('available_hypervisors') do
         hosts = client.hosts rescue []
         hosts.sort_by(&:name)
       end
@@ -79,11 +79,11 @@ module ForemanXen
     end
 
     def storage_pools
-      self.read_from_cache('storage_pools', 'storage_pools!')
+      read_from_cache('storage_pools', 'storage_pools!')
     end
 
     def storage_pools!
-      self.store_in_cache('storage_pools') do
+      store_in_cache('storage_pools') do
         results = []
         storages = client.storage_repositories.select { |sr| sr.type != 'udev' && sr.type != 'iso' } rescue []
         storages.each do |sr|
@@ -116,41 +116,41 @@ module ForemanXen
     end
 
     def networks
-      self.read_from_cache('networks', 'networks!')
+      read_from_cache('networks', 'networks!')
     end
 
     def networks!
-      self.store_in_cache('networks') do
+      store_in_cache('networks') do
         client.networks.sort_by(&:name) rescue []
       end
     end
 
     def templates
-      self.read_from_cache('templates', 'templates!')
+      read_from_cache('templates', 'templates!')
     end
 
     def templates!
-      self.store_in_cache('templates') do
+      store_in_cache('templates') do
         client.servers.templates.sort_by(&:name)
       end
     end
 
     def custom_templates
-      self.read_from_cache('custom_templates', 'custom_templates!')
+      read_from_cache('custom_templates', 'custom_templates!')
     end
 
     def custom_templates!
-      self.store_in_cache('custom_templates') do
+      store_in_cache('custom_templates') do
         get_templates(client.servers.custom_templates)
       end
     end
 
     def builtin_templates
-      self.read_from_cache('builtin_templates', 'builtin_templates!')
+      read_from_cache('builtin_templates', 'builtin_templates!')
     end
 
     def builtin_templates!
-      self.store_in_cache('builtin_templates') do
+      store_in_cache('builtin_templates') do
         get_templates(client.servers.builtin_templates)
       end
     end
@@ -387,21 +387,6 @@ module ForemanXen
       super.merge({})
     end
 
-    def read_from_cache(key, fallback)
-      value = Rails.cache.fetch(cache_key + key) { public_send(fallback) }
-      value
-    end
-
-    def store_in_cache(key)
-      value = yield
-      Rails.cache.write(cache_key + key, value)
-      value
-    end
-
-    def cache_key
-      "computeresource_#{id}/"
-    end
-
     private
 
     def create_network(vm, args)
@@ -440,6 +425,21 @@ module ForemanXen
     def get_hypervisor_host(args)
       return client.hosts.first unless args[:hypervisor_host] != ''
       client.hosts.find { |host| host.name == args[:hypervisor_host] }
+    end
+
+    def read_from_cache(key, fallback)
+      value = Rails.cache.fetch(cache_key + key) { public_send(fallback) }
+      value
+    end
+
+    def store_in_cache(key)
+      value = yield
+      Rails.cache.write(cache_key + key, value)
+      value
+    end
+
+    def cache_key
+      "computeresource_#{id}/"
     end
   end
 end
