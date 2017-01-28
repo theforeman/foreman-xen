@@ -1,5 +1,4 @@
 function xenPopulateNetworks(network_list){
-    console.log("HAHAHAHAHAHAAH");
     $('#host_compute_attributes_VIFs_print').children().remove();
     for (var i = 0; i < network_list.length; i++) {
         network = network_list[i];
