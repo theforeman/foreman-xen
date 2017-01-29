@@ -1,21 +1,19 @@
 <div class="fields">
   <div id='nat' class=''>
-    <%= selectable_f f, :print,
+    <%= selectable_f_with_cache_invalidation f, :print,
                      compute_resource.networks.map(&:name),
                      {  :include_blank => compute_resource.networks.any? ? false : _('No networks'),
                         :selected      => attribute_map[:network_selected]
                      },
-                     {  :class           => 'span2',
-                        :label           => _('Network'),
-                        :input_group_btn => link_to_function(icon_text('refresh'), 'refreshCache(this, xenPopulateNetworks)', {
-                          :class => 'btn btn-primary',
-                          :title => _('Refresh the available networks.'),
-                          :data => {
-                            :url => '/foreman_xen/cache/refresh',
-                            :compute_resource_id => compute_resource.id,
-                            :attribute => 'networks'
-                          }
-                        })
+                     {  :class         => 'span2',
+                        :label         => _('Network')
+                     },
+                     {
+                         :callback               => 'xenPopulateNetworks',
+                         :title                  => 'Refresh available networks',
+                         :url                    => '/foreman_xen/cache/refresh',
+                         :computer_resource_id   => compute_resource.id,
+                         :attribute              => 'networks'
                      }
     %>
   </div>
