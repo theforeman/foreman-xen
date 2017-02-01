@@ -106,17 +106,19 @@ module XenComputeHelper
     compute_resource.available_hypervisors!.map { |t| [t.name + ' - ' + (t.metrics.memory_free.to_f / t.metrics.memory_total.to_f * 100).round(2).to_s + '% free mem', t.name] }
   end
 
-  def selectable_f_with_cache_invalidation(f, attr, array, select_options = {}, html_options = {},  input_group_options = {})
-    unless html_options.has_key?('input_group_btn')
-      html_options[:input_group_btn] = link_to_function(icon_text('refresh'), "refreshCache(this, #{input_group_options[:callback]})", {
-          :class => 'btn btn-primary',
-          :title => _(input_group_options[:title]),
-          :data => {
-              :url => input_group_options[:url],
-              :compute_resource_id => input_group_options[:computer_resource_id],
-              :attribute => input_group_options[:attribute]
-          }
-      })
+  def selectable_f_with_cache_invalidation(f, attr, array, select_options = {}, html_options = {}, input_group_options = {})
+    unless html_options.key?('input_group_btn')
+      html_options[:input_group_btn] = link_to_function(
+        icon_text('refresh'),
+        "refreshCache(this, #{input_group_options[:callback]})",
+        :class => 'btn btn-primary',
+        :title => _(input_group_options[:title]),
+        :data  => {
+          :url                 => input_group_options[:url],
+          :compute_resource_id => input_group_options[:computer_resource_id],
+          :attribute           => input_group_options[:attribute]
+        }
+      )
     end
     selectable_f(f, attr, array, select_options, html_options)
   end

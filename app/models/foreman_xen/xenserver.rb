@@ -65,7 +65,7 @@ module ForemanXen
 
     def available_hypervisors!
       store_in_cache('available_hypervisors') do
-        hosts = client.hosts rescue []
+        hosts = client.hosts
         hosts.sort_by(&:name)
       end
     end
@@ -85,7 +85,7 @@ module ForemanXen
     def storage_pools!
       store_in_cache('storage_pools') do
         results = []
-        storages = client.storage_repositories.select { |sr| sr.type != 'udev' && sr.type != 'iso' } rescue []
+        storages = client.storage_repositories.select { |sr| sr.type != 'udev' && sr.type != 'iso' }
         storages.each do |sr|
           subresults = {}
           found      = false
@@ -98,7 +98,7 @@ module ForemanXen
             subresults[:uuid]         = sr.uuid
             break
           end
-          if not found
+          unless found
             subresults[:name]         = sr.name
             subresults[:display_name] = sr.name
             subresults[:uuid]         = sr.uuid
@@ -121,7 +121,7 @@ module ForemanXen
 
     def networks!
       store_in_cache('networks') do
-        client.networks.sort_by(&:name) rescue []
+        client.networks.sort_by(&:name)
       end
     end
 
@@ -418,7 +418,7 @@ module ForemanXen
     end
 
     def get_templates(templates)
-      tmps = templates.select { |t| !t.is_a_snapshot } rescue []
+      tmps = templates.select { |t| !t.is_a_snapshot }
       tmps.sort_by(&:name)
     end
 

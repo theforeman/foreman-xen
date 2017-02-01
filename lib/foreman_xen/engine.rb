@@ -23,11 +23,11 @@ module ForemanXen
     end
 
     assets_to_precompile =
-        Dir.chdir(root) do
-          Dir['app/assets/javascripts/**/*', 'app/assets/stylesheets/**/*'].map do |f|
-            f.split(File::SEPARATOR, 4).last
-          end
+      Dir.chdir(root) do
+        Dir['app/assets/javascripts/**/*', 'app/assets/stylesheets/**/*'].map do |f|
+          f.split(File::SEPARATOR, 4).last
         end
+      end
     initializer 'foreman_xen.assets.precompile' do |app|
       app.config.assets.precompile += assets_to_precompile
     end
@@ -35,7 +35,6 @@ module ForemanXen
     initializer 'foreman_xen.configure_assets', group: :assets do
       SETTINGS[:foreman_xen] = { assets: { precompile: assets_to_precompile } }
     end
-
 
     config.to_prepare do
       begin

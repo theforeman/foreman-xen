@@ -1,11 +1,10 @@
 module ForemanXen
   class CacheController < ::ApplicationController
-
-    before_action :get_compute_resource
+    before_action :load_compute_resource
 
     # POST = foreman_xen/cache/refresh
     def refresh
-      type                = params[:type]
+      type = params[:type]
 
       unless cache_attribute_whitelist.include?(type)
         process_error(:error_msg => "Error refreshing cache. #{type} is not a white listed attribute")
@@ -28,8 +27,8 @@ module ForemanXen
       %w(networks hypervisors templates custom_templates builtin_templates storage_pools)
     end
 
-    def get_compute_resource
-      @compute_resource = ComputeResource.find_by_id(params['compute_resource_id'])
+    def load_compute_resource
+      @compute_resource = ComputeResource.find_by(id: params['compute_resource_id'])
     end
   end
 end
