@@ -21,7 +21,7 @@
     <div class="form-group ">
       <%= selectable_f_with_cache_invalidation f,
                                                :builtin_template_name,
-                                               [[_("No template"), ""]] + xen_custom_template_map(compute_resource),
+                                               [[_("No template"), ""]] + xen_builtin_template_map(compute_resource),
                                                { :selected => attribute_map[:template_selected_builtin] },
                                                { :class => 'form-control span2',
                                                  :label => 'Builtin Template'
