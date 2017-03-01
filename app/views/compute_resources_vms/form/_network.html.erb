@@ -1,12 +1,20 @@
 <div class="fields">
-  <%
-     nat = compute_resource.networks
-  -%>
-
   <div id='nat' class=''>
-    <%= selectable_f f, :print, nat.map(&:name),
-                     { :include_blank => nat.any? ? false : _("No networks"),
-                       :selected      => attribute_map[:network_selected] },
-                     { :class => "span2", :label => _("Network") } %>
+    <%= selectable_f_with_cache_invalidation f, :print,
+                     compute_resource.networks.map(&:name),
+                     {  :include_blank => compute_resource.networks.any? ? false : _('No networks'),
+                        :selected      => attribute_map[:network_selected]
+                     },
+                     {  :class         => 'span2',
+                        :label         => _('Network')
+                     },
+                     {
+                         :callback               => 'xenPopulateNetworks',
+                         :title                  => 'Refresh available networks',
+                         :url                    => '/foreman_xen/cache/refresh',
+                         :computer_resource_id   => compute_resource.id,
+                         :attribute              => 'networks'
+                     }
+    %>
   </div>
 </div>

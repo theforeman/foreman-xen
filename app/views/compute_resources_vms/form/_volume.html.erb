@@ -1,6 +1,18 @@
 <div class="fields">
-
-  <%= selectable_f f, :sr_uuid, compute_resource.storage_pools.map { |item| [item[:display_name], item[:uuid]] }, { :selected => attribute_map[:volume_selected] }, :class => "span2", :label => _("Storage Repository") %>
+  <%= selectable_f_with_cache_invalidation f, :sr_uuid,
+        xen_storage_pool_map(compute_resource),
+        { :selected => attribute_map[:volume_selected] },
+        { :class => "span2",
+         :label => _("Storage Repository"),
+        },
+        {
+           :callback               => 'xenPopulateStoragePools',
+           :title                  => 'Refresh available storage repositories',
+           :url                    => '/foreman_xen/cache/refresh',
+           :computer_resource_id   => compute_resource.id,
+           :attribute              => 'storage_pools'
+        }
+  %>
 
   <%= text_f f, :physical_size, :class => "input-mini", :label => _("Size (GB)"), :value => attribute_map[:volume_size] %>
 </div>
