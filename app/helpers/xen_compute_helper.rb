@@ -103,10 +103,15 @@ module XenComputeHelper
   end
 
   def xen_hypervisor_map(compute_resource)
-    compute_resource.available_hypervisors!.map { |t| [t.name + ' - ' + (t.metrics.memory_free.to_f / t.metrics.memory_total.to_f * 100).round(2).to_s + '% free mem', t.name] }
+    compute_resource.available_hypervisors!.map do |t|
+      [t.name + ' - ' + (
+        t.metrics.memory_free.to_f / t.metrics.memory_total.to_f * 100
+      ).round(2).to_s + '% free mem', t.name]
+    end
   end
 
-  def selectable_f_with_cache_invalidation(f, attr, array, select_options = {}, html_options = {}, input_group_options = {})
+  def selectable_f_with_cache_invalidation(f, attr, array,
+                                           select_options = {}, html_options = {}, input_group_options = {})
     unless html_options.key?('input_group_btn')
       html_options[:input_group_btn] = link_to_function(
         icon_text('refresh'),
