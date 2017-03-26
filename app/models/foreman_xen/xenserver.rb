@@ -356,7 +356,6 @@ module ForemanXen
         :type => 'vnc',
         :name => vm.name
       )
-
     rescue Error => e
       logger.warn e
       raise e
@@ -418,7 +417,7 @@ module ForemanXen
     end
 
     def get_templates(templates)
-      tmps = templates.select { |t| !t.is_a_snapshot }
+      tmps = templates.reject(&:is_a_snapshot)
       tmps.sort_by(&:name)
     end
 
