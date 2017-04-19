@@ -2,6 +2,8 @@ module ForemanXen
   class Xenserver < ComputeResource
     validates :url, :user, :password, :presence => true
 
+    attr_accessible :uuid
+
     def provided_attributes
       super.merge(
         :uuid => :reference,
