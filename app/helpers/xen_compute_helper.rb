@@ -27,7 +27,7 @@ module XenComputeHelper
 
   def hosts_controller_compute_attribute_map(params, compute_resource, new)
     attribute_map = empty_attribute_map
-    if new_host?(new)
+    if new.try(:new_record?)
       compute_attributes = compute_resource.compute_profile_attributes_for(params['host']['compute_profile_id'])
       attribute_map = filter_compute_attributes(attribute_map, compute_attributes)
     elsif new
