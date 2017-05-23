@@ -24,7 +24,7 @@ module ForemanXen
 
     # List of methods to permit
     def cache_attribute_whitelist
-      %w(networks hypervisors templates custom_templates builtin_templates storage_pools)
+      %w[networks hypervisors templates custom_templates builtin_templates storage_pools]
     end
 
     def load_compute_resource
