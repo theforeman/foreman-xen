@@ -65,17 +65,3 @@ Metrics/ParameterLists:
 # Offense count: 4
 Metrics/PerceivedComplexity:
   Max: 13
-
-# Offense count: 1
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: format, sprintf, percent
-Style/FormatString:
-  Exclude:
-    - 'app/models/concerns/fog_extensions/xenserver/server.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: SupportedStyles.
-# SupportedStyles: percent, brackets
-Style/SymbolArray:
-  EnforcedStyle: brackets

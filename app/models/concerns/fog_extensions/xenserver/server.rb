@@ -41,7 +41,7 @@ module FogExtensions
       end
 
       def vm_description
-        _('%{cpus} CPUs and %{ram} memory') % { :cpus => vcpus_max, :ram => number_to_human_size(memory_max.to_i) }
+        format(_('%{cpus} CPUs and %{ram} memory'), :cpus => vcpus_max, :ram => number_to_human_size(memory_max.to_i))
       end
 
       def interfaces

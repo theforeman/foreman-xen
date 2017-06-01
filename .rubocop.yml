@@ -13,15 +13,18 @@ Metrics/LineLength:
 Style/Documentation:
   Enabled: false
 
+Style/FormatStringToken:
+  EnforcedStyle: template
+
 Style/HashSyntax:
   Enabled: false
   SupportedStyles:
     - ruby19
     - hash_rockets
 
-Style/ExtraSpacing:
+Layout/ExtraSpacing:
   AllowForAlignment: true
 
-Style/AlignHash:
+Layout/AlignHash:
   EnforcedHashRocketStyle: table
   EnforcedColonStyle: table

@@ -187,7 +187,7 @@ module ForemanXen
       return unless errors.empty?
       opts = vm_instance_defaults.merge(attr.to_hash).symbolize_keys
 
-      [:networks, :volumes].each do |collection|
+      %i[networks volumes].each do |collection|
         nested_attrs     = opts.delete("#{collection}_attributes".to_sym)
         opts[collection] = nested_attributes_for(collection, nested_attrs) if nested_attrs
       end
