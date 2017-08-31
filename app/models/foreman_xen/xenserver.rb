@@ -10,7 +10,7 @@ module ForemanXen
     end
 
     def capabilities
-      [:build]
+      [:build, :image]
     end
 
     def find_vm_by_uuid(uuid)
