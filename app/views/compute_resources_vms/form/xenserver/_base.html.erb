@@ -17,6 +17,8 @@
 -%>
 
 <%= javascript_tag("$(document).on('ContentLoad', tfm.numFields.initAll)"); %>
+
+
 <!-- VM Initial Settings -->
 <div class="children_fields">
   <fieldset id="vm_profile">
@@ -30,6 +32,36 @@
   </fieldset>
 </div>
 
+
+<!-- Storage -->
+<div class="children_fields xenserver-raw" id="xenserver-storage">
+  <%= field_set_tag 'Storage', :id => 'storage_volumes', :title => _('Storage') do -%>
+      <%= f.fields_for :VBDs do |i| %>
+          <%= render 'compute_resources_vms/form/volume', :f => i, :compute_resource => compute_resource, :new => new, :attribute_map => attribute_map %>
+      <% end -%>
+  <% end -%>
+  <%= checkbox_f f, :xstools, :checked => false, :label => _('Insert XS Tools ISO Drive') %>
+
+
+<!-- Network -->
+<div class="children_fields" id="xenserver-network">
+  <%= field_set_tag 'Network interfaces', :id => 'network_interfaces', :title => _('Networks') do -%>
+      <%= f.fields_for :VIFs do |i| %>
+          <%= render 'compute_resources_vms/form/network', :f => i, :compute_resource => compute_resource, :new => new, :attribute_map => attribute_map %>
+      <% end -%>
+  <% end -%>
+</div>
+
+
+<!-- Startup -->
+<div class="children_fields" id="xenserver-vm-start">
+  <%= field_set_tag 'VM Startup Options', :id => 'vm_startup_options', :title => _('Power ON VM') do -%>
+      <%= checkbox_f f, :start, :checked => (attribute_map[:power_on] == '1' || start_enable), :label => _("Power ON VM") %>
+  <% end -%>
+</div>
+
+
+<!-- Habilita Image no tab Operating System -->
 <%
    arch ||= nil ; os ||= nil
    images = possible_images(compute_resource, arch, os)
@@ -38,20 +70,4 @@
   <%= select_f f, :image_id, images, :uuid, :name,
                { :include_blank => (images.empty? || images.size == 1) ? false : _('Please select an image') },
                { :disabled => images.empty?, :label => _('Image'), :label_size => "col-md-2" } %>
-</div>
-
-<!-- Network -->
-<div class="children_fields" id="xenserver-network" style="">
-  <%= field_set_tag 'Network interfaces', :id => 'network_interfaces', :title => _('Networks') do -%>
-      <%= f.fields_for :VIFs do |i| %>
-          <%= render 'compute_resources_vms/form/network', :f => i, :compute_resource => compute_resource, :new => new, :attribute_map => attribute_map %>
-      <% end -%>
-  <% end -%>
-</div>
-
-<!-- Startup -->
-<div class="children_fields" id="xenserver-vm-start" style="<%= hide_raw %>">
-  <%= field_set_tag 'VM Startup Options', :id => 'vm_startup_options', :title => _('Power ON VM') do -%>
-      <%= checkbox_f f, :start, :checked => (attribute_map[:power_on] == '1' || start_enable), :label => _("Power ON VM") %>
-  <% end -%>
 </div>
