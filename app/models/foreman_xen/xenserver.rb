@@ -196,7 +196,7 @@ module ForemanXen
     end
 
     def create_vm(args = {})
-      custom_template_name  = args[:custom_template_name].to_s
+      custom_template_name  = args[:image_id].to_s
       builtin_template_name = args[:builtin_template_name].to_s
 
       if builtin_template_name != '' && custom_template_name != ''
@@ -226,11 +226,14 @@ module ForemanXen
 
       host = get_hypervisor_host(args)
 
-      logger.info "create_vm_from_builtin: host : #{host.name}"
+      logger.info "url: #{url}"
+      logger.info "user: #{user}"
+      logger.info "password: #{password}"
+      logger.info "create_vm_from_builtin: #{host}"
 
       raise 'Memory max cannot be lower than Memory min' if mem_min.to_i > mem_max.to_i
 
-      template    = client.custom_templates.select { |t| t.name == args[:custom_template_name] }.first
+      template    = client.custom_templates.select { |t| t.name == args[:image_id] }.first
       vm          = template.clone args[:name]
       vm.affinity = host
 
@@ -244,10 +247,10 @@ module ForemanXen
 
       create_network(vm, args)
 
-      args['xenstore']['vm-data']['ifs']['0']['mac'] = vm.vifs.first.mac
-      xenstore_data                                  = xenstore_hash_flatten(args['xenstore'])
+#      args['xenstore']['vm-data']['ifs']['0']['mac'] = vm.vifs.first.mac
+#      xenstore_data                                  = xenstore_hash_flatten(args['xenstore'])
 
-      vm.set_attribute('xenstore_data', xenstore_data)
+#      vm.set_attribute('xenstore_data', xenstore_data)
       if vm.memory_static_max.to_i < mem_max.to_i
         vm.set_attribute('memory_static_max', mem_max)
         vm.set_attribute('memory_dynamic_max', mem_max)
