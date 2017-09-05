@@ -86,7 +86,10 @@ module ForemanXen
     def storage_pools!
       store_in_cache('storage_pools') do
         results = []
-        storages = client.storage_repositories.select { |sr| sr.type != 'udev' && sr.type != 'iso' }
+        storages = client.storage_repositories.select do |sr|
+	  espaco_livre = sr.physical_size.to_f - sr.physical_utilisation.to_f
+	  sr.type != 'udev' && sr.type != 'iso' && espaco_livre > 644245094400 #Somente SRs com espaco livre  maiores que 600GB serao utilizados
+	end
         storages.each do |sr|
           subresults = {}
           found      = false
@@ -97,16 +100,18 @@ module ForemanXen
             subresults[:name]         = sr.name
             subresults[:display_name] = sr.name + '(' + host.hostname + ')'
             subresults[:uuid]         = sr.uuid
+            subresults[:espaco_livre] = sr.physical_size.to_f - sr.physical_utilisation.to_f
             break
           end
           unless found
             subresults[:name]         = sr.name
             subresults[:display_name] = sr.name
             subresults[:uuid]         = sr.uuid
+            subresults[:espaco_livre] = sr.physical_size.to_f - sr.physical_utilisation.to_f
           end
           results.push(subresults)
         end
-        results.sort_by! { |item| item[:display_name] }
+        results.sort_by! { |item| item[:espaco_livre] }.reverse!
       end
     end
 
