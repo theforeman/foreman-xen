@@ -79,7 +79,8 @@ module ForemanXen
     end
 
     def storage_pools
-      read_from_cache('storage_pools', 'storage_pools!')
+      #read_from_cache('storage_pools', 'storage_pools!')
+      storage_pools!
     end
 
     def storage_pools!
