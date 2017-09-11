@@ -240,15 +240,16 @@ module ForemanXen
       raise 'Memory max cannot be lower than Memory min' if mem_min.to_i > mem_max.to_i
       
       template    = client.custom_templates.select { |t| t.name == args[:image_id] }.first
-      vm          = template.clone args[:name]
-#      vm.affinity = host
-      vm.provision
-
-      vdi = vm.vbds.first.vdi
       sr = client.storage_repositories.find { |sr| sr.uuid == (args[:VBDs][:sr_uuid]).to_s }
-      vdi.pool_migrate sr.reference, {'live' => 'true'}
-      sr.scan
+      vm_reference = template.copy args[:name], sr.reference
+      vm = client.servers.find { |server| server.reference  = vm_reference }
+#      vm.affinity = host
 
+      disks = vm.vbds.select { |vbd| vbd.type == 'Disk' }
+      disks.each do |vbd|
+        vbd.vdi.set_attribute('name-label', "#{vm.name}_#{vbd.device}_#{vbd.userdevice}")
+      end
+      sr.scan
 
       begin
         vm.vifs.first.destroy
@@ -274,15 +275,7 @@ module ForemanXen
         vm.set_attribute('memory_static_max', mem_max)
       end
 
-
-      disks = vm.vbds.select { |vbd| vbd.type == 'Disk' }
-      disks.sort! { |a, b| a.userdevice <=> b.userdevice }
-      i = 0
-      disks.each do |vbd|
-        vbd.vdi.set_attribute('name-label', "#{args[:name]}_#{vbd.device}_#{i}")
-        i += 1
-      end
-      vm.reload
+      vm.provision
       vm
     end
 
