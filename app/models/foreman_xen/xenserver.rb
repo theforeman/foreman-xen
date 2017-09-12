@@ -246,6 +246,7 @@ module ForemanXen
 #      vm.affinity = host
 
       disks = vm.vbds.select { |vbd| vbd.type == 'Disk' }
+#      disks.sort! { |a, b| a.userdevice <=> b.userdevice }
       disks.each do |vbd|
         vbd.vdi.set_attribute('name-label', "#{vm.name}_#{vbd.device}_#{vbd.userdevice}")
       end
