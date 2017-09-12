@@ -239,7 +239,7 @@ module ForemanXen
 
       raise 'Memory max cannot be lower than Memory min' if mem_min.to_i > mem_max.to_i
       
-      template    = client.custom_templates.select { |t| t.name == args[:image_id] }.first
+      template    = client.custom_templates.select { |t| t.uuid == args[:image_id] }.first
       sr = client.storage_repositories.find { |sr| sr.uuid == (args[:VBDs][:sr_uuid]).to_s }
       vm_reference = template.copy args[:name], sr.reference
       vm = client.servers.find { |server| server.reference  = vm_reference }
