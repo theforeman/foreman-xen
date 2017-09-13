@@ -1,7 +1,7 @@
 <% new = f.object
    attribute_map = compute_attribute_map(params, compute_resource, new)
    hide_raw = ''
-   if params && params['host'] && params['host']['compute_attributes'] && params['host']['compute_attributes']['custom_template_name'] != ''
+   if params && params['host'] && params['host']['compute_attributes'] && params['host']['compute_attributes']['image_id'] != ''
      hide_raw = 'display:none;'
    end
    if controller_name == 'hosts'

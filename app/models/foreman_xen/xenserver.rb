@@ -202,18 +202,18 @@ module ForemanXen
     end
 
     def create_vm(args = {})
-      custom_template_name  = args[:image_id].to_s
+      image_id  = args[:image_id].to_s
       builtin_template_name = args[:builtin_template_name].to_s
 
-      if builtin_template_name != '' && custom_template_name != ''
-        logger.info "custom_template_name: #{custom_template_name}"
+      if builtin_template_name != '' && image_id != ''
+        logger.info "image_id: #{image_id}"
         logger.info "builtin_template_name: #{builtin_template_name}"
         raise 'you can select at most one template type'
       end
       begin
-        logger.info "create_vm(): custom_template_name: #{custom_template_name}"
+        logger.info "create_vm(): image_id: #{image_id}"
         logger.info "create_vm(): builtin_template_name: #{builtin_template_name}"
-        vm = custom_template_name != '' ? create_vm_from_custom(args) : create_vm_from_builtin(args)
+        vm = image_id != '' ? create_vm_from_custom(args) : create_vm_from_builtin(args)
         vm.set_attribute('name_description', 'Provisioned by Foreman')
         vm.set_attribute('VCPUs_max', args[:vcpus_max])
         vm.set_attribute('VCPUs_at_startup', args[:vcpus_max])
