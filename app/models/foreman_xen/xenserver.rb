@@ -244,12 +244,7 @@ module ForemanXen
       vm_reference = template.copy args[:name], sr.reference
       vm = client.servers.find { |server| server.reference  = vm_reference }
 #      vm.affinity = host
-
-      disks = vm.vbds.select { |vbd| vbd.type == 'Disk' }
-#      disks.sort! { |a, b| a.userdevice <=> b.userdevice }
-      disks.each do |vbd|
-        vbd.vdi.set_attribute('name-label', "#{vm.name}_#{vbd.device}_#{vbd.userdevice}")
-      end
+      vm.provision
       sr.scan
 
       begin
@@ -276,7 +271,13 @@ module ForemanXen
         vm.set_attribute('memory_static_max', mem_max)
       end
 
-      vm.provision
+      disks = vm.vbds.select { |vbd| vbd.type == 'Disk' }
+      disks.each do |vbd|
+        name_label = "#{vm.name}_#{vbd.device}_#{vbd.userdevice}"
+        logger.info  "selmison: #{name_label}"
+        vbd.vdi.set_name_label name_label
+      end
+
       vm
     end
 
