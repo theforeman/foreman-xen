@@ -41,9 +41,11 @@
       <% end -%>
       <%= checkbox_f f, :xstools, :checked => false, :label => _('Insert XS Tools ISO Drive') %>
 
-      <%= f.fields_for :VBDs do |i| %>
+<!--      <%= f.fields_for :VBDs do |i| %>
           <%= render 'compute_resources_vms/form/volume_data', :f => i, :compute_resource => compute_resource, :new => new, :attribute_map => attribute_map %>
       <% end -%>
+-->
+
   <% end -%>
 </div>
 
