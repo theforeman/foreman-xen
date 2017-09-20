@@ -385,7 +385,7 @@ module ForemanXen
         :xenserver_url                => url,
         :xenserver_username           => user,
         :xenserver_password           => password,
-        :xenserver_timeout            => 300,
+        :xenserver_timeout            => 1800, #Timeout de 30 min devido ao tempo elevado necessario para clonar a template
         :xenserver_redirect_to_master => true
       )
     end
