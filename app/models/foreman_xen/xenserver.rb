@@ -88,7 +88,7 @@ module ForemanXen
         results = []
         storages = client.storage_repositories.select do |sr|
 	  espaco_livre = sr.physical_size.to_f - sr.physical_utilisation.to_f
-	  sr.type != 'udev' && sr.type != 'iso' && espaco_livre > 644245094400 #Somente SRs com espaco livre  maiores que 600GB serao utilizados
+	  sr.type != 'udev' && sr.type != 'iso' && espaco_livre > 671088640000 #Somente SRs com espaco livre  maiores que 600GB + 25GB serao utilizados
 	end
         storages.each do |sr|
           subresults = {}
