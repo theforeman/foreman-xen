@@ -84,30 +84,38 @@ module ForemanXen
     end
 
     def storage_pools!
+      gb   = 1_073_741_824 # 1gb in bytes
       store_in_cache('storage_pools') do
         results = []
         storages = client.storage_repositories.select do |sr|
-	  espaco_livre = sr.physical_size.to_f - sr.physical_utilisation.to_f
-	  sr.type != 'udev' && sr.type != 'iso' && espaco_livre > 671088640000 #Somente SRs com espaco livre  maiores que 600GB + 25GB serao utilizados
+        espaco_livre = sr.physical_size.to_f - sr.physical_utilisation.to_f
+          case client.host.to_s.downcase
+          when "10.34.245.1", "s3001", "s3001.mpdft.gov.br", "s3001.mpdft.mp.br", "10.34.173.101", "s3002", "s3002.mpdft.gov.br", "s3002.mpdft.mp.br"
+            sr.type != 'udev' && sr.type != 'iso' && espaco_livre > 625*gb #Somente SRs com espaco livre  maiores que 600GB + 25GB serao utilizados
+          else
+	    sr.type != 'udev' && (sr.name.upcase.include? '_SO') && sr.type != 'iso' && espaco_livre > 625*gb
+          end
+
 	end
         storages.each do |sr|
           subresults = {}
           found      = false
+          espaco_livre = (sr.physical_size.to_f - sr.physical_utilisation.to_f)/gb
 
           available_hypervisors.each do |host|
             next unless sr.reference == host.suspend_image_sr
             found                     = true
             subresults[:name]         = sr.name
-            subresults[:display_name] = sr.name + '(' + host.hostname + ')'
+            subresults[:display_name] = sr.name + '(' + host.hostname + ')' + " (#{espaco_livre.round(2)} GB)"
             subresults[:uuid]         = sr.uuid
-            subresults[:espaco_livre] = sr.physical_size.to_f - sr.physical_utilisation.to_f
+            subresults[:espaco_livre] = espaco_livre
             break
           end
           unless found
             subresults[:name]         = sr.name
-            subresults[:display_name] = sr.name
+            subresults[:display_name] = sr.name + " (#{espaco_livre.round(2)} GB)"
             subresults[:uuid]         = sr.uuid
-            subresults[:espaco_livre] = sr.physical_size.to_f - sr.physical_utilisation.to_f
+            subresults[:espaco_livre] = espaco_livre
           end
           results.push(subresults)
         end
