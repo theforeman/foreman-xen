@@ -8,6 +8,12 @@ Lint/RescueException:
   Exclude:
     - 'lib/foreman_xen/vnc_tunnel.rb'
 
+# Offense count: 9
+Lint/RescueWithoutErrorClass:
+  Exclude:
+    - 'app/models/foreman_xen/xenserver.rb'
+    - 'lib/foreman_xen/engine.rb'
+
 # Offense count: 2
 # Cop supports --auto-correct.
 # Configuration parameters: IgnoreEmptyBlocks, AllowUnusedKeywordArguments.
