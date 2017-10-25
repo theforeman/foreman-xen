@@ -3,4 +3,4 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'nokogiri', '< 1.7', require: false if RUBY_VERSION.start_with? '2.0.'
-gem 'rubocop', '~> 0.50.0', require: false
+gem 'rubocop', '~> 0.51.0', require: false
