@@ -81,7 +81,7 @@ module XenComputeHelper
     if compute_attributes['VIFs']
       attribute_map[:network_selected] = compute_attributes['VIFs']['print']
     end
-    attribute_map[:template_selected_custom]  = compute_attributes['custom_template_name']
+    attribute_map[:template_selected_custom]  = compute_attributes['image_id']
     attribute_map[:template_selected_builtin] = compute_attributes['builtin_template_name']
     attribute_map[:cpu_count]                 = compute_attributes['vcpus_max']
     attribute_map[:memory_min]                = compute_attributes['memory_min']
