@@ -318,7 +318,9 @@ module ForemanXen
         other_config.delete 'default_template'
         other_config['mac_seed'] = SecureRandom.uuid
       end
-      vm = client.servers.new :name               => args[:name],
+
+      vm_name = args[:name][s.length, args[:name].length - ".mpdft.gov.br".length]
+      vm = client.servers.new :name               => vm_name,
                               :affinity           => host,
                               :pv_bootloader      => '',
                               :hvm_boot_params    => { :order => 'dnc' },
