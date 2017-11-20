@@ -32,6 +32,12 @@
   </fieldset>
 </div>
 
+<!-- Templates -->
+<div class="children_fields" style="<%= hide_raw %>">
+  <%= field_set_tag 'VM Template', :id => 'xen_templates', :title => _('Template') do -%>
+      <%= render 'compute_resources_vms/form/templates', :f => f, :compute_resource => compute_resource, :new => new, :attribute_map => attribute_map %>
+  <% end -%>
+</div>
 
 <!-- Storage -->
 <div class="children_fields xenserver-raw" id="xenserver-storage">
@@ -77,3 +83,10 @@
                { :include_blank => (images.empty? || images.size == 1) ? false : _('Please select an image') },
                { :disabled => images.empty?, :label => _('Image'), :label_size => "col-md-2" } %>
 </div>
+
+<script type="text/javascript">
+    // Check if custom template in use then do now show SR settings
+    if ($("#compute_attribute_vm_attrs_builtin_template_name").val() == "" && $("#compute_attribute_vm_attrs_custom_template_name").val() != "") {
+        $('.xenserver-raw').hide(1);
+    }
+</script>

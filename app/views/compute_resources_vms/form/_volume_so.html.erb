@@ -13,4 +13,8 @@
            :attribute              => 'storage_pools'
         }
   %>
+  <%= field_set_tag nil, :id => 'xen_volume_so_size'  do -%>
+    <%= text_f f, :physical_size, :class => "input-mini", :id => "xen_volume_so_size", :label => _("Size (GB)"), :value => attribute_map[:volume_size] %>
+  <% end -%>
+
 </div>

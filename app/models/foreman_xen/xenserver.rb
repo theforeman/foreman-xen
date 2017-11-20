@@ -294,9 +294,9 @@ module ForemanXen
       mem_max = args[:memory_max]
       mem_min = args[:memory_min]
 
-      host = get_hypervisor_host(args)
-
-      logger.info "create_vm_from_builtin: host : #{host.name}"
+#      host = get_hypervisor_host(args)
+      host = client.hosts.sample
+      logger.info "create_vm_from_builtin: #{host.inspect}"
 
       builtin_template_name = args[:builtin_template_name]
       builtin_template_name = builtin_template_name.to_s
