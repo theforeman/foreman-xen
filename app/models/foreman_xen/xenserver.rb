@@ -249,8 +249,7 @@ module ForemanXen
       
       template = client.custom_templates.select { |t| t.uuid == args[:image_id] }.first
       sr = client.storage_repositories.find { |sr| sr.uuid == (args[:VBDs][:sr_uuid]).to_s }
-      vm_name = args[:name][s.length, args[:name].length - ".mpdft.gov.br".length]
-      vm_reference = template.copy vm_name, sr.reference
+      vm_reference = template.copy  args[:name], sr.reference
 #     vm.affinity = host
       client.provision_server (vm_reference)
       vm = client.servers.find { |server| server.reference == vm_reference }
@@ -282,8 +281,7 @@ module ForemanXen
 
       disks = vm.vbds.select { |vbd| vbd.type == 'Disk' }
       disks.each do |vbd|
-#        name_label = "#{vm_name}_#{vbd.device}_#{vbd.userdevice}"
-        name_label = "#{vm_name}_xvda_#{vbd.userdevice}"
+        name_label = "#{args[:name]}_xvda_#{vbd.userdevice}"
         vbd.vdi.set_name_label name_label
       end
       vm.reload
@@ -319,8 +317,7 @@ module ForemanXen
         other_config['mac_seed'] = SecureRandom.uuid
       end
 
-      vm_name = args[:name][s.length, args[:name].length - ".mpdft.gov.br".length]
-      vm = client.servers.new :name               => vm_name,
+      vm = client.servers.new :name               => args[:name],
                               :affinity           => host,
                               :pv_bootloader      => '',
                               :hvm_boot_params    => { :order => 'dnc' },
