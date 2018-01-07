@@ -96,9 +96,7 @@ module ForemanXen
     def create
       id   = params[:id]
       name = params[:name]
-      if name.nil? || name == ''
-        process_error(:error_msg => 'You must supply a name.')
-      end
+      process_error(:error_msg => 'You must supply a name.') if name.nil? || name == ''
       @host = get_host_by_id(id)
       if !@host.nil?
         @compute_resource = get_compute_resource_by_host_id(id)
