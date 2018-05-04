@@ -315,7 +315,7 @@ module ForemanXen
 
       if args[:xstools] == '1'
         # Add xs-tools ISO to newly created VMs
-        dvd_vdi = client.vdis.find { |isovdi| isovdi.name == 'xs-tools.iso' }
+        dvd_vdi = client.vdis.find { |isovdi| isovdi.name == 'xs-tools.iso' || isovdi.name == 'guest-tools.iso' }
         vbdconnectcd = {
           'vdi'                  => dvd_vdi,
           'vm'                   => vm.reference,

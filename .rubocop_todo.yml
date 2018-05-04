@@ -39,7 +39,7 @@ Lint/UselessAssignment:
 
 # Offense count: 16
 Metrics/AbcSize:
-  Max: 65
+  Max: 67
 
 # Offense count: 2
 # Configuration parameters: CountBlocks.
