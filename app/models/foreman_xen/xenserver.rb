@@ -168,7 +168,7 @@ module ForemanXen
       end
       retval = []
       tmps.each do |snapshot|
-	retval << snapshot if snapshot.snapshot_metadata.include?(vm.uuid)
+        retval << snapshot if snapshot.snapshot_metadata.include?(vm.uuid)
       end
       retval
     end
