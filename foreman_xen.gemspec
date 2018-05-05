@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.homepage    = 'http://github.com/theforeman/foreman-xen'
   s.summary     = 'Provision and manage XEN Server from Foreman'
   s.description = 'Provision and manage XEN Server from Foreman.'
-  s.licenses    = ['GPL-3']
+  s.licenses    = ['GPL-3.0']
 
   s.add_dependency 'fog-xenserver', '~> 0.2'
   s.add_development_dependency('rake')
