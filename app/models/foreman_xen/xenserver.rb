@@ -260,7 +260,9 @@ module ForemanXen
         vm.set_attribute('memory_static_max', mem_max)
       end
 
-      disks = vm.vbds.select { |vbd| vbd.type == 'Disk' }
+      # workaround for fog-xenserver bug. when calling clone method, the returned object references
+      # VBD from the template instead of the clone
+      disks = find_vm_by_uuid(vm.reference).vbds.select { |vbd| vbd.type == 'Disk' }
       disks.sort! { |a, b| a.userdevice <=> b.userdevice }
       i = 0
       disks.each do |vbd|
