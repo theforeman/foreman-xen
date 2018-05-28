@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.version     = ForemanXen::VERSION
   s.authors     = ['Pavel Nemirovsky', 'Michal Piotrowski', 'Avi Israeli']
   s.email       = ['operations@oovoo.com']
-  s.homepage    = 'http://github.com/theforeman/foreman-xen'
+  s.homepage    = 'https://github.com/theforeman/foreman-xen'
   s.summary     = 'Provision and manage XEN Server from Foreman'
   s.description = 'Provision and manage XEN Server from Foreman.'
   s.licenses    = ['GPL-3.0']
