@@ -247,10 +247,6 @@ module ForemanXen
 
       create_network(vm, args)
 
-      args['xenstore']['vm-data']['ifs']['0']['mac'] = vm.vifs.first.mac
-      xenstore_data                                  = xenstore_hash_flatten(args['xenstore'])
-
-      vm.set_attribute('xenstore_data', xenstore_data)
       if vm.memory_static_max.to_i < mem_max.to_i
         vm.set_attribute('memory_static_max', mem_max)
         vm.set_attribute('memory_dynamic_max', mem_max)
