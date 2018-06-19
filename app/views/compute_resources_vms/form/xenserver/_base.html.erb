@@ -41,7 +41,7 @@
 
 <!-- Storage -->
 <div class="children_fields xenserver-raw" id="xenserver-storage">
-  <%= field_set_tag 'Storagexs', :id => 'storage_volumes', :title => _('Storages') do -%>
+  <%= field_set_tag 'Storages', :id => 'storage_volumes', :title => _('Storages') do -%>
       <%= f.fields_for :VBDs do |i| %>
           <%= render 'compute_resources_vms/form/volume_so', :f => i, :compute_resource => compute_resource, :new => new, :attribute_map => attribute_map %>
       <% end -%>
