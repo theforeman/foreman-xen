@@ -4,6 +4,7 @@
    if params && params['host'] && params['host']['compute_attributes'] && params['host']['compute_attributes']['image_id'] != ''
      hide_raw = 'display:none;'
    end
+
    if controller_name == 'hosts'
      fields_enabled = true
      start_enable   = true
@@ -14,11 +15,9 @@
    else
      fields_enabled = false
    end
+	 
 -%>
-
 <%= javascript_tag("$(document).on('ContentLoad', tfm.numFields.initAll)"); %>
-
-
 <!-- VM Initial Settings -->
 <div class="children_fields">
   <fieldset id="vm_profile">
@@ -39,6 +38,12 @@
   <% end -%>
 </div>
 
+<!-- XenStore Data -->
+<div class="children_fields" id="xenserver-xenstore-data">  <%= field_set_tag 'Xen Store Data', :id => 'xen_store_data', :title => _('Xen Store Data') do -%>
+  <%= field_set_tag 'Xen Store Data', :id => 'xen_store_data', :title => _('Xen Store Data') do -%>
+      <%= render 'compute_resources_vms/form/xenstore', :f => f, :compute_resource => compute_resource, :new => new, :attribute_map => attribute_map %>
+  <% end %>
+</div>
 <!-- Storage -->
 <div class="children_fields xenserver-raw" id="xenserver-storage">
   <%= field_set_tag 'Storages', :id => 'storage_volumes', :title => _('Storages') do -%>

@@ -84,42 +84,29 @@ module ForemanXen
     end
 
     def storage_pools!
-      gb   = 1_073_741_824 # 1gb in bytes
       store_in_cache('storage_pools') do
         results = []
-        storages = client.storage_repositories.select do |sr|
-        espaco_livre = sr.physical_size.to_f - sr.physical_utilisation.to_f
-          case client.host.to_s.downcase
-          when "10.34.245.1", "s3001", "s3001.mpdft.gov.br", "s3001.mpdft.mp.br", "10.34.173.101", "s3002", "s3002.mpdft.gov.br", "s3002.mpdft.mp.br"
-            sr.type != 'udev' && sr.type != 'iso' && espaco_livre > 625*gb #Somente SRs com espaco livre  maiores que 600GB + 25GB serao utilizados
-          else
-	    sr.type != 'udev' && (sr.name.upcase.include? '_SO') && sr.type != 'iso' && espaco_livre > 625*gb
-          end
-
-	end
+        storages = client.storage_repositories.select { |sr| sr.type != 'udev' && sr.type != 'iso' }
         storages.each do |sr|
           subresults = {}
           found      = false
-          espaco_livre = (sr.physical_size.to_f - sr.physical_utilisation.to_f)/gb
 
           available_hypervisors.each do |host|
             next unless sr.reference == host.suspend_image_sr
             found                     = true
             subresults[:name]         = sr.name
-            subresults[:display_name] = sr.name + '(' + host.hostname + ')' + " (#{espaco_livre.round(2)} GB)"
+            subresults[:display_name] = sr.name + '(' + host.hostname + ')'
             subresults[:uuid]         = sr.uuid
-            subresults[:espaco_livre] = espaco_livre
             break
           end
           unless found
             subresults[:name]         = sr.name
-            subresults[:display_name] = sr.name + " (#{espaco_livre.round(2)} GB)"
+            subresults[:display_name] = sr.name
             subresults[:uuid]         = sr.uuid
-            subresults[:espaco_livre] = espaco_livre
           end
           results.push(subresults)
         end
-        results.sort_by! { |item| item[:espaco_livre] }.reverse!
+        results.sort_by! { |item| item[:display_name] }
       end
     end
 
@@ -240,17 +227,14 @@ module ForemanXen
 
       host = get_hypervisor_host(args)
 
-      logger.info "url: #{url}"
-      logger.info "user: #{user}"
-      logger.info "password: #{password}"
       logger.info "create_vm_from_builtin: #{host}"
 
       raise 'Memory max cannot be lower than Memory min' if mem_min.to_i > mem_max.to_i
-      
+
       template = client.custom_templates.select { |t| t.uuid == args[:image_id] }.first
       sr = client.storage_repositories.find { |sr| sr.uuid == (args[:VBDs][:sr_uuid]).to_s }
       vm_reference = template.copy  args[:name], sr.reference
-#     vm.affinity = host
+
       client.provision_server (vm_reference)
       vm = client.servers.find { |server| server.reference == vm_reference }
       sr.scan
@@ -263,10 +247,10 @@ module ForemanXen
 
       create_network(vm, args)
 
-#      args['xenstore']['vm-data']['ifs']['0']['mac'] = vm.vifs.first.mac
-#      xenstore_data                                  = xenstore_hash_flatten(args['xenstore'])
-#      vm.set_attribute('xenstore_data', xenstore_data)
+      args['xenstore']['vm-data']['ifs']['0']['mac'] = vm.vifs.first.mac
+      xenstore_data                                  = xenstore_hash_flatten(args['xenstore'])
 
+      vm.set_attribute('xenstore_data', xenstore_data)
       if vm.memory_static_max.to_i < mem_max.to_i
         vm.set_attribute('memory_static_max', mem_max)
         vm.set_attribute('memory_dynamic_max', mem_max)
@@ -280,9 +264,11 @@ module ForemanXen
       end
 
       disks = vm.vbds.select { |vbd| vbd.type == 'Disk' }
+      disks.sort! { |a, b| a.userdevice <=> b.userdevice }
+      i = 0
       disks.each do |vbd|
-        name_label = "#{args[:name]}_xvda_#{vbd.userdevice}"
-        vbd.vdi.set_name_label name_label
+        vbd.vdi.set_attribute('name-label', "#{args[:name]}_#{i}")
+        i += 1
       end
       vm.reload
       vm
@@ -292,9 +278,9 @@ module ForemanXen
       mem_max = args[:memory_max]
       mem_min = args[:memory_min]
 
-#      host = get_hypervisor_host(args)
-      host = client.hosts.sample
-      logger.info "create_vm_from_builtin: #{host.inspect}"
+      host = get_hypervisor_host(args)
+
+      logger.info "create_vm_from_builtin: host : #{host.name}"
 
       builtin_template_name = args[:builtin_template_name]
       builtin_template_name = builtin_template_name.to_s
@@ -316,7 +302,6 @@ module ForemanXen
         other_config.delete 'default_template'
         other_config['mac_seed'] = SecureRandom.uuid
       end
-
       vm = client.servers.new :name               => args[:name],
                               :affinity           => host,
                               :pv_bootloader      => '',
