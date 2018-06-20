@@ -10,7 +10,7 @@ module ForemanXen
     end
 
     def capabilities
-      [:build]
+      %i[build image]
     end
 
     def find_vm_by_uuid(uuid)
@@ -79,7 +79,8 @@ module ForemanXen
     end
 
     def storage_pools
-      read_from_cache('storage_pools', 'storage_pools!')
+      # read_from_cache('storage_pools', 'storage_pools!')
+      storage_pools!
     end
 
     def storage_pools!
@@ -196,18 +197,18 @@ module ForemanXen
     end
 
     def create_vm(args = {})
-      custom_template_name  = args[:custom_template_name].to_s
+      image_id = args[:image_id].to_s
       builtin_template_name = args[:builtin_template_name].to_s
 
-      if builtin_template_name != '' && custom_template_name != ''
-        logger.info "custom_template_name: #{custom_template_name}"
+      if builtin_template_name != '' && image_id != ''
+        logger.info "image_id: #{image_id}"
         logger.info "builtin_template_name: #{builtin_template_name}"
         raise 'you can select at most one template type'
       end
       begin
-        logger.info "create_vm(): custom_template_name: #{custom_template_name}"
+        logger.info "create_vm(): image_id: #{image_id}"
         logger.info "create_vm(): builtin_template_name: #{builtin_template_name}"
-        vm = custom_template_name != '' ? create_vm_from_custom(args) : create_vm_from_builtin(args)
+        vm = image_id != '' ? create_vm_from_custom(args) : create_vm_from_builtin(args)
         vm.set_attribute('name_description', 'Provisioned by Foreman')
         vm.set_attribute('VCPUs_max', args[:vcpus_max])
         vm.set_attribute('VCPUs_at_startup', args[:vcpus_max])
@@ -226,15 +227,17 @@ module ForemanXen
 
       host = get_hypervisor_host(args)
 
-      logger.info "create_vm_from_builtin: host : #{host.name}"
+      logger.info "create_vm_from_builtin: #{host.name}"
 
       raise 'Memory max cannot be lower than Memory min' if mem_min.to_i > mem_max.to_i
 
-      template    = client.custom_templates.select { |t| t.name == args[:custom_template_name] }.first
-      vm          = template.clone args[:name]
-      vm.affinity = host
+      template = client.custom_templates.select { |t| t.uuid == args[:image_id] }.first
+      storage_repository = client.storage_repositories.find { |sr| sr.uuid == (args[:VBDs][:sr_uuid]).to_s }
+      vm_reference = template.copy args[:name], storage_repository.reference
 
-      vm.provision
+      client.provision_server vm_reference
+      vm = client.servers.find { |server| server.reference == vm_reference }
+      storage_repository.scan
 
       begin
         vm.vifs.first.destroy
@@ -244,10 +247,6 @@ module ForemanXen
 
       create_network(vm, args)
 
-      args['xenstore']['vm-data']['ifs']['0']['mac'] = vm.vifs.first.mac
-      xenstore_data                                  = xenstore_hash_flatten(args['xenstore'])
-
-      vm.set_attribute('xenstore_data', xenstore_data)
       if vm.memory_static_max.to_i < mem_max.to_i
         vm.set_attribute('memory_static_max', mem_max)
         vm.set_attribute('memory_dynamic_max', mem_max)
@@ -267,6 +266,7 @@ module ForemanXen
         vbd.vdi.set_attribute('name-label', "#{args[:name]}_#{i}")
         i += 1
       end
+      vm.reload
       vm
     end
 
@@ -373,6 +373,7 @@ module ForemanXen
         :xenserver_url                => url,
         :xenserver_username           => user,
         :xenserver_password           => password,
+        :xenserver_timeout            => 1800, # Timeout de 30 min
         :xenserver_redirect_to_master => true
       )
     end

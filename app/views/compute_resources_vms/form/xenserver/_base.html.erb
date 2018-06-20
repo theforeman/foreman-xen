@@ -2,7 +2,7 @@
    attribute_map = compute_attribute_map(params, compute_resource, new)
 
    hide_raw = ''
-   if params && params['host'] && params['host']['compute_attributes'] && params['host']['compute_attributes']['custom_template_name'] != ''
+   if params && params['host'] && params['host']['compute_attributes'] && params['host']['compute_attributes']['image_id'] != ''
      hide_raw = 'display:none;'
    end
 
@@ -33,31 +33,30 @@
 </div>
 
 <!-- Templates -->
-<div class="children_fields">
+<div class="children_fields" style="<%= hide_raw %>">
   <%= field_set_tag 'VM Template', :id => 'xen_templates', :title => _('Template') do -%>
       <%= render 'compute_resources_vms/form/templates', :f => f, :compute_resource => compute_resource, :new => new, :attribute_map => attribute_map %>
   <% end -%>
 </div>
 
-<!-- XenStore Data -->
-<div class="children_fields" id="xenserver-xenstore-data">
-  <%= field_set_tag 'Xen Store Data', :id => 'xen_store_data', :title => _('Xen Store Data') do -%>
-      <%= render 'compute_resources_vms/form/xenstore', :f => f, :compute_resource => compute_resource, :new => new, :attribute_map => attribute_map %>
-  <% end %>
-</div>
-
 <!-- Storage -->
-<div class="children_fields xenserver-raw" id="xenserver-storage" style="<%= hide_raw %>">
-  <%= field_set_tag 'Storage', :id => 'storage_volumes', :title => _('Storage') do -%>
+<div class="children_fields xenserver-raw" id="xenserver-storage">
+  <%= field_set_tag 'Storages', :id => 'storage_volumes', :title => _('Storages') do -%>
       <%= f.fields_for :VBDs do |i| %>
-          <%= render 'compute_resources_vms/form/volume', :f => i, :compute_resource => compute_resource, :new => new, :attribute_map => attribute_map %>
+          <%= render 'compute_resources_vms/form/volume_so', :f => i, :compute_resource => compute_resource, :new => new, :attribute_map => attribute_map %>
       <% end -%>
+      <%= checkbox_f f, :xstools, :checked => false, :label => _('Insert XS Tools ISO Drive') %>
+
+<!--      <%= f.fields_for :VBDs do |i| %>
+          <%= render 'compute_resources_vms/form/volume_data', :f => i, :compute_resource => compute_resource, :new => new, :attribute_map => attribute_map %>
+      <% end -%>
+-->
+
   <% end -%>
-  <%= checkbox_f f, :xstools, :checked => false, :label => _('Insert XS Tools ISO Drive') %>
 </div>
 
 <!-- Network -->
-<div class="children_fields" id="xenserver-network" style="<%= hide_raw %>">
+<div class="children_fields" id="xenserver-network">
   <%= field_set_tag 'Network interfaces', :id => 'network_interfaces', :title => _('Networks') do -%>
       <%= f.fields_for :VIFs do |i| %>
           <%= render 'compute_resources_vms/form/network', :f => i, :compute_resource => compute_resource, :new => new, :attribute_map => attribute_map %>
@@ -72,125 +71,27 @@
 </div>
 
 <!-- Startup -->
-<div class="children_fields" id="xenserver-vm-start" style="<%= hide_raw %>">
+<div class="children_fields" id="xenserver-vm-start">
   <%= field_set_tag 'VM Startup Options', :id => 'vm_startup_options', :title => _('Power ON VM') do -%>
       <%= checkbox_f f, :start, :checked => (attribute_map[:power_on] == '1' || start_enable), :label => _("Power ON VM") %>
   <% end -%>
 </div>
 
+
+<!-- Habilita Image no tab Operating System -->
+<%
+   arch ||= nil ; os ||= nil
+   images = possible_images(compute_resource, arch, os)
+%>
+<div id='image_selection'>
+  <%= select_f f, :image_id, images, :uuid, :name,
+               { :include_blank => (images.empty? || images.size == 1) ? false : _('Please select an image') },
+               { :disabled => images.empty?, :label => _('Image'), :label_size => "col-md-2" } %>
+</div>
+
 <script type="text/javascript">
-
-    // Check if its a computer resource template then just do not show the form of XenStore
-    if ($("#compute_attribute_compute_profile_id").length > 0) {
-        $('#xenserver-xenstore-data').hide(1)
-    }
-
     // Check if custom template in use then do now show SR settings
     if ($("#compute_attribute_vm_attrs_builtin_template_name").val() == "" && $("#compute_attribute_vm_attrs_custom_template_name").val() != "") {
         $('.xenserver-raw').hide(1);
     }
-
-    // Check which template are in use
-    if ($("#compute_attribute_vm_attrs_builtin_template_name").val() != "") {
-        $('#compute_attribute_vm_attrs_custom_template_name').val($("#compute_attribute_vm_attrs_custom_template_name option:contains('No template')").val());
-        // IE and Chrome
-        $('#compute_attribute_vm_attrs_custom_template_name').attr("disabled", 'disabled');
-        $('.custom_template_name').prop("disabled", true);
-    }
-
-    if ($("#compute_attribute_vm_attrs_custom_template_name").val() != "") {
-        $('#compute_attribute_vm_attrs_builtin_template_name').val($("#compute_attribute_vm_attrs_custom_template_name option:contains('No template')").val());
-        // IE and Chrome
-        $('#compute_attribute_vm_attrs_builtin_template_name').attr("disabled", 'disabled');
-        $('.builtin_templates').prop("disabled", true);
-    }
-
-    // Computer Profile Templates
-    $(document).off('change.xenserver', '#compute_attribute_vm_attrs_custom_template_name');
-    $(document).on('change.xenserver', '#compute_attribute_vm_attrs_custom_template_name', function (data) {
-        if ($('option:selected', data.target).val() == "") {
-            $('.xenserver-raw').show(1000);
-            // IE and Chrome
-            $('.builtin_templates').prop("disabled", false);
-            $('#compute_attribute_vm_attrs_builtin_template_name').removeAttr('disabled');
-        } else {
-            $('.xenserver-raw').hide(1000);
-            $('#compute_attribute_vm_attrs_builtin_template_name').val($("#compute_attribute_vm_attrs_builtin_template_name option:contains('No template')").val());
-            // IE and Chrome
-            $('#compute_attribute_vm_attrs_builtin_template_name').attr("disabled", 'disabled');
-            $('.builtin_templates').prop("disabled", true);
-
-        }
-
-    });
-
-    $(document).off('change.xenserver', '#compute_attribute_vm_attrs_builtin_template_name');
-    $(document).on('change.xenserver', '#compute_attribute_vm_attrs_builtin_template_name', function (data) {
-        if ($('option:selected', data.target).val() == "") {
-            // IE and Chrome
-            $('.builtin_templates').prop("disabled", false);
-            $('#compute_attribute_vm_attrs_custom_template_name').removeAttr('disabled');
-        } else {
-            $('#compute_attribute_vm_attrs_custom_template_name').val($("#compute_attribute_vm_attrs_custom_template_name option:contains('No template')").val());
-            // IE and Chrome
-            $('#compute_attribute_vm_attrs_custom_template_name').attr("disabled", 'disabled');
-            $('.custom_template_name').prop("disabled", true);
-
-        }
-
-    });
-
-
-    // Host Profile Forms
-
-    // Check which template are in use
-    if ($("#host_compute_attributes_custom_template_name").val() != "") {
-        $('#host_compute_attributes_builtin_template_name').val($("#host_compute_attributes_builtin_template_name option:contains('No template')").val());
-        // IE and Chrome
-        $('#host_compute_attributes_builtin_template_name').attr("disabled", 'disabled');
-        $('.builtin_templates').prop("disabled", true);
-    }
-
-    if ($("#host_compute_attributes_builtin_template_name").val() != "") {
-        $('#host_compute_attributes_custom_template_name').val($("#host_compute_attributes_custom_template_name option:contains('No template')").val());
-        // IE and Chrome
-        $('#host_compute_attributes_custom_template_name').attr("disabled", 'disabled');
-        $('.custom_template_name').prop("disabled", true);
-    }
-
-    $(document).off('change.xenserver', '#host_compute_attributes_custom_template_name');
-    $(document).on('change.xenserver', '#host_compute_attributes_custom_template_name', function (data) {
-        if ($('option:selected', data.target).val() == "") {
-            $('.xenserver-raw').show(1000);
-            // IE and Chrome
-            $('.builtin_templates').prop("disabled", false);
-            $('#host_compute_attributes_builtin_template_name').removeAttr('disabled');
-        } else {
-            $('.xenserver-raw').hide(1000);
-            $('#host_compute_attributes_builtin_template_name').val($("#host_compute_attributes_builtin_template_name option:contains('No template')").val());
-            // IE and Chrome
-            $('#host_compute_attributes_builtin_template_name').attr("disabled", 'disabled');
-            $('.builtin_templates').prop("disabled", true);
-
-        }
-
-    });
-
-    $(document).off('change.xenserver', '#host_compute_attributes_builtin_template_name');
-    $(document).on('change.xenserver', '#host_compute_attributes_builtin_template_name', function (data) {
-        if ($('option:selected', data.target).val() == "") {
-            // IE and Chrome
-            $('.builtin_templates').prop("disabled", false);
-            $('#host_compute_attributes_custom_template_name').removeAttr('disabled');
-        } else {
-            $('#host_compute_attributes_custom_template_name').val($("#host_compute_attributes_builtin_template_name option:contains('No template')").val());
-            // IE and Chrome
-            $('#host_compute_attributes_custom_template_name').attr("disabled", 'disabled');
-            $('.custom_template_name').prop("disabled", true);
-
-        }
-    })
 </script>
-
-<%= compute_specific_js(compute_resource, 'foreman_xen/cache_refresh') %>
-<%= compute_specific_js(compute_resource, 'foreman_xen/populate_fields') %>

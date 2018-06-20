@@ -3,7 +3,7 @@
         xen_storage_pool_map(compute_resource),
         { :selected => attribute_map[:volume_selected] },
         { :class => "span2",
-         :label => _("Storage Repository"),
+         :label => _("SR para o volume do S.O."),
         },
         {
            :callback               => 'xenPopulateStoragePools',
@@ -13,6 +13,8 @@
            :attribute              => 'storage_pools'
         }
   %>
+  <%= field_set_tag nil, :id => 'xen_volume_so_size'  do -%>
+    <%= text_f f, :physical_size, :class => "input-mini", :id => "xen_volume_so_size", :label => _("Size (GB)"), :value => attribute_map[:volume_size] %>
+  <% end -%>
 
-  <%= text_f f, :physical_size, :class => "input-mini", :label => _("Size (GB)"), :value => attribute_map[:volume_size] %>
 </div>
