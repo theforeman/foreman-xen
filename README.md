@@ -21,8 +21,9 @@ Please see the Foreman manual for further instructions:
 | >=1.8.1, <1.10  | 0.1.x (unmaintained)  |
 | >=1.10, <1.11   | 0.2.x (unmaintained)  |
 | >=1.11, <1.13   | 0.3.x (unmaintained)  |
-| >=1.13, <1.14   | 0.4.x                 |
-| >=1.14          | 0.5.x                 |
+| >=1.13, <1.14   | 0.4.x (unmaintained)  |
+| >=1.14, <1.17   | 0.5.x                 |
+| >=1.17          | 0.6.x                 |
 
 ## Support
 

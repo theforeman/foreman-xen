@@ -9,7 +9,7 @@ module ForemanXen
     engine_name 'foreman_xen'
 
     initializer 'foreman_xen.register_gettext', :after => :load_config_initializers do |app|
-      locale_dir    = File.join(File.expand_path('../../..', __FILE__), 'locale')
+      locale_dir    = File.join(File.expand_path('../..', __dir__), 'locale')
       locale_domain = 'foreman-xen'
 
       Foreman::Gettext::Support.add_text_domain locale_domain, locale_dir
@@ -43,8 +43,8 @@ module ForemanXen
       begin
         # extend fog xen server and image models.
         require 'fog/compute/xen_server/models/server'
-        require File.expand_path('../../../app/models/concerns/fog_extensions/xenserver/server', __FILE__)
-        require File.expand_path('../../../app/models/concerns/foreman_xen/host_helper_extensions', __FILE__)
+        require File.expand_path('../../app/models/concerns/fog_extensions/xenserver/server', __dir__)
+        require File.expand_path('../../app/models/concerns/foreman_xen/host_helper_extensions', __dir__)
 
         Fog::Compute::XenServer::Server.send(:include, ::FogExtensions::Xenserver::Server)
         ::HostsHelper.send(:include, ForemanXen::HostHelperExtensions)

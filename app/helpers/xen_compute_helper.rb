@@ -55,9 +55,7 @@ module XenComputeHelper
     elsif params && params['host'] && params['host']['compute_profile_id']
       compute_attributes = compute_resource.compute_profile_attributes_for(params['host']['compute_profile_id'])
     end
-    if compute_attributes
-      attribute_map = filter_compute_attributes(attribute_map, compute_attributes)
-    end
+    attribute_map = filter_compute_attributes(attribute_map, compute_attributes) if compute_attributes
     attribute_map
   end
 
@@ -78,11 +76,8 @@ module XenComputeHelper
       attribute_map[:volume_size]     = compute_attributes['VBDs']['physical_size']
       attribute_map[:volume_selected] = compute_attributes['VBDs']['sr_uuid']
     end
-    if compute_attributes['VIFs']
-      attribute_map[:network_selected] = compute_attributes['VIFs']['print']
-    end
-
-    attribute_map[:template_selected_custom]  = compute_attributes['image_id']
+    attribute_map[:network_selected] = compute_attributes['VIFs']['print'] if compute_attributes['VIFs']
+    attribute_map[:template_selected_custom]  = compute_attributes['custom_template_name']
     attribute_map[:template_selected_builtin] = compute_attributes['builtin_template_name']
     attribute_map[:cpu_count]                 = compute_attributes['vcpus_max']
     attribute_map[:memory_min]                = compute_attributes['memory_min']

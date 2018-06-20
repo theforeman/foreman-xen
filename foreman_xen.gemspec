@@ -1,6 +1,4 @@
-# encoding: utf-8
-
-$LOAD_PATH.push File.expand_path('../lib', __FILE__)
+$LOAD_PATH.push File.expand_path('lib', __dir__)
 
 # Maintain your gem's version:
 require 'foreman_xen/version'
@@ -11,10 +9,10 @@ Gem::Specification.new do |s|
   s.version     = ForemanXen::VERSION
   s.authors     = ['Pavel Nemirovsky', 'Michal Piotrowski', 'Avi Israeli']
   s.email       = ['operations@oovoo.com']
-  s.homepage    = 'http://github.com/theforeman/foreman-xen'
+  s.homepage    = 'https://github.com/theforeman/foreman-xen'
   s.summary     = 'Provision and manage XEN Server from Foreman'
   s.description = 'Provision and manage XEN Server from Foreman.'
-  s.licenses    = ['GPL-3']
+  s.licenses    = ['GPL-3.0']
 
   s.add_dependency 'fog-xenserver', '~> 0.2'
   s.add_development_dependency('rake')

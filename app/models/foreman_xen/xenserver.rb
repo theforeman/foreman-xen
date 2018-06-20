@@ -169,7 +169,7 @@ module ForemanXen
       end
       retval = []
       tmps.each do |snapshot|
-        retval << snapshot if vm.snapshots.include?(snapshot.reference)
+        retval << snapshot if snapshot.snapshot_metadata.include?(vm.uuid)
       end
       retval
     end
@@ -227,11 +227,11 @@ module ForemanXen
 
       host = get_hypervisor_host(args)
 
-      logger.info "create_vm_from_builtin: #{host}"
+      logger.info "create_vm_from_builtin: #{host.name}"
 
       raise 'Memory max cannot be lower than Memory min' if mem_min.to_i > mem_max.to_i
 
-      template = client.custom_templates.select { |t| t.uuid == args[:image_id] }.first
+      template    = client.custom_templates.select { |t| t.uuid == args[:image_id] }.first
       sr = client.storage_repositories.find { |sr| sr.uuid == (args[:VBDs][:sr_uuid]).to_s }
       vm_reference = template.copy  args[:name], sr.reference
 
@@ -315,7 +315,7 @@ module ForemanXen
 
       if args[:xstools] == '1'
         # Add xs-tools ISO to newly created VMs
-        dvd_vdi = client.vdis.find { |isovdi| isovdi.name == 'xs-tools.iso' }
+        dvd_vdi = client.vdis.find { |isovdi| isovdi.name == 'xs-tools.iso' || isovdi.name == 'guest-tools.iso' }
         vbdconnectcd = {
           'vdi'                  => dvd_vdi,
           'vm'                   => vm.reference,
@@ -373,7 +373,7 @@ module ForemanXen
         :xenserver_url                => url,
         :xenserver_username           => user,
         :xenserver_password           => password,
-        :xenserver_timeout            => 1800, #Timeout de 30 min devido ao tempo elevado necessario para clonar a template
+        :xenserver_timeout            => 1800, #Timeout de 30 min
         :xenserver_redirect_to_master => true
       )
     end
