@@ -42,11 +42,11 @@ module ForemanXen
     config.to_prepare do
       begin
         # extend fog xen server and image models.
-        require 'fog/compute/xen_server/models/server'
+        require 'fog/xenserver/compute/models/server'
         require File.expand_path('../../app/models/concerns/fog_extensions/xenserver/server', __dir__)
         require File.expand_path('../../app/models/concerns/foreman_xen/host_helper_extensions', __dir__)
 
-        Fog::Compute::XenServer::Server.send(:include, ::FogExtensions::Xenserver::Server)
+        Fog::XenServer::Compute::Server.send(:include, ::FogExtensions::Xenserver::Server)
         ::HostsHelper.send(:include, ForemanXen::HostHelperExtensions)
       rescue => e
         Rails.logger.warn "Foreman-Xen: skipping engine hook (#{e})"

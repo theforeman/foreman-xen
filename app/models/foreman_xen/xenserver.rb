@@ -368,8 +368,7 @@ module ForemanXen
     protected
 
     def client
-      @client ||= ::Fog::Compute.new(
-        :provider                     => 'XenServer',
+      @client ||= Fog::XenServer::Compute.new(
         :xenserver_url                => url,
         :xenserver_username           => user,
         :xenserver_password           => password,

@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.description = 'Provision and manage XEN Server from Foreman.'
   s.licenses    = ['GPL-3.0']
 
-  s.add_dependency 'fog-xenserver', '~> 0.2'
+  s.add_dependency 'fog-xenserver', '~> 1.0'
   s.add_development_dependency('rake')
 
   s.files = Dir['{app,config,db,lib,locale}/**/*', 'LICENSE', 'Rakefile', 'README.md']
