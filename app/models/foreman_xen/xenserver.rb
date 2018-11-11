@@ -19,6 +19,7 @@ module ForemanXen
       Foreman::Logging.exception("Failed retrieving xenserver vm by uuid #{uuid}", e)
       raise(ActiveRecord::RecordNotFound) if e.message.include?('HANDLE_INVALID')
       raise(ActiveRecord::RecordNotFound) if e.message.include?('VM.get_record: ["SESSION_INVALID"')
+
       raise e
     end
 
@@ -92,6 +93,7 @@ module ForemanXen
 
           available_hypervisors.each do |host|
             next unless sr.reference == host.suspend_image_sr
+
             found                     = true
             subresults[:name]         = sr.name
             subresults[:display_name] = sr.name + '(' + host.hostname + ')'
@@ -161,10 +163,11 @@ module ForemanXen
 
     def find_snapshots_for_vm(vm)
       return [] if vm.snapshots.empty?
+
       tmps = begin
         client.servers.templates.select(&:is_a_snapshot)
-      rescue
-        []
+             rescue
+               []
       end
       retval = []
       tmps.each do |snapshot|
@@ -176,8 +179,8 @@ module ForemanXen
     def find_snapshots
       tmps = begin
         client.servers.templates.select(&:is_a_snapshot)
-      rescue
-        []
+             rescue
+               []
       end
       tmps.sort_by(&:name)
     end
@@ -185,6 +188,7 @@ module ForemanXen
     def new_vm(attr = {})
       test_connection
       return unless errors.empty?
+
       opts = vm_instance_defaults.merge(attr.to_hash).symbolize_keys
 
       %i[networks volumes].each do |collection|
@@ -422,6 +426,7 @@ module ForemanXen
 
     def get_hypervisor_host(args)
       return client.hosts.first unless args[:hypervisor_host] != ''
+
       client.hosts.find { |host| host.name == args[:hypervisor_host] }
     end
 

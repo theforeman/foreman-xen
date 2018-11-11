@@ -51,6 +51,7 @@ class VNCTunnel
         begin
           data = @client_socket.read_nonblock(1024)
           break if data.nil?
+
           @srv_socket.write(data)
         rescue IO::WaitReadable => e
           IO.select([@client_socket])

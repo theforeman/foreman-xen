@@ -59,6 +59,7 @@ module ForemanXen
           snapshots = @compute_resource.find_snapshots
           snapshots.each do |snapshot|
             next unless snapshot.reference == ref
+
             name = snapshot.name
             snapshot.destroy
             notice "Successfully deleted snapshot #{snapshot.name}"
