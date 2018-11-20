@@ -373,10 +373,9 @@ module ForemanXen
 
     def client
       @client ||= Fog::XenServer::Compute.new(
-        :xenserver_url                => url,
-        :xenserver_username           => user,
-        :xenserver_password           => password,
-        :xenserver_redirect_to_master => true
+        :xenserver_url      => url,
+        :xenserver_username => user,
+        :xenserver_password => password
       )
     end
 
