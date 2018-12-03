@@ -133,7 +133,7 @@ module ForemanXen
 
     def templates!
       store_in_cache('templates') do
-        client.servers.templates.sort_by(&:name)
+        client.templates.sort_by(&:name)
       end
     end
 
@@ -143,7 +143,7 @@ module ForemanXen
 
     def custom_templates!
       store_in_cache('custom_templates') do
-        get_templates(client.servers.custom_templates)
+        get_templates(client.custom_templates)
       end
     end
 
@@ -153,7 +153,7 @@ module ForemanXen
 
     def builtin_templates!
       store_in_cache('builtin_templates') do
-        get_templates(client.servers.builtin_templates)
+        get_templates(client.builtin_templates)
       end
     end
 
@@ -165,7 +165,7 @@ module ForemanXen
       return [] if vm.snapshots.empty?
 
       tmps = begin
-        client.servers.templates.select(&:is_a_snapshot)
+        client.templates.select(&:is_a_snapshot)
              rescue
                []
       end
@@ -178,7 +178,7 @@ module ForemanXen
 
     def find_snapshots
       tmps = begin
-        client.servers.templates.select(&:is_a_snapshot)
+        client.templates.select(&:is_a_snapshot)
              rescue
                []
       end
@@ -296,7 +296,7 @@ module ForemanXen
 
       other_config = {}
       if builtin_template_name != ''
-        template     = client.servers.builtin_templates.find { |tmp| tmp.name == args[:builtin_template_name] }
+        template     = client.builtin_templates.find { |tmp| tmp.name == args[:builtin_template_name] }
         other_config = template.other_config
         other_config.delete 'disks'
         other_config.delete 'default_template'
