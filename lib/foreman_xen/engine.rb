@@ -20,7 +20,7 @@ module ForemanXen
         requires_foreman '>= 1.18'
         # Register xen compute resource in foreman
         compute_resource ForemanXen::Xenserver
-        parameter_filter(ComputeResource, :uuid)
+        parameter_filter(ComputeResource, :uuid, :iso_library_mountpoint)
       end
     end
 
@@ -43,11 +43,22 @@ module ForemanXen
       begin
         # extend fog xen server and image models.
         require 'fog/xenserver/compute/models/server'
+        require 'fog/xenserver/compute/models/host'
+        require 'fog/xenserver/compute/models/vdi'
+        require 'fog/xenserver/compute/models/storage_repository'
         require File.expand_path('../../app/models/concerns/fog_extensions/xenserver/server', __dir__)
+        require File.expand_path('../../app/models/concerns/fog_extensions/xenserver/host', __dir__)
+        require File.expand_path('../../app/models/concerns/fog_extensions/xenserver/vdi', __dir__)
+        require File.expand_path('../../app/models/concerns/fog_extensions/xenserver/storage_repository', __dir__)
         require File.expand_path('../../app/models/concerns/foreman_xen/host_helper_extensions', __dir__)
+        require File.expand_path('../../app/models/concerns/foreman_xen/host_extensions', __dir__)
 
-        Fog::XenServer::Compute::Server.send(:include, ::FogExtensions::Xenserver::Server)
+        Fog::XenServer::Compute::Models::Server.send(:include, ::FogExtensions::Xenserver::Server)
+        Fog::XenServer::Compute::Models::Host.send(:include, ::FogExtensions::Xenserver::Host)
+        Fog::XenServer::Compute::Models::Vdi.send(:include, ::FogExtensions::Xenserver::Vdi)
+        Fog::XenServer::Compute::Models::StorageRepository.send(:include, ::FogExtensions::Xenserver::StorageRepository)
         ::HostsHelper.send(:include, ForemanXen::HostHelperExtensions)
+        ::Host::Managed.send(:prepend, ForemanXen::HostExtensions)
       rescue => e
         Rails.logger.warn "Foreman-Xen: skipping engine hook (#{e})"
       end

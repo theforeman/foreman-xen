@@ -1,1 +1,1 @@
-attributes :user
+attributes :user, :iso_library_mountpoint

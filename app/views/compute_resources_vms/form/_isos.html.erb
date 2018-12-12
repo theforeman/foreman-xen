@@ -1,0 +1,14 @@
+<div id="iso_selection">
+  <%= selectable_f_with_cache_invalidation(f, :iso,
+        options_from_collection_for_select(
+          compute_resource.isos, :uuid, :name, compute_attributes.dig(:iso)
+        ),
+        { prompt: 'Select ISO to attach' },
+        { class: "span2",
+          label: _('Attach ISO'), },
+        { title: 'Refresh available storage repositories',
+          url: '/foreman_xen/cache/refresh',
+          compute_resource_id: compute_resource.id,
+          attribute: 'isos' }
+      ) %>
+</div>

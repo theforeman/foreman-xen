@@ -1,0 +1,14 @@
+<%= selectable_f_with_cache_invalidation f, :sr,
+      options_from_collection_for_select(
+        compute_resource.storage_pools, :uuid, :display_name, (f.object.sr.uuid rescue nil)
+      ),
+      {},
+      { class: 'span2',
+        label: _("Storage Repository") },
+      { title: 'Refresh available storage repositories',
+        url: '/foreman_xen/cache/refresh',
+        compute_resource_id: compute_resource.id,
+        attribute: 'storage_pools' }
+%>
+
+<%= text_f f, :virtual_size_gb, :class => "input-mini", :label => _("Size (GB)"), :value => (f.object.virtual_size.to_i / 1_073_741_824) %>

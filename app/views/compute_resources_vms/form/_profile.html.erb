@@ -1,0 +1,5 @@
+<div class="fields">
+  <%= counter_f f, :vcpus_max, :label => _('vCPUs'), :label_size => 'col-md-2', :'data-soft-max' => compute_resource.max_cpu_count %>
+  <%= byte_size_f f, :memory_min, :label => _('Memory Min'), :label_size => "col-md-2", :'data-soft-max' => compute_resource.max_memory %>
+  <%= byte_size_f f, :memory_max, :label => _('Memory Max'), :label_size => "col-md-2", :'data-soft-max' => compute_resource.max_memory %>
+</div>

@@ -14,7 +14,12 @@ module ForemanXen
       end
 
       respond_to do |format|
-        format.json { render :json => @compute_resource.public_send("#{type}!") }
+        format.json do
+          filtered_data = @compute_resource.public_send("#{type}!").map do |e|
+            e.attributes.slice(:id, :uuid, :name, :display_name)
+          end
+          render json: filtered_data
+        end
       end
     end
 
@@ -22,7 +27,7 @@ module ForemanXen
 
     # List of methods to permit
     def cache_attribute_whitelist
-      %w[networks hypervisors templates custom_templates builtin_templates storage_pools]
+      %w[isos networks available_hypervisors hypervisors templates builtin_templates storage_pools]
     end
 
     def load_compute_resource
