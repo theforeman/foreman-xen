@@ -1,0 +1,48 @@
+<div class="image_fields" style="display:none">
+  <div id='image_selection'>
+    <%= select_f f, :image_id, images, :uuid, :name,
+                 { :include_blank => (images.empty? || images.size == 1) ? false : _('Please select an image') },
+                 { :disabled => images.empty?, :label => _('Image'), :label_size => "col-md-2" } %>
+  </div>
+  <div id="target_sr_selection">
+    <%= selectable_f_with_cache_invalidation(f, :target_sr,
+          options_from_collection_for_select(
+            compute_resource.storage_pools, :uuid, :display_name
+          ),
+          {},
+          { class: "span2",
+            label: _("Target Repository"), },
+          { title: 'Refresh available storage repositories',
+            url: '/foreman_xen/cache/refresh',
+            compute_resource_id: compute_resource.id,
+            attribute: 'storage_pools' }
+        ) %>
+  </div>
+
+<% if compute_resource.iso_library_mountpoint %>
+
+  <div id="configdrive">
+    <%= checkbox_f(f, :configdrive,
+                   { checked: true, label: _('Metadata ISO'),
+                     help_inline: 'Attach cloud-init compatible configdrive' }
+                  )%>
+  </div>
+  <%= javascript_tag("
+    $(document).on('change', '#host_provision_method_image', function(){
+      if ($('#host_provision_method_image').is(':checked')) {
+        $('#configdrive').appendTo($('#image_provisioning'));
+        $('#configdrive').show();
+      }
+    });
+  ") %>
+
+<%end%>
+</div>
+<%= javascript_tag("
+$(document).on('change', '#host_provision_method_image', function(){
+  if ($('#host_provision_method_image').is(':checked')) {
+    $('#target_sr_selection').appendTo($('#image_provisioning'));
+    $('#target_sr_selection').show();
+  }
+});
+"); %>

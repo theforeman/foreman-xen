@@ -13,6 +13,16 @@ Please see the Foreman manual for further instructions:
 
 * [Foreman: How to Install a Plugin](http://theforeman.org/plugins/#2.Installation)
 
+## Image based provisioning
+
+In order to use the cloud-init functionality users need to:
+
+- install the `genisoimage` package
+- mount a "NFS ISO Library" (as XenServer calls it) which is attached to the Xen pool to a location writable by the foreman user.
+- set this mount point / path as ISO library mountpoint in the compute resource
+
+foreman_xen then creates a network configuration file, renders the user_data template, puts them in an ISO, copies this ISO to the attached ISO-library and attaches it to the created VM, where cloud-init can use the data provided to initialize the VM.
+
 ## Compatibility
 
 | Foreman Version | Plugin Version       |

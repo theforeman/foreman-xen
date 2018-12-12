@@ -1,0 +1,25 @@
+<!-- VM Template -->
+<div class="network_fields" style="display:none">
+  <div id="vm_template_selection">
+    <%= selectable_f_with_cache_invalidation(f, :builtin_template,
+          options_from_collection_for_select(
+            compute_resource.builtin_templates, :uuid, :name
+          ),
+          { selected: nil, #TODO
+            prompt: 'No Template'},
+          { class: 'span2', label: 'VM Template' },
+          { title: 'Refresh available builtin templates',
+            url: '/foreman_xen/cache/refresh',
+            compute_resource_id: compute_resource.id,
+            attribute: 'builtin_templates' }
+         ) %>
+  </div>
+</div>
+<%= javascript_tag("
+$(document).ready(function(){
+  if (!$('#network_provisioning').has('#vm_template_selection').length) {
+    $('#vm_template_selection').appendTo($('#network_provisioning'));
+    $('#vm_template_selection').show();
+  }
+});
+") %>

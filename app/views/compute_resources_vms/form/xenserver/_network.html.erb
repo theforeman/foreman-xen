@@ -1,0 +1,22 @@
+<div class="fields">
+  <div id='xenserver_network'>
+    <%= selectable_f_with_cache_invalidation f, :network,
+          options_from_collection_for_select(
+            compute_resource.networks, :uuid, :name
+          ),
+          { include_blank: compute_resource.networks.any? ? false : _('No networks') },
+          { class: 'span2',
+            label: _('Network'),
+            label_size: 'col-md-3',
+            sizer: 'col-md-8',
+            disabled: (controller_name != 'hosts') },
+          { title: 'Refresh available networks',
+            url: '/foreman_xen/cache/refresh',
+            compute_resource_id: compute_resource.id,
+            attribute: 'networks' }
+    %>
+  </div>
+</div>
+<%= javascript_tag("
+$(document).ready(function(){ $('#network_interfaces').hide(); });
+") if controller_name != 'hosts' %>

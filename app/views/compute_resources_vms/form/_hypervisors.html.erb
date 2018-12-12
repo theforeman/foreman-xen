@@ -1,12 +1,15 @@
-<div id='templates' class=''>
-  <div class="form-group">
-    <%= selectable_f f, :hypervisor_host,
-                     [[_("Automatic allocation"), ""]] + xen_hypervisor_map(compute_resource),
-                     {},
-                     { :class => 'form-control span2',
-                       :disabled => (controller_name != 'hosts'),
-                       :label => 'Hypervisor'
-                     }
-    %>
-  </div>
+<div id='hypervisor_selection'>
+  <%= selectable_f_with_cache_invalidation(f, :hypervisor_host,
+        options_from_collection_for_select(
+          compute_resource.available_hypervisors, :uuid, :display_name
+        ),
+        { include_blank: 'Automatic allocation' },
+        { class: "span2",
+          disabled: (controller_name != 'hosts'),
+          label: _("Hypervisor"), },
+        { title: 'Refresh available hypervisors',
+          url: '/foreman_xen/cache/refresh',
+          compute_resource_id: compute_resource.id,
+          attribute: 'available_hypervisors' }
+      ) %>
 </div>

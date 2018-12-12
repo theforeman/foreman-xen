@@ -5,8 +5,13 @@ module FogExtensions
 
       include ActionView::Helpers::NumberHelper
 
-      attr_accessor :start
-      attr_accessor :memory_min, :memory_max, :custom_template_name, :builtin_template_name, :hypervisor_host
+      attr_accessor :start, :image_id, :hypervisor_host, :iso, :target_sr
+      attr_accessor :memory_min, :memory_max, :builtin_template
+      attr_writer :volumes, :interfaces
+
+      def id
+        uuid
+      end
 
       def to_s
         name
@@ -15,6 +20,13 @@ module FogExtensions
       def nics_attributes=(attrs); end
 
       def volumes_attributes=(attrs); end
+
+      def volumes
+        @volumes ||= []
+        disks = vbds.compact.select(&:disk?)
+        disks.sort! { |x, y| x.userdevice <=> y.userdevice }
+        (disks.map(&:vdi) + @volumes).uniq
+      end
 
       def memory
         memory_static_max.to_i
@@ -45,11 +57,17 @@ module FogExtensions
       end
 
       def interfaces
-        vifs
+        (vifs + @interfaces).uniq
       end
 
       def select_nic(fog_nics, nic)
         fog_nics[0]
+      end
+
+      def user_data
+        return !other_config['default_template'] if is_a_template
+
+        false
       end
     end
   end
