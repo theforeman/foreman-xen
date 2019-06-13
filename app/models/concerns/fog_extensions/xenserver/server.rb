@@ -6,6 +6,7 @@ module FogExtensions
       include ActionView::Helpers::NumberHelper
 
       attr_accessor :start
+      attr_accessor :image_id
       attr_accessor :memory_min, :memory_max, :builtin_template_name, :hypervisor_host
 
       def to_s
