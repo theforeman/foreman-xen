@@ -10,7 +10,7 @@ module ForemanXen
     end
 
     def capabilities
-      [:build, :image]
+      %i[build image]
     end
 
     def find_vm_by_uuid(uuid)
@@ -200,7 +200,7 @@ module ForemanXen
     end
 
     def create_vm(args = {})
-      image_id  = args[:image_id].to_s
+      image_id = args[:image_id].to_s
       builtin_template_name = args[:builtin_template_name].to_s
 
       if builtin_template_name != '' && image_id != ''
@@ -234,13 +234,13 @@ module ForemanXen
 
       raise 'Memory max cannot be lower than Memory min' if mem_min.to_i > mem_max.to_i
 
-      template    = client.custom_templates.select { |t| t.uuid == args[:image_id] }.first
-      sr = client.storage_repositories.find { |sr| sr.uuid == (args[:VBDs][:sr_uuid]).to_s }
-      vm_reference = template.copy  args[:name], sr.reference
+      template = client.custom_templates.select { |t| t.uuid == args[:image_id] }.first
+      storagerepos = client.storage_repositories.find { |sr| sr.uuid == (args[:VBDs][:sr_uuid]).to_s }
+      vm_reference = template.copy args[:name], sr.reference
 
-      client.provision_server (vm_reference)
+      client.provision_server vm_reference
       vm = client.servers.find { |server| server.reference == vm_reference }
-      sr.scan
+      storagerepos.scan
 
       begin
         vm.vifs.first.destroy
@@ -375,7 +375,7 @@ module ForemanXen
         :xenserver_url      => url,
         :xenserver_username => user,
         :xenserver_password => password,
-        :xenserver_timeout  => 1800 #Timeout de 30 min
+        :xenserver_timeout  => 1800 # Timeout 30 min
       )
     end
 
