@@ -372,13 +372,13 @@ module ForemanXen
 
     def client
       @client ||= Fog::XenServer::Compute.new(
-        :xenserver_url      => url,
-        :xenserver_username => user,
-        :xenserver_password => password,
-        :xenserver_use_ssl => 1,
-        :xenserver_port => 443,
+        :xenserver_url         => url,
+        :xenserver_username    => user,
+        :xenserver_password    => password,
+        :xenserver_use_ssl     => 1,
+        :xenserver_port        => 443,
         :xenserver_verify_mode => 0,
-        :xenserver_timeout  => 1800 # Timeout 30 min
+        :xenserver_timeout     => 1800 # Timeout 30 min
       )
     end
 
