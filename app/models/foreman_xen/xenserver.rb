@@ -1,4 +1,5 @@
 module ForemanXen
+# rubocop:disable ClassLength
   class Xenserver < ComputeResource
     validates :url, :user, :password, :presence => true
 
@@ -19,6 +20,7 @@ module ForemanXen
       Foreman::Logging.exception("Failed retrieving xenserver vm by uuid #{uuid}", e)
       raise(ActiveRecord::RecordNotFound) if e.message.include?('HANDLE_INVALID')
       raise(ActiveRecord::RecordNotFound) if e.message.include?('VM.get_record: ["SESSION_INVALID"')
+
       raise e
     end
 
@@ -91,6 +93,7 @@ module ForemanXen
           found      = false
           available_hypervisors.each do |host|
             next unless sr.reference == host.suspend_image_sr
+
             found                     = true
             subresults[:name]         = sr.name
             subresults[:display_name] = sr.name + '(' + host.hostname + ')'
@@ -160,6 +163,7 @@ module ForemanXen
 
     def find_snapshots_for_vm(vm)
       return [] if vm.snapshots.empty?
+
       tmps = begin
         client.templates.select(&:is_a_snapshot)
              rescue
@@ -368,13 +372,13 @@ module ForemanXen
 
     def client
       @client ||= Fog::XenServer::Compute.new(
-        :xenserver_url      => url,
-        :xenserver_username => user,
-        :xenserver_password => password,
-        :xenserver_use_ssl => 1,
-        :xenserver_port => 443,
-        :xenserver_verify_mode => 0,
-        :xenserver_timeout  => 1800 # Timeout 30 min
+        :xenserver_url           => url,
+        :xenserver_username      => user,
+        :xenserver_password      => password,
+        :xenserver_use_ssl       => 1,
+        :xenserver_port          => 443,
+        :xenserver_verify_mode   => 0,
+        :xenserver_timeout       => 1800 # Timeout 30 min
       )
     end
 
@@ -443,4 +447,5 @@ module ForemanXen
       "computeresource_#{id}/"
     end
   end
+# rubocop:enable ClassLength
 end
