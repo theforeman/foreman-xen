@@ -1,5 +1,5 @@
 module ForemanXen
-# rubocop:disable ClassLength
+  # rubocop:disable ClassLength
   class Xenserver < ComputeResource
     validates :url, :user, :password, :presence => true
 
@@ -372,13 +372,13 @@ module ForemanXen
 
     def client
       @client ||= Fog::XenServer::Compute.new(
-        :xenserver_url           => url,
-        :xenserver_username      => user,
-        :xenserver_password      => password,
-        :xenserver_use_ssl       => 1,
-        :xenserver_port          => 443,
-        :xenserver_verify_mode   => 0,
-        :xenserver_timeout       => 1800 # Timeout 30 min
+        :xenserver_url         => url,
+        :xenserver_username    => user,
+        :xenserver_password    => password,
+        :xenserver_use_ssl     => 1,
+        :xenserver_port        => 443,
+        :xenserver_verify_mode => 0,
+        :xenserver_timeout     => 1800 # Timeout 30 min
       )
     end
 
@@ -447,5 +447,5 @@ module ForemanXen
       "computeresource_#{id}/"
     end
   end
-# rubocop:enable ClassLength
+  # rubocop:enable ClassLength
 end
