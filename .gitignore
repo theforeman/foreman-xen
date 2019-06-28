@@ -3,6 +3,7 @@ Gemfile.lock
 log/*.log
 pkg/
 .idea/
+vendor/
 test/dummy/db/*.sqlite3
 test/dummy/db/*.sqlite3-journal
 test/dummy/log/*.log

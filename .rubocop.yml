@@ -8,8 +8,8 @@ AllCops:
 Rails:
   Enabled: true
 
-Metrics/LineLength:
-  Max: 120
+Metrics:
+  Enabled: false
 
 Style/Documentation:
   Enabled: false
