@@ -6,9 +6,7 @@ module ForemanXen
     def refresh
       type = params[:type]
 
-      unless cache_attribute_whitelist.include?(type)
-        process_error(:error_msg => "Error refreshing cache. #{type} is not a white listed attribute")
-      end
+      process_error(:error_msg => "Error refreshing cache. #{type} is not a white listed attribute") unless cache_attribute_whitelist.include?(type)
 
       unless @compute_resource.respond_to?("#{type}!")
         process_error(:error_msg => "Error refreshing cache. Method '#{type}!' not found for compute resource" +
