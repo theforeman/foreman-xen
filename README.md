@@ -34,7 +34,8 @@ foreman_xen then creates a network configuration file, renders the user_data tem
 | >=1.13, <1.14   | 0.4.x (unmaintained) |
 | >=1.14, <1.17   | 0.5.x (unmaintained) |
 | >=1.17, <1.18   | 0.6.x (unmaintained) |
-| >=1.18          | 0.7.x                |
+| >=1.18, <1.20   | 0.7.x (unmaintained) |
+| >=1.20          | 1.0.0                |
 
 ## Support
 
