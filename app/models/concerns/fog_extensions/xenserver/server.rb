@@ -13,6 +13,10 @@ module FogExtensions
         uuid
       end
 
+      def identity
+        uuid
+      end
+
       def to_s
         name
       end
