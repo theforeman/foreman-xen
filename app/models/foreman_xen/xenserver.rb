@@ -52,8 +52,11 @@ module ForemanXen
       end
     end
 
+    # rubocop:disable Rails/DynamicFindBy
+    # Fog::XenServer::Compute (client) isn't an ActiveRecord model which
+    # supports find_by()
     def find_vm_by_uuid(uuid)
-      client.servers.find_by(uuid: uuid)
+      client.servers.find_by_uuid(uuid)
     rescue Fog::XenServer::RequestFailed => e
       Foreman::Logging.exception("Failed retrieving xenserver vm by uuid #{uuid}", e)
       raise(ActiveRecord::RecordNotFound) if e.message.include?('HANDLE_INVALID')
@@ -61,6 +64,7 @@ module ForemanXen
 
       raise e
     end
+    # rubocop:enable Rails/DynamicFindBy
 
     # we default to destroy the VM's storage as well.
     def destroy_vm(ref, args = {})
@@ -526,13 +530,17 @@ module ForemanXen
       out_hash
     end
 
+    # rubocop:disable Rails/DynamicFindBy
+    # Fog::XenServer::Compute (client) isn't an ActiveRecord model which
+    # supports find_by()
     def set_vm_affinity(vm, hypervisor)
       if hypervisor.empty?
         vm.set_attribute('affinity', '')
       else
-        vm.set_attribute('affinity', client.hosts.find_by(uuid: hypervisor))
+        vm.set_attribute('affinity', client.hosts.find_by_uuid(hypervisor))
       end
     end
+    # rubocop:enable Rails/DynamicFindBy
 
     def create_and_attach_configdrive(vm, attr)
       network_data = add_mac_to_network_data(attr[:network_data], vm)

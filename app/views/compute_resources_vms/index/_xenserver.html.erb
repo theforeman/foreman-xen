@@ -11,7 +11,7 @@
   <tbody>
   <% @vms.each do |vm| -%>
       <tr>
-        <td><%= link_to_if_authorized vm.name, hash_for_compute_resource_vm_path(:compute_resource_id => @compute_resource, :id => vm.identity) %></td>
+        <td><%= link_to_if_authorized vm.name, hash_for_compute_resource_vm_path(:compute_resource_id => @compute_resource, :id => vm.uuid) %></td>
         <td><%= vm.vcpus_max %></td>
         <td><%= (vm.memory_static_max.to_i / 1073741824).to_s %> GB</td>
         <td><%= vm.power_state %> </td>
