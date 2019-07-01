@@ -8,7 +8,8 @@
             { prompt: 'Select a Template'},
             { class: 'span2', label: 'Builtin Template' },
             { title: 'Refresh available builtin templates',
-              url: '/foreman_xen/cache/refresh',
+              url: url_for(controller: "foreman_xen/cache",
+                           action: "refresh", only_path: true),
               compute_resource_id: compute_resource.id,
               attribute: 'builtin_templates' }
            ) %>
