@@ -273,8 +273,8 @@ module ForemanXen
       {
         name:               args[:name],
         name_description:   args[:comment],
-        VCPUs_max:          args[:vcpus_max],
-        VCPUs_at_startup:   args[:vcpus_max],
+        vcpus_max:          args[:vcpus_max],
+        vcpus_at_startup:   args[:vcpus_max],
         memory_static_max:  args[:memory_max],
         memory_dynamic_max: args[:memory_max],
         memory_dynamic_min: args[:memory_min],
@@ -374,9 +374,9 @@ module ForemanXen
       mem = %w[memory_static_max memory_dynamic_max
                memory_dynamic_min memory_static_min]
       mem.reverse! if vm.memory_static_max.to_i > attr[:memory_static_max].to_i
-      # VCPU values must satisfy: 0 < VCPUs_at_startup <= VCPUs_max
-      cpu = %w[VCPUs_max VCPUs_at_startup]
-      cpu.reverse! if vm.vcpus_at_startup > attr[:VCPUs_at_startup]
+      # VCPU values must satisfy: 0 < vcpus_at_startup <= vcpus_max
+      cpu = %w[vcpus_max vcpus_at_startup]
+      cpu.reverse! if vm.vcpus_at_startup > attr[:vcpus_at_startup]
       (mem + cpu).each { |e| vm.set_attribute e, attr[e.to_sym] }
     end
 
