@@ -53,12 +53,12 @@ module ForemanXen
         require File.expand_path('../../app/models/concerns/foreman_xen/host_helper_extensions', __dir__)
         require File.expand_path('../../app/models/concerns/foreman_xen/host_extensions', __dir__)
 
-        Fog::XenServer::Compute::Models::Server.send(:include, ::FogExtensions::Xenserver::Server)
-        Fog::XenServer::Compute::Models::Host.send(:include, ::FogExtensions::Xenserver::Host)
-        Fog::XenServer::Compute::Models::Vdi.send(:include, ::FogExtensions::Xenserver::Vdi)
-        Fog::XenServer::Compute::Models::StorageRepository.send(:include, ::FogExtensions::Xenserver::StorageRepository)
-        ::HostsHelper.send(:include, ForemanXen::HostHelperExtensions)
-        ::Host::Managed.send(:prepend, ForemanXen::HostExtensions)
+        Fog::XenServer::Compute::Models::Server.include ::FogExtensions::Xenserver::Server
+        Fog::XenServer::Compute::Models::Host.include ::FogExtensions::Xenserver::Host
+        Fog::XenServer::Compute::Models::Vdi.include ::FogExtensions::Xenserver::Vdi
+        Fog::XenServer::Compute::Models::StorageRepository.include ::FogExtensions::Xenserver::StorageRepository
+        ::HostsHelper.include ForemanXen::HostHelperExtensions
+        ::Host::Managed.prepend ForemanXen::HostExtensions
       rescue => e
         Rails.logger.warn "Foreman-Xen: skipping engine hook (#{e})"
       end

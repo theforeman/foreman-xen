@@ -2,6 +2,6 @@ source 'https://rubygems.org'
 
 gemspec
 
-gem 'rubocop', '~> 0.72.0', require: false
-gem 'rubocop-performance', '~> 1.4.0', require: false
-gem 'rubocop-rails', '~> 2.1.0', require: false
+gem 'rubocop', '~> 0.75.1', require: false
+gem 'rubocop-performance', '~> 1.5.2', require: false
+gem 'rubocop-rails', '~> 2.3.2', require: false

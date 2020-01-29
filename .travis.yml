@@ -3,7 +3,8 @@ language: ruby
 rvm:
   - 2.3.5
   - 2.5.1
-#  - 2.6.3
+  - 2.6.3
+  - 2.7.0
 before_install:
   - gem update --remote bundler
 install:
