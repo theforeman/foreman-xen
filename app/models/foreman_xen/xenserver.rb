@@ -56,8 +56,6 @@ module ForemanXen
     # Fog::XenServer::Compute (client) isn't an ActiveRecord model which
     # supports find_by()
     def find_vm_by_uuid(uuid)
-      return client.servers.find { |s| s.reference == uuid } if uuid.start_with? 'OpaqueRef:'
-
       client.servers.find_by_uuid(uuid)
     rescue Fog::XenServer::RequestFailed => e
       Foreman::Logging.exception("Failed retrieving xenserver vm by uuid #{uuid}", e)
