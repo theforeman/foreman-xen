@@ -8,6 +8,10 @@ module FogExtensions
         prepend FogExtensions::Xenserver::StorageRepository
       end
 
+      def id
+        uuid
+      end
+
       def initialize(new_attributes = {})
         super(new_attributes)
         attributes[:display_name] = init_display_name
@@ -27,6 +31,14 @@ module FogExtensions
 
       def physical_utilisation_gb
         physical_utilisation.to_i / 1024 / 1024 / 1024
+      end
+
+      def capacity
+        physical_size_gb
+      end
+
+      def freespace
+        free_space
       end
 
       def init_display_name
