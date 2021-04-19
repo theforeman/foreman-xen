@@ -39,6 +39,15 @@ module ForemanXen
       attrs[:iso_library_mountpoint] = mountpoint
     end
 
+    def detach_cdrom(uuid)
+      begin
+        vm = find_vm_by_uuid(uuid)
+        detach_cdrom_vbd(vm) if vm
+      rescue => e
+        logger.error "unable to detach cdrom:#{e}"
+      end
+    end
+
     def cleanup_configdrive(uuid)
       iso_file_name = "foreman-configdrive-#{uuid}.iso"
       begin
@@ -495,6 +504,13 @@ module ForemanXen
         client.vbds.create vbd
       end
       true
+    end
+
+    def detach_cdrom_vbd(vm)
+      cd_drive = client.vbds.find { |v| v.vm == vm && v.type == 'CD' }
+      unless cd_drive&.empty
+        client.eject_vbd cd_drive.reference
+      end
     end
 
     def find_free_userdevice(vm)
