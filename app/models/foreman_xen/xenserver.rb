@@ -518,7 +518,7 @@ module ForemanXen
                                                'netmask' => subnet.nil? ? '' : subnet.mask } } },
         'nameserver1' => subnet.nil? ? '' : subnet.dns_primary,
         'nameserver2' => subnet.nil? ? '' : subnet.dns_secondary,
-        'environment' => !host.respond_to?("environment")? ? '' : host.environment.to_s }
+        'environment' => !host.respond_to?("environment") ? '' : host.environment.to_s }
     end
 
     def xenstore_hash_flatten(nested_hash, _key = nil, keychain = nil, out_hash = {})
