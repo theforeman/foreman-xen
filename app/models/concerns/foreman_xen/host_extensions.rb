@@ -3,7 +3,10 @@ module ForemanXen
     extend ActiveSupport::Concern
 
     def built(installed = true)
-      compute_resource.cleanup_configdrive(uuid) if compute_resource && compute_resource.type == 'ForemanXen::Xenserver'
+      if compute_resource && compute_resource.type == 'ForemanXen::Xenserver'
+        compute_resource.detach_cdrom(uuid)
+        compute_resource.cleanup_configdrive(uuid)
+      end
       super(installed)
     end
 
