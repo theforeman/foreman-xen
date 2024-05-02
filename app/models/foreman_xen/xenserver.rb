@@ -39,6 +39,15 @@ module ForemanXen
       attrs[:iso_library_mountpoint] = mountpoint
     end
 
+    def detach_cdrom(uuid)
+      begin
+        vm = find_vm_by_uuid(uuid)
+        detach_cdrom_vbd(vm) if vm
+      rescue => e
+        logger.error "unable to detach cdrom:#{e}"
+      end
+    end
+
     def cleanup_configdrive(uuid)
       iso_file_name = "foreman-configdrive-#{uuid}.iso"
       begin
@@ -108,6 +117,14 @@ module ForemanXen
 
     def available_images
       custom_templates!
+    end
+
+    def available_storage_domains(*)
+      storage_pools
+    end
+
+    def available_networks(*)
+      networks
     end
 
     def available_hypervisors
@@ -273,8 +290,8 @@ module ForemanXen
       {
         name:               args[:name],
         name_description:   args[:comment],
-        vcpus_max:          args[:vcpus_max],
-        vcpus_at_startup:   args[:vcpus_max],
+        VCPUs_max:          args[:vcpus_max],
+        VCPUs_at_startup:   args[:vcpus_max],
         memory_static_max:  args[:memory_max],
         memory_dynamic_max: args[:memory_max],
         memory_dynamic_min: args[:memory_min],
@@ -374,9 +391,9 @@ module ForemanXen
       mem = %w[memory_static_max memory_dynamic_max
                memory_dynamic_min memory_static_min]
       mem.reverse! if vm.memory_static_max.to_i > attr[:memory_static_max].to_i
-      # VCPU values must satisfy: 0 < vcpus_at_startup <= vcpus_max
-      cpu = %w[vcpus_max vcpus_at_startup]
-      cpu.reverse! if vm.vcpus_at_startup > attr[:vcpus_at_startup]
+      # VCPU values must satisfy: 0 < VCPUs_at_startup <= VCPUs_max
+      cpu = %w[VCPUs_max VCPUs_at_startup]
+      cpu.reverse! if vm.vcpus_at_startup > attr[:VCPUs_at_startup]
       (mem + cpu).each { |e| vm.set_attribute e, attr[e.to_sym] }
     end
 
@@ -489,6 +506,13 @@ module ForemanXen
       true
     end
 
+    def detach_cdrom_vbd(vm)
+      cd_drive = client.vbds.find { |v| v.vm == vm && v.type == 'CD' }
+      unless cd_drive&.empty
+        client.eject_vbd cd_drive.reference
+      end
+    end
+
     def find_free_userdevice(vm)
       # Find next free userdevice id for vbd
       # vm.vbds is not current, vm.reload not working.
@@ -518,7 +542,7 @@ module ForemanXen
                                                'netmask' => subnet.nil? ? '' : subnet.mask } } },
         'nameserver1' => subnet.nil? ? '' : subnet.dns_primary,
         'nameserver2' => subnet.nil? ? '' : subnet.dns_secondary,
-        'environment' => host.environment.to_s }
+        'environment' => !host.respond_to?("environment") ? '' : host.environment.to_s }
     end
 
     def xenstore_hash_flatten(nested_hash, _key = nil, keychain = nil, out_hash = {})
@@ -539,7 +563,7 @@ module ForemanXen
       if hypervisor.empty?
         vm.set_attribute('affinity', '')
       else
-        vm.set_attribute('affinity', client.hosts.find_by_uuid(hypervisor))
+        vm.set_attribute('affinity', hypervisor)
       end
     end
     # rubocop:enable Rails/DynamicFindBy

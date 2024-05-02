@@ -57,6 +57,7 @@ module FogExtensions
       end
 
       def interfaces
+        @interfaces ||= []
         (vifs + @interfaces).uniq
       end
 
