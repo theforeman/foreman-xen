@@ -1,6 +1,5 @@
 # Foreman XEN Plugin
 
-[![Build Status](https://api.travis-ci.org/theforeman/foreman-xen.svg)](https://travis-ci.org/theforeman/foreman-xen)
 [![Code Climate](https://codeclimate.com/github/theforeman/foreman-xen/badges/gpa.svg)](https://codeclimate.com/github/theforeman/foreman-xen)
 
 This plugin enables managing of XEN Server as a Compute Resource in Foreman.
