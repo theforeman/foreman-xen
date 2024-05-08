@@ -1,5 +1,8 @@
 # Foreman XEN Plugin
 
+> [!NOTE]
+> This plugin is unmaintained. You can find a maintained fork at [bnerickson/foreman-xen](https://github.com/bnerickson/foreman-xen/).
+
 [![Code Climate](https://codeclimate.com/github/theforeman/foreman-xen/badges/gpa.svg)](https://codeclimate.com/github/theforeman/foreman-xen)
 
 This plugin enables managing of XEN Server as a Compute Resource in Foreman.
