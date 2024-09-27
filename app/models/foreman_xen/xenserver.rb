@@ -539,7 +539,7 @@ module ForemanXen
       if hypervisor.empty?
         vm.set_attribute('affinity', '')
       else
-        vm.set_attribute('affinity', client.hosts.find_by_uuid(hypervisor))
+        vm.set_attribute('affinity', hypervisor)
       end
     end
     # rubocop:enable Rails/DynamicFindBy
