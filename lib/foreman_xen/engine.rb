@@ -16,11 +16,13 @@ module ForemanXen
     end
 
     initializer 'foreman_xen.register_plugin', :before => :finisher_hook do |app|
-      Foreman::Plugin.register :foreman_xen do
-        requires_foreman '>= 1.20'
-        # Register xen compute resource in foreman
-        compute_resource ForemanXen::Xenserver
-        parameter_filter(ComputeResource, :uuid, :iso_library_mountpoint)
+      app.reloader.to_prepare do
+        Foreman::Plugin.register :foreman_xen do
+          requires_foreman '>= 1.20'
+          # Register xen compute resource in foreman
+          compute_resource ForemanXen::Xenserver
+          parameter_filter(ComputeResource, :uuid, :iso_library_mountpoint)
+        end
       end
     end
 
@@ -45,10 +47,12 @@ module ForemanXen
         require 'fog/xenserver/compute/models/server'
         require 'fog/xenserver/compute/models/host'
         require 'fog/xenserver/compute/models/vdi'
+        require 'fog/xenserver/compute/models/network'
         require 'fog/xenserver/compute/models/storage_repository'
         require File.expand_path('../../app/models/concerns/fog_extensions/xenserver/server', __dir__)
         require File.expand_path('../../app/models/concerns/fog_extensions/xenserver/host', __dir__)
         require File.expand_path('../../app/models/concerns/fog_extensions/xenserver/vdi', __dir__)
+        require File.expand_path('../../app/models/concerns/fog_extensions/xenserver/network', __dir__)
         require File.expand_path('../../app/models/concerns/fog_extensions/xenserver/storage_repository', __dir__)
         require File.expand_path('../../app/models/concerns/foreman_xen/host_helper_extensions', __dir__)
         require File.expand_path('../../app/models/concerns/foreman_xen/host_extensions', __dir__)
@@ -56,6 +60,7 @@ module ForemanXen
         Fog::XenServer::Compute::Models::Server.include ::FogExtensions::Xenserver::Server
         Fog::XenServer::Compute::Models::Host.include ::FogExtensions::Xenserver::Host
         Fog::XenServer::Compute::Models::Vdi.include ::FogExtensions::Xenserver::Vdi
+        Fog::XenServer::Compute::Models::Network.include ::FogExtensions::Xenserver::Network
         Fog::XenServer::Compute::Models::StorageRepository.include ::FogExtensions::Xenserver::StorageRepository
         ::HostsHelper.include ForemanXen::HostHelperExtensions
         ::Host::Managed.prepend ForemanXen::HostExtensions
